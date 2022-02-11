@@ -1,0 +1,8 @@
+.quizzes {
+  width: 50rem;
+  max-width: 95%;
+  padding: 1rem;
+  margin: 2rem auto;
+  background-color: #2a98d3;
+  border-radius: 7px;
+}

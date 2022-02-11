@@ -1,0 +1,53 @@
+.quiz-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 20rem;
+  width: 90%;
+  height: 15rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 5px;
+  background-color: #d8d2cb;
+  transition: transform 700ms;
+}
+
+.quiz-item:hover {
+  transform: scale(110%);
+}
+
+.quiz-item__label {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.quiz-item__label--title {
+  font-size: 1.7rem;
+}
+
+.quiz-item__label--author {
+  padding: 0.5rem;
+  background-color: #f7f7f7;
+  border-radius: 7px;
+}
+
+.quiz-item__btn {
+  max-width: 10rem;
+  width: 90%;
+  margin: 2rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1.5px solid #000000;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.quiz-item__btn:hover {
+  background-color: #c7c7c7;
+}
+
+.span-bold {
+  font-weight: 700;
+}
