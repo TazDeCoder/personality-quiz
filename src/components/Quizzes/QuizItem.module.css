@@ -19,14 +19,14 @@
 
 .quiz-item__label {
   text-align: center;
-  font-size: 1.1rem;
 }
 
-.quiz-item__label--title {
+.label--title {
   font-size: 1.7rem;
 }
 
-.quiz-item__label--author {
+.label--author {
+  font-size: 1.1rem;
   padding: 0.5rem;
   background-color: #f7f7f7;
   border-radius: 7px;
@@ -48,6 +48,6 @@
   background-color: #c7c7c7;
 }
 
-.span-bold {
+.span--bold {
   font-weight: 700;
 }

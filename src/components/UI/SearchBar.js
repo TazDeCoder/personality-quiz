@@ -1,19 +1,19 @@
-import "./SearchBar.css";
+import styles from "./SearchBar.module.css";
 
 function SearchBar(props) {
   return (
-    <div className="searchbar">
-      <form className="searchbar-form">
+    <div className={styles.searchbar}>
+      <form className={styles["searchbar-form"]}>
         <input
-          className="searchbar-form__input"
-          type="text"
+          className={styles["searchbar-form__input"]}
+          type={styles.text}
           onChange={props.onType}
         />
       </form>
 
-      <ul className="searchbar-list">
+      <ul className={styles["searchbar-list"]}>
         {props.suggestions.map((suggestion, idx) => (
-          <li className="searchbar-list__item" key={idx}>
+          <li className={styles["searchbar-list__item"]} key={idx}>
             {suggestion}
           </li>
         ))}

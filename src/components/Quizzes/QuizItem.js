@@ -1,14 +1,14 @@
-import "./QuizItem.css";
+import styles from "./QuizItem.module.css";
 
 function QuizItem(props) {
   return (
-    <li className="quiz-item">
-      <h1 className="quiz-item__label quiz-item__label--title">
+    <li className={styles["quiz-item"]}>
+      <h1 className={`${styles["quiz-item__label"]} ${styles["label--title"]}`}>
         {props.title}
       </h1>
-      <button className="quiz-item__btn">Start Quiz</button>
-      <p className="quiz-item__label quiz-item__label--author">
-        Created By: <span className="span-bold">{props.author}</span>
+      <button className={styles["quiz-item__btn"]}>Start Quiz</button>
+      <p className={`${styles["quiz-item__label"]} ${styles["label--author"]}`}>
+        Created By: <span className={styles["span--bold"]}>{props.author}</span>
       </p>
     </li>
   );
