@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Quizzes from "./components/Quizzes";
+import Quizzes from "./components/Quizzes/Quizzes";
 
 const SAMPLE_QUIZZES = [
   {
