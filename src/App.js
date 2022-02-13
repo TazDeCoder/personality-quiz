@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Quizzes from "./components/Quizzes/Quizzes";
+import AddQuiz from "./components/AddQuiz/AddQuiz";
 
 const SAMPLE_QUIZZES = [
   {
@@ -16,11 +17,18 @@ const SAMPLE_QUIZZES = [
 ];
 
 function App() {
-  const [quizzes] = useState(SAMPLE_QUIZZES);
+  const [quizzes, setQuizzes] = useState(SAMPLE_QUIZZES);
+
+  const addQuizHandler = (quiz) => {
+    setQuizzes((prevExpenses) => {
+      return [...prevExpenses, quiz];
+    });
+  };
 
   return (
     <div>
       <Quizzes items={quizzes} />
+      <AddQuiz onAddQuiz={addQuizHandler} />
     </div>
   );
 }

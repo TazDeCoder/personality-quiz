@@ -1,0 +1,45 @@
+.add-quiz__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 30rem;
+  padding: 1rem;
+  margin: 0 auto;
+  background-color: #f7f7f7;
+  border-radius: 7px;
+}
+
+.add-quiz__control {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin: 0.25rem;
+}
+
+.add-quiz__control label {
+  font-size: 1.1rem;
+  width: 40%;
+}
+
+.add-quiz__control input {
+  flex-grow: 1;
+  font-size: 1rem;
+  padding: 0.25rem;
+}
+
+.add-quiz__actions {
+  text-align: right;
+  width: 100%;
+  margin: 0.5rem;
+}
+
+.add-quiz__actions button {
+  background-color: #fff;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+.add-quiz__actions button:hover {
+  background-color: #ccc;
+  cursor: pointer;
+}
