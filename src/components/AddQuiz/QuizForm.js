@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import styles from "./QuizForm.module.css";
 import Card from "../UI/Card";
+import Button from "../UI/Button";
 
 function QuizForm(props) {
   const [inputTitle, setInputTitle] = useState("");
@@ -55,7 +56,7 @@ function QuizForm(props) {
         </div>
 
         <div className={styles["add-quiz__actions"]}>
-          <button>Add Quiz</button>
+          <Button>Add Quiz</Button>
         </div>
       </Card>
     </form>
