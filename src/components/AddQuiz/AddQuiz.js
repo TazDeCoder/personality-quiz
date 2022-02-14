@@ -10,9 +10,9 @@ function AddQuiz(props) {
   };
 
   return (
-    <div>
+    <>
       <QuizForm onSaveQuizData={saveQuizDataHandler} />
-    </div>
+    </>
   );
 }
 

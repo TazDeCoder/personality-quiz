@@ -1,4 +1,6 @@
 import { useState } from "react";
+
+import styles from "./QuizzesSearchBar.module.css";
 import SearchBar from "../UI/SearchBar";
 
 function QuizzesSearchBar(props) {
@@ -20,7 +22,15 @@ function QuizzesSearchBar(props) {
     setSuggestions(filteredQuizzes);
   };
 
-  return <SearchBar suggestions={suggestions} onType={typeHandler} />;
+  return (
+    <>
+      <SearchBar
+        className={styles.searchbar}
+        suggestions={suggestions}
+        onType={typeHandler}
+      />
+    </>
+  );
 }
 
 export default QuizzesSearchBar;

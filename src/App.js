@@ -26,10 +26,10 @@ function App() {
   };
 
   return (
-    <div>
-      <Quizzes items={quizzes} />
+    <>
       <AddQuiz onAddQuiz={addQuizHandler} />
-    </div>
+      <Quizzes items={quizzes} />
+    </>
   );
 }
 

@@ -1,4 +1,6 @@
 .button {
+  font-size: 1rem;
+  font-weight: 600;
   background-color: #eee;
   border: 2px solid #000;
 }
