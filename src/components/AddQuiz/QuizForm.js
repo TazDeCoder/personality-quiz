@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import styles from "./QuizForm.module.css";
+import Card from "../UI/Card";
 
 function QuizForm(props) {
   const [inputTitle, setInputTitle] = useState("");
@@ -30,7 +31,7 @@ function QuizForm(props) {
 
   return (
     <form onSubmit={submitHandler}>
-      <div className={styles["add-quiz__controls"]}>
+      <Card className={styles["add-quiz__controls"]}>
         <div className={styles["add-quiz__control"]}>
           <label>Title</label>
           <input
@@ -56,7 +57,7 @@ function QuizForm(props) {
         <div className={styles["add-quiz__actions"]}>
           <button>Add Quiz</button>
         </div>
-      </div>
+      </Card>
     </form>
   );
 }
