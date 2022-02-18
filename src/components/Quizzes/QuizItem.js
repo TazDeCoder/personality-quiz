@@ -3,6 +3,10 @@ import Button from "../UI/Button";
 import Card from "../UI/Card";
 
 function QuizItem(props) {
+  const viewQuizItemHandler = () => {
+    props.onViewQuiz(props.id);
+  };
+
   return (
     <li>
       <Card className={styles["quiz-item"]}>
@@ -11,7 +15,12 @@ function QuizItem(props) {
         >
           {props.title}
         </h1>
-        <Button className={styles["quiz-item__btn"]}>Start Quiz</Button>
+        <Button
+          className={styles["quiz-item__btn"]}
+          onClick={viewQuizItemHandler}
+        >
+          See Details
+        </Button>
         <p
           className={`${styles["quiz-item__label"]} ${styles["label--author"]}`}
         >

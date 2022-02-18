@@ -21,6 +21,7 @@ const SAMPLE_QUIZZES = [
 function App() {
   const [quizzes, setQuizzes] = useState(SAMPLE_QUIZZES);
   const [showQuizForm, setShowQuizForm] = useState(false);
+  const [viewQuiz, setViewQuiz] = useState();
 
   const addQuizHandler = (quiz) => {
     setQuizzes((prevExpenses) => {
@@ -34,16 +35,32 @@ function App() {
     setShowQuizForm(!showQuizForm);
   };
 
+  const viewQuizHandler = (quiz) => {
+    setViewQuiz(quiz);
+  };
+
+  const closeViewQuizHandler = () => {
+    setViewQuiz(null);
+  };
+
   return (
     <>
+      {showQuizForm && (
+        <Modal onClose={toggleQuizFormHandler}>
+          <AddQuiz onAddQuiz={addQuizHandler} />
+        </Modal>
+      )}
+      {viewQuiz && (
+        <Modal onClose={closeViewQuizHandler}>
+          <div>
+            <h1>{viewQuiz.title}</h1>
+            <p>{viewQuiz.author}</p>
+          </div>
+        </Modal>
+      )}
       <MainHeader onToggleQuizForm={toggleQuizFormHandler} />
       <main>
-        {showQuizForm && (
-          <Modal onClose={toggleQuizFormHandler}>
-            <AddQuiz onAddQuiz={addQuizHandler} />{" "}
-          </Modal>
-        )}
-        <Quizzes items={quizzes} />
+        <Quizzes items={quizzes} onViewQuiz={viewQuizHandler} />
       </main>
     </>
   );

@@ -7,7 +7,7 @@ function Quizzes(props) {
   return (
     <Card className={styles.quizzes}>
       <QuizzesSearchBar quizzes={props.items} />
-      <QuizzesList quizzes={props.items} />
+      <QuizzesList quizzes={props.items} onViewQuiz={props.onViewQuiz} />
     </Card>
   );
 }
