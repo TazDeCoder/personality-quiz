@@ -48,14 +48,13 @@ q {
 html,
 body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 }
 html {
   font-size: 16px;
 }
 body {
   background-color: #165170;
-  padding: 1rem;
 }
 nav,
 button,
