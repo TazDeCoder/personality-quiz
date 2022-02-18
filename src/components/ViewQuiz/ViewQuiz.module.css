@@ -1,0 +1,49 @@
+.view-quiz {
+  padding: 1rem;
+  background-color: #f7f7f7;
+  border: 2px solid #000;
+  border-radius: 12px;
+}
+
+.view-quiz__content {
+  padding: 0.5rem;
+  margin: 1rem auto;
+  font-size: 1.1rem;
+}
+
+.view-quiz__content h1 {
+  font-size: 1.9rem;
+}
+
+.view-quiz__content p {
+  height: 8rem;
+  padding: 0.5rem;
+  margin: 0.5rem auto;
+  overflow: auto;
+  line-height: 1.2;
+  background-color: #fff;
+}
+
+.view-quiz__meta {
+  padding: 0.5rem;
+  margin: 1rem auto;
+  font-size: 1.2rem;
+}
+
+.view-quiz__meta p {
+  padding: 0.5rem;
+}
+
+.view-quiz__meta span {
+  font-weight: 600;
+}
+
+.view-quiz__actions {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+.view-quiz__actions button {
+  margin: 0 0.5rem;
+}
