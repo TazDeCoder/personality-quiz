@@ -5,7 +5,7 @@ const MainHeader = (props) => {
   return (
     <header className={styles["main-header"]}>
       <h1>Personality Quiz</h1>
-      <Navigation />
+      <Navigation onToggleForm={props.onToggleQuizForm} />
     </header>
   );
 };

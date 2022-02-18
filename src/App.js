@@ -3,6 +3,7 @@ import { useState } from "react";
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
+import Modal from "./components/UI/Modal";
 
 const SAMPLE_QUIZZES = [
   {
@@ -25,13 +26,23 @@ function App() {
     setQuizzes((prevExpenses) => {
       return [...prevExpenses, quiz];
     });
+
+    setShowQuizForm(false);
+  };
+
+  const toggleQuizFormHandler = () => {
+    setShowQuizForm(!showQuizForm);
   };
 
   return (
     <>
-      <MainHeader />
+      <MainHeader onToggleQuizForm={toggleQuizFormHandler} />
       <main>
-        {showQuizForm && <AddQuiz onAddQuiz={addQuizHandler} />}
+        {showQuizForm && (
+          <Modal onClose={toggleQuizFormHandler}>
+            <AddQuiz onAddQuiz={addQuizHandler} />{" "}
+          </Modal>
+        )}
         <Quizzes items={quizzes} />
       </main>
     </>

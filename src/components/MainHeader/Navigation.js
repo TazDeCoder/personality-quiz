@@ -3,10 +3,10 @@ import Button from "../UI/Button";
 
 function Navigation(props) {
   return (
-    <nav class={styles.nav}>
+    <nav className={styles.nav}>
       <ul>
         <li>
-          <Button onClick={props.onLogout}>Add New Quiz</Button>
+          <Button onClick={props.onToggleForm}>Add New Quiz</Button>
         </li>
       </ul>
     </nav>
