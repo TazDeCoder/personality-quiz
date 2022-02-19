@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import styles from "./QuizForm.module.css";
-import Card from "../UI/Card";
 import Button from "../UI/Button";
 
 function QuizForm(props) {
   const [inputTitle, setInputTitle] = useState("");
   const [inputAuthor, setInputAuthor] = useState("");
+  const [inputDesc, setInputDesc] = useState("");
 
   const titleChangeHandler = (e) => {
     setInputTitle(e.target.value);
@@ -16,23 +16,29 @@ function QuizForm(props) {
     setInputAuthor(e.target.value);
   };
 
+  const descChangeHandler = (e) => {
+    setInputDesc(e.target.value);
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
     // Create quiz data object
     const quizData = {
       title: inputTitle,
       author: inputAuthor,
+      desc: inputDesc,
     };
     // Clear input fields
     setInputTitle("");
     setInputAuthor("");
+    setInputDesc("");
     // Save quiz data
     props.onSaveQuizData(quizData);
   };
 
   return (
     <form onSubmit={submitHandler}>
-      <Card className={styles["add-quiz__controls"]}>
+      <div className={styles["add-quiz__controls"]}>
         <div className={styles["add-quiz__control"]}>
           <label>Title</label>
           <input
@@ -40,6 +46,7 @@ function QuizForm(props) {
             value={inputTitle}
             placeholder="Enter title of quiz"
             onChange={titleChangeHandler}
+            maxLength="128"
             required
           />
         </div>
@@ -55,10 +62,21 @@ function QuizForm(props) {
           />
         </div>
 
-        <div className={styles["add-quiz__actions"]}>
-          <Button>Add Quiz</Button>
+        <div className={styles["add-quiz__control"]}>
+          <label>Desc</label>
+          <textarea
+            value={inputDesc}
+            placeholder="Fill in details of the quiz"
+            onChange={descChangeHandler}
+            maxLength="960"
+            required
+          />
         </div>
-      </Card>
+
+        <div className={styles["add-quiz__actions"]}>
+          <Button>Create Quiz Draft</Button>
+        </div>
+      </div>
     </form>
   );
 }

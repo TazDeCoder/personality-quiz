@@ -5,6 +5,7 @@ function AddQuiz(props) {
     const quizData = {
       ...inputQuizData,
       id: Math.random().toString(),
+      questions: [],
     };
     props.onAddQuiz(quizData);
   };
