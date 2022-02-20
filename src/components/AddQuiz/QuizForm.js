@@ -74,7 +74,7 @@ function QuizForm(props) {
         </div>
 
         <div className={styles["add-quiz__actions"]}>
-          <Button>Create Quiz Draft</Button>
+          <Button type="submit">Create Quiz Draft</Button>
         </div>
       </div>
     </form>

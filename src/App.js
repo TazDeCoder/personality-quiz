@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
 import Modal from "./components/UI/Modal";
 import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
+import EditQuiz from "./components/EditQuiz/EditQuiz";
 
 const SAMPLE_QUIZZES = [
   {
@@ -16,12 +17,18 @@ const SAMPLE_QUIZZES = [
       {
         prompt: "What is your favourite color",
         answers: [
-          { text: "Yellow", types: "Yellow" },
-          { text: "Blue", types: "Blue" },
-          { text: "Red", types: "Red" },
-          { text: "Green", types: "Green" },
+          { text: "Yellow", types: ["yellow"] },
+          { text: "Blue", types: ["blue"] },
+          { text: "Red", types: ["red"] },
+          { text: "Green", types: ["green"] },
         ],
       },
+    ],
+    types: [
+      { title: "Yellow", description: "Banana" },
+      { title: "Blue", description: "Blueberry" },
+      { title: "Red", description: "Strawberry" },
+      { title: "Green", description: "Apple" },
     ],
   },
   {
@@ -33,12 +40,18 @@ const SAMPLE_QUIZZES = [
       {
         prompt: "What is your favourite color",
         answers: [
-          { text: "Yellow", types: "Yellow" },
-          { text: "Blue", types: "Blue" },
-          { text: "Red", types: "Red" },
-          { text: "Green", types: "Green" },
+          { text: "Yellow", types: ["yellow"] },
+          { text: "Blue", types: ["blue"] },
+          { text: "Red", types: ["red"] },
+          { text: "Green", types: ["green"] },
         ],
       },
+    ],
+    types: [
+      { title: "Yellow", description: "Banana" },
+      { title: "Blue", description: "Blueberry" },
+      { title: "Red", description: "Strawberry" },
+      { title: "Green", description: "Apple" },
     ],
   },
 ];
@@ -46,7 +59,32 @@ const SAMPLE_QUIZZES = [
 function App() {
   const [quizzes, setQuizzes] = useState(SAMPLE_QUIZZES);
   const [showQuizForm, setShowQuizForm] = useState(false);
-  const [viewQuiz, setViewQuiz] = useState();
+  const [viewQuiz, setViewQuiz] = useState(null);
+  const [editQuiz, setEditQuiz] = useState(null);
+
+  useEffect(() => {
+    setViewQuiz(null);
+  }, [quizzes]);
+
+  const toggleQuizFormHandler = () => {
+    setShowQuizForm(!showQuizForm);
+  };
+
+  const showViewQuizHandler = (quiz) => {
+    setViewQuiz(quiz);
+  };
+
+  const closeViewQuizHandler = () => {
+    setViewQuiz(null);
+  };
+
+  const showEditQuizHandler = () => {
+    setEditQuiz(viewQuiz);
+  };
+
+  const closeEditQuizHandler = () => {
+    setEditQuiz(null);
+  };
 
   const addQuizHandler = (quiz) => {
     setQuizzes((prevExpenses) => {
@@ -56,16 +94,16 @@ function App() {
     setShowQuizForm(false);
   };
 
-  const toggleQuizFormHandler = () => {
-    setShowQuizForm(!showQuizForm);
-  };
+  const updateQuizHandler = (id, quizData) => {
+    const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === id);
 
-  const viewQuizHandler = (quiz) => {
-    setViewQuiz(quiz);
-  };
+    if (existingQuizIdx === -1) return;
 
-  const closeViewQuizHandler = () => {
-    setViewQuiz(null);
+    setQuizzes((prevQuizzes) => {
+      const updatedQuizzes = [...prevQuizzes];
+      updatedQuizzes[existingQuizIdx] = { ...quizData };
+      return updatedQuizzes;
+    });
   };
 
   return (
@@ -75,14 +113,23 @@ function App() {
           <AddQuiz onAddQuiz={addQuizHandler} />
         </Modal>
       )}
-      {viewQuiz && (
+      {viewQuiz && !editQuiz && (
         <Modal onClose={closeViewQuizHandler}>
-          <ViewQuiz quiz={viewQuiz} />
+          <ViewQuiz quiz={viewQuiz} onEditQuiz={showEditQuizHandler} />
+        </Modal>
+      )}
+      {editQuiz && (
+        <Modal>
+          <EditQuiz
+            quiz={editQuiz}
+            onUpdateQuiz={updateQuizHandler}
+            onClose={closeEditQuizHandler}
+          />
         </Modal>
       )}
       <MainHeader onToggleQuizForm={toggleQuizFormHandler} />
       <main>
-        <Quizzes items={quizzes} onViewQuiz={viewQuizHandler} />
+        <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />
       </main>
     </>
   );
