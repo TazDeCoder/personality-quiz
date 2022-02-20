@@ -12,9 +12,14 @@ function SearchBar(props) {
       </div>
 
       <ul className={styles["searchbar-list"]}>
-        {props.suggestions.map((suggestion, idx) => (
-          <li key={idx} className={styles["searchbar-list__item"]}>
-            {suggestion}
+        {props.suggestions.map((suggestion) => (
+          <li
+            className={styles["searchbar-list__item"]}
+            key={suggestion.id}
+            id={suggestion.id}
+            onClick={props.onSuggestionClick}
+          >
+            {suggestion.title}
           </li>
         ))}
       </ul>

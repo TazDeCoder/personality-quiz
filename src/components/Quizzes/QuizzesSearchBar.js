@@ -14,12 +14,25 @@ function QuizzesSearchBar(props) {
       return;
     }
     const filteredQuizzes = props.quizzes
-      .map((quiz) => quiz.title)
-      .filter((title) =>
-        title.toLowerCase().startsWith(searchInput.toLowerCase())
+      .map((quiz) => {
+        return {
+          id: quiz.id,
+          title: quiz.title,
+        };
+      })
+      .filter((quiz) =>
+        quiz.title.toLowerCase().startsWith(searchInput.toLowerCase())
       )
       .slice(0, RESULTS_LIMIT);
     setSuggestions(filteredQuizzes);
+  };
+
+  const suggestionClickHandler = (e) => {
+    const quiz = props.quizzes.find(
+      (quiz) => quiz.id === e.target.getAttribute("id")
+    );
+    props.onViewQuiz(quiz);
+    setSuggestions([]);
   };
 
   return (
@@ -28,6 +41,7 @@ function QuizzesSearchBar(props) {
         className={styles.searchbar}
         suggestions={suggestions}
         onType={typeHandler}
+        onSuggestionClick={suggestionClickHandler}
       />
     </>
   );

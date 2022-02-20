@@ -34,7 +34,7 @@
 
 .searchbar-list {
   position: absolute;
-  z-index: 100;
+  z-index: 10;
   left: 0;
   width: 100%;
   padding: 0.25rem;
