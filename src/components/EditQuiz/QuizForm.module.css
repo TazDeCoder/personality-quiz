@@ -8,10 +8,8 @@
 }
 
 .add-quiz__control {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   margin: 0.25rem;
 }
@@ -27,7 +25,6 @@
 }
 
 .add-quiz__control-prompt {
-  grid-column: 1 / 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,7 +37,6 @@
 }
 
 .add-quiz__control-answer {
-  grid-column: 1 / 2;
   display: flex;
   align-items: center;
 }
@@ -52,7 +48,6 @@
 }
 
 .add-quiz__control-types {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
 }

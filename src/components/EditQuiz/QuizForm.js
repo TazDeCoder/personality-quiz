@@ -6,28 +6,33 @@ import AddIcon from "../UI/AddIcon";
 import ListItem from "../UI/ListItem";
 
 function QuizForm(props) {
-  const initialTypesState =
+  // Initial state data
+  const initialTypesData =
     props.quiz?.types.map((type) => {
       return {
         title: type.title,
         isChecked: false,
       };
     }) ?? [];
-  const initialQuestionsState = props.quiz?.questions ?? [];
+  const initialQuestionsData = props.quiz?.questions ?? [];
 
-  const [inputQuestions, setInputQuestions] = useState(initialQuestionsState);
+  const [inputQuestions, setInputQuestions] = useState(initialQuestionsData);
   const [inputPrompt, setInputPrompt] = useState("");
   const [inputAnswer, setInputAnswer] = useState("");
   const [inputAnswers, setInputAnswers] = useState([]);
   const [inputTypeTitle, setInputTypeTitle] = useState("");
   const [inputTypeDesc, setInputTypeDesc] = useState("");
-  const [typesState, setTypesState] = useState(initialTypesState);
+  const [typesState, setTypesState] = useState(initialTypesData);
   const [inputTypes, setInputTypes] = useState(typesState);
   const [showTypeForm, setShowTypeForm] = useState(false);
 
   useEffect(() => {
     setInputTypes(typesState);
   }, [typesState]);
+
+  const toggleTypeFormHandler = () => {
+    setShowTypeForm(!showTypeForm);
+  };
 
   const promptChangeHandler = (e) => {
     setInputPrompt(e.target.value);
@@ -45,28 +50,33 @@ function QuizForm(props) {
     setInputTypeDesc(e.target.value);
   };
 
-  const toggleTypeFormHandler = () => {
-    setShowTypeForm(!showTypeForm);
-  };
-
   const typesChangeHandler = (e) => {
     setInputTypes((prevTypes) => {
+      // Checking if type already exists
       const typeFoundIdx = prevTypes.findIndex(
         (type) => type.title.toLowerCase() === e.target.value
       );
-
-      if (typeFoundIdx === -1) return;
-
+      if (typeFoundIdx === -1) {
+        return;
+      }
+      // Update selected type
       const updatedTypes = [...prevTypes];
       updatedTypes[typeFoundIdx].isChecked = e.target.checked;
-
+      // Return updated types
       return updatedTypes;
     });
   };
 
-  const addTypeHandler = () => {
+  const addNewTypeHandler = () => {
     // Checking field validity
     if (inputTypeTitle.trim().length === 0) {
+      return;
+    }
+    // Checking if type already exists
+    const typeFoundIdx = typesState.findIndex(
+      (type) => type.title.toLowerCase() === inputTypeTitle.toLowerCase()
+    );
+    if (typeFoundIdx !== -1) {
       return;
     }
     // Create type object
@@ -74,7 +84,7 @@ function QuizForm(props) {
       title: inputTypeTitle,
       description: inputTypeDesc,
     };
-    // Updates types state
+    // Update types state
     setTypesState((prevTypesState) => [
       ...prevTypesState,
       {
@@ -82,39 +92,46 @@ function QuizForm(props) {
         isChecked: false,
       },
     ]);
-    // Handle question array
+    // Handle type data
     props.onUpdateQuizData({
       types: [typeData],
     });
-    // Close type form + clear fields
+    // Close type form + clear input fields
     setInputTypeTitle("");
     setInputTypeDesc("");
     setShowTypeForm(false);
   };
 
   const addAnswerHandler = () => {
-    // Filter input types
-    const filteredTypes = inputTypes.filter((type) => type.isChecked);
     // Checking field validity
+    const filteredTypes = inputTypes.filter((type) => type.isChecked);
     if (
       inputAnswer.trim().length === 0 ||
       inputAnswers.length > 3 ||
       filteredTypes.length === 0
     )
       return;
+    // Get types title
     const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
     // Create answer object
     const answerData = {
       text: inputAnswer,
       types: typesTitle,
     };
-    // Update answers array
+    // Update answers state
     setInputAnswers((prevAnswers) => {
       return [...prevAnswers, answerData];
     });
     // Clear input fields
     setInputAnswer("");
-    setInputTypes(initialTypesState);
+    setInputTypes((prevTypes) => {
+      return prevTypes.map((type) => {
+        return {
+          ...type,
+          isChecked: false,
+        };
+      });
+    });
   };
 
   const addPromptHandler = () => {
@@ -130,7 +147,7 @@ function QuizForm(props) {
     setInputQuestions((prevQuestions) => {
       return [...prevQuestions, questionData];
     });
-    // Clear input field
+    // Clear input fields
     setInputPrompt("");
     setInputAnswers([]);
   };
@@ -138,20 +155,22 @@ function QuizForm(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     // Checking field validity
-    const filteredQuestions = inputQuestions.filter((question) => {
-      for (const q of Object.values(props.quiz.questions)) {
-        if (q.id !== question.id) return true;
-      }
-    });
-
-    if (filteredQuestions.length === 0) {
+    let newQuestions = [];
+    for (const iptQuestion of inputQuestions) {
+      if (
+        props.quiz.questions.some((question) => iptQuestion.id === question.id)
+      )
+        continue;
+      else newQuestions.push(iptQuestion);
+    }
+    // Close modal if no new questions are added
+    if (newQuestions.length === 0) {
       props.onClose();
       return;
     }
-
-    // Handle question array
+    // Handle questions data
     props.onUpdateQuizData({
-      questions: filteredQuestions,
+      questions: newQuestions,
     });
     // Close modal
     props.onClose();
@@ -179,38 +198,42 @@ function QuizForm(props) {
 
       <div className={styles["add-quiz__controls"]}>
         <div className={styles["add-quiz__control"]}>
-          <div className={styles["add-quiz__control-prompt"]}>
-            <label>Prompt</label>
-            <input
-              type="text"
-              value={inputPrompt}
-              placeholder="Enter question prompt"
-              onChange={promptChangeHandler}
-            />
+          <div>
+            <div className={styles["add-quiz__control-prompt"]}>
+              <label>Prompt</label>
+              <input
+                type="text"
+                value={inputPrompt}
+                placeholder="Enter question prompt"
+                onChange={promptChangeHandler}
+              />
+            </div>
+
+            <div
+              className={styles["add-quiz__control-action"]}
+              onClick={addPromptHandler}
+            >
+              <AddIcon />
+            </div>
           </div>
 
-          <div
-            className={styles["add-quiz__control-action"]}
-            onClick={addPromptHandler}
-          >
-            <AddIcon />
-          </div>
+          <div>
+            <div className={styles["add-quiz__control-answer"]}>
+              <label>Answer</label>
+              <input
+                type="text"
+                value={inputAnswer}
+                placeholder="Enter an answer"
+                onChange={answerChangeHandler}
+              />
+            </div>
 
-          <div className={styles["add-quiz__control-answer"]}>
-            <label>Answer</label>
-            <input
-              type="text"
-              value={inputAnswer}
-              placeholder="Enter an answer"
-              onChange={answerChangeHandler}
-            />
-          </div>
-
-          <div
-            className={styles["add-quiz__control-action"]}
-            onClick={addAnswerHandler}
-          >
-            <AddIcon />
+            <div
+              className={styles["add-quiz__control-action"]}
+              onClick={addAnswerHandler}
+            >
+              <AddIcon />
+            </div>
           </div>
 
           <div className={styles["add-quiz__control-types"]}>
@@ -265,7 +288,7 @@ function QuizForm(props) {
           )}
           {showTypeForm && (
             <div>
-              <Button onClick={addTypeHandler}>Add Type</Button>
+              <Button onClick={addNewTypeHandler}>Add Type</Button>
               <Button onClick={toggleTypeFormHandler}>Close</Button>
             </div>
           )}
