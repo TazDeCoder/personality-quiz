@@ -15,6 +15,7 @@ const SAMPLE_QUIZZES = [
     desc: "Lorem ipsum dolor sit amet, id sale regione iuvaret pro. Usu an doming omnium scripserit, sed ne quod iusto salutatus. At eam enim eruditi expetendis, eu eos aperiri appareat signiferumque. Eum melius accommodare id, an his assum dolore. Eu mea facer soluta constituto, ei probo nonumy sit. Eu his dicta nihil dolorum, mei ea salutandi qualisque. Solum viderer vim at, habemus philosophia cu nam. Usu assum ocurreret percipitur at. Te detracto voluptatum liberavisse vim, ei pri minimum nostrum. Ad putant forensibus mei. Eu affert aeterno urbanitas cum, est idque movet iudico eu. Ea tractatos complectitur sit, an harum repudiandae sea. Vel ignota menandri eloquentiam ea, duo ut ullum nostrud fastidii, eu mea stet feugiat. Deleniti hendrerit pro ne, nec veritus efficiendi cu, an appetere patrioque nam. Eu vide.",
     questions: [
       {
+        id: Math.random().toString(),
         prompt: "What is your favourite color",
         answers: [
           { text: "Yellow", types: ["yellow"] },
@@ -38,6 +39,7 @@ const SAMPLE_QUIZZES = [
     desc: "Lorem ipsum dolor sit amet, eos natum prima commodo at, movet probatus euripidis mea ea, est nusquam propriae ut. Sed augue noster cu. An adhuc tibique deseruisse sed. Vidisse regione te cum, pro movet assueverit ne, affert dicant periculis id est. Elaboraret quaerendum scribentur cum ei, an vocibus nominavi constituto mea. Has ut dolor clita, ei illud electram nec. Sit illud dolore ei, vix quot elaboraret ei. Cu eam eius impedit molestie, cu petentium sapientem mel. Brute vituperatoribus per te.  Aperiri facilis ne vim, per scriptorem persequeris ad. No qui nullam eruditi, et insolens instructior contentiones eum. His ne indoctum molestiae appellantur, ad placerat disputando instructior mel, in his vero mundi vocent. Sit veri paulo prompta in. Vidit vidisse mea ut, pri velit oporteat cu, in has diceret.",
     questions: [
       {
+        id: Math.random().toString(),
         prompt: "What is your favourite color",
         answers: [
           { text: "Yellow", types: ["yellow"] },
