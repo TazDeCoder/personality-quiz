@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import styles from "./QuizForm.module.css";
 import Button from "../UI/Button";
@@ -22,13 +22,8 @@ function QuizForm(props) {
   const [inputAnswers, setInputAnswers] = useState([]);
   const [inputTypeTitle, setInputTypeTitle] = useState("");
   const [inputTypeDesc, setInputTypeDesc] = useState("");
-  const [typesState, setTypesState] = useState(initialTypesData);
-  const [inputTypes, setInputTypes] = useState(typesState);
   const [showTypeForm, setShowTypeForm] = useState(false);
-
-  useEffect(() => {
-    setInputTypes(typesState);
-  }, [typesState]);
+  const [inputTypes, setInputTypes] = useState(initialTypesData);
 
   const toggleTypeFormHandler = () => {
     setShowTypeForm(!showTypeForm);
@@ -73,7 +68,7 @@ function QuizForm(props) {
       return;
     }
     // Checking if type already exists
-    const typeFoundIdx = typesState.findIndex(
+    const typeFoundIdx = inputTypes.findIndex(
       (type) => type.title.toLowerCase() === inputTypeTitle.toLowerCase()
     );
     if (typeFoundIdx !== -1) {
@@ -85,8 +80,8 @@ function QuizForm(props) {
       description: inputTypeDesc,
     };
     // Update types state
-    setTypesState((prevTypesState) => [
-      ...prevTypesState,
+    setInputTypes((prevInputTypes) => [
+      ...prevInputTypes,
       {
         title: typeData.title,
         isChecked: false,

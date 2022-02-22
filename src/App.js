@@ -61,19 +61,29 @@ const SAMPLE_QUIZZES = [
 function App() {
   const [quizzes, setQuizzes] = useState(SAMPLE_QUIZZES);
   const [showQuizForm, setShowQuizForm] = useState(false);
-  const [viewQuiz, setViewQuiz] = useState(null);
-  const [editQuiz, setEditQuiz] = useState(null);
+  const [currentQuiz, setCurrentQuiz] = useState();
+  const [viewQuiz, setViewQuiz] = useState();
+  const [editQuiz, setEditQuiz] = useState();
 
   useEffect(() => {
-    setViewQuiz(null);
+    const existingQuizIdx = quizzes.findIndex(
+      (quiz) => quiz?.id === currentQuiz?.id
+    );
+    if (existingQuizIdx === -1) return;
+    setCurrentQuiz(quizzes[existingQuizIdx]);
   }, [quizzes]);
 
+  useEffect(() => {
+    if (viewQuiz) setCurrentQuiz(viewQuiz);
+    else setCurrentQuiz(null);
+  }, [viewQuiz]);
+
   const toggleQuizFormHandler = () => {
-    setShowQuizForm(!showQuizForm);
+    setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
   };
 
-  const showViewQuizHandler = (quiz) => {
-    setViewQuiz(quiz);
+  const showViewQuizHandler = (quizId) => {
+    setViewQuiz(quizId);
   };
 
   const closeViewQuizHandler = () => {
@@ -81,26 +91,25 @@ function App() {
   };
 
   const showEditQuizHandler = () => {
-    setEditQuiz(viewQuiz);
+    setEditQuiz(currentQuiz);
   };
 
   const closeEditQuizHandler = () => {
     setEditQuiz(null);
   };
 
-  const addQuizHandler = (quiz) => {
+  const addQuizHandler = (newQuiz) => {
     setQuizzes((prevExpenses) => {
-      return [...prevExpenses, quiz];
+      return [...prevExpenses, newQuiz];
     });
-
+    // Close quiz form
     setShowQuizForm(false);
   };
 
   const updateQuizHandler = (id, quizData) => {
     const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === id);
-
     if (existingQuizIdx === -1) return;
-
+    // Update quizzes
     setQuizzes((prevQuizzes) => {
       const updatedQuizzes = [...prevQuizzes];
       updatedQuizzes[existingQuizIdx] = { ...quizData };
@@ -117,13 +126,16 @@ function App() {
       )}
       {viewQuiz && !editQuiz && (
         <Modal onClose={closeViewQuizHandler}>
-          <ViewQuiz quiz={viewQuiz} onEditQuiz={showEditQuizHandler} />
+          <ViewQuiz
+            quiz={currentQuiz ? currentQuiz : viewQuiz}
+            onEditQuiz={showEditQuizHandler}
+          />
         </Modal>
       )}
       {editQuiz && (
         <Modal>
           <EditQuiz
-            quiz={editQuiz}
+            quiz={currentQuiz ? currentQuiz : editQuiz}
             onUpdateQuiz={updateQuizHandler}
             onClose={closeEditQuizHandler}
           />
