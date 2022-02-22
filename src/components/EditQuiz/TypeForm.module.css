@@ -1,0 +1,39 @@
+.type-form__control {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.type-form__control div {
+  display: flex;
+  margin: 0.25rem 0;
+}
+
+.type-form__control input {
+  width: 20rem;
+  max-width: 95%;
+}
+
+.type-form__control textarea {
+  width: 18rem;
+  height: 8rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.type-form__action {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+}
+
+.type-form__action p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.type-form__action div {
+  cursor: pointer;
+}

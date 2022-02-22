@@ -4,6 +4,7 @@ import styles from "./QuizForm.module.css";
 import Button from "../UI/Button";
 import AddIcon from "../UI/AddIcon";
 import ListItem from "../UI/ListItem";
+import TypeForm from "./TypeForm";
 
 function QuizForm(props) {
   // Initial state data
@@ -16,17 +17,15 @@ function QuizForm(props) {
     }) ?? [];
   const initialQuestionsData = props.quiz?.questions ?? [];
 
+  const [showTypeForm, setShowTypeForm] = useState(false);
   const [inputQuestions, setInputQuestions] = useState(initialQuestionsData);
   const [inputPrompt, setInputPrompt] = useState("");
   const [inputAnswer, setInputAnswer] = useState("");
   const [inputAnswers, setInputAnswers] = useState([]);
-  const [inputTypeTitle, setInputTypeTitle] = useState("");
-  const [inputTypeDesc, setInputTypeDesc] = useState("");
-  const [showTypeForm, setShowTypeForm] = useState(false);
   const [inputTypes, setInputTypes] = useState(initialTypesData);
 
   const toggleTypeFormHandler = () => {
-    setShowTypeForm(!showTypeForm);
+    setShowTypeForm((prevTypeForm) => !prevTypeForm);
   };
 
   const promptChangeHandler = (e) => {
@@ -35,14 +34,6 @@ function QuizForm(props) {
 
   const answerChangeHandler = (e) => {
     setInputAnswer(e.target.value);
-  };
-
-  const typeTitleChangeHandler = (e) => {
-    setInputTypeTitle(e.target.value);
-  };
-
-  const typeDescChangeHandler = (e) => {
-    setInputTypeDesc(e.target.value);
   };
 
   const typesChangeHandler = (e) => {
@@ -62,23 +53,7 @@ function QuizForm(props) {
     });
   };
 
-  const addNewTypeHandler = () => {
-    // Checking field validity
-    if (inputTypeTitle.trim().length === 0) {
-      return;
-    }
-    // Checking if type already exists
-    const typeFoundIdx = inputTypes.findIndex(
-      (type) => type.title.toLowerCase() === inputTypeTitle.toLowerCase()
-    );
-    if (typeFoundIdx !== -1) {
-      return;
-    }
-    // Create type object
-    const typeData = {
-      title: inputTypeTitle,
-      description: inputTypeDesc,
-    };
+  const addNewTypeHandler = (typeData) => {
     // Update types state
     setInputTypes((prevInputTypes) => [
       ...prevInputTypes,
@@ -91,9 +66,7 @@ function QuizForm(props) {
     props.onUpdateQuizData({
       types: [typeData],
     });
-    // Close type form + clear input fields
-    setInputTypeTitle("");
-    setInputTypeDesc("");
+    // Close type form
     setShowTypeForm(false);
   };
 
@@ -251,29 +224,10 @@ function QuizForm(props) {
           </div>
 
           {showTypeForm && (
-            <div className={styles["add-quiz__control-type"]}>
-              <p>New Type</p>
-
-              <div>
-                <label>Title</label>
-                <input
-                  type="text"
-                  placeholder="Enter type title"
-                  value={inputTypeTitle}
-                  onChange={typeTitleChangeHandler}
-                />
-              </div>
-
-              <div>
-                <label>Desc</label>
-                <textarea
-                  value={inputTypeDesc}
-                  placeholder="Write description of type"
-                  maxLength="128"
-                  onChange={typeDescChangeHandler}
-                />
-              </div>
-            </div>
+            <TypeForm
+              types={props.quiz.types}
+              onAddNewType={addNewTypeHandler}
+            />
           )}
         </div>
 
@@ -282,10 +236,7 @@ function QuizForm(props) {
             <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
           )}
           {showTypeForm && (
-            <div>
-              <Button onClick={addNewTypeHandler}>Add Type</Button>
-              <Button onClick={toggleTypeFormHandler}>Close</Button>
-            </div>
+            <Button onClick={toggleTypeFormHandler}>Close</Button>
           )}
           <Button type="submit">Save Quiz</Button>
         </div>
