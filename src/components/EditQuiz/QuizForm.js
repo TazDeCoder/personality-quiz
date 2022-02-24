@@ -144,94 +144,102 @@ function QuizForm(props) {
     props.onClose();
   };
 
+  const quizFormContent = (
+    <div className={styles["edit-quiz__control"]}>
+      <div>
+        <div className={styles["edit-quiz__control-prompt"]}>
+          <label>Prompt</label>
+          <input
+            type="text"
+            value={inputPrompt}
+            placeholder="Enter question prompt"
+            onChange={promptChangeHandler}
+          />
+        </div>
+
+        <div
+          className={styles["edit-quiz__control-action"]}
+          onClick={addPromptHandler}
+        >
+          <AddIcon />
+        </div>
+      </div>
+
+      <div>
+        <div className={styles["edit-quiz__control-answer"]}>
+          <label>Answer</label>
+          <input
+            type="text"
+            value={inputAnswer}
+            placeholder="Enter an answer"
+            onChange={answerChangeHandler}
+          />
+        </div>
+
+        <div
+          className={styles["edit-quiz__control-action"]}
+          onClick={addAnswerHandler}
+        >
+          <AddIcon />
+        </div>
+      </div>
+
+      <div className={styles["edit-quiz__control-types"]}>
+        <p>Types</p>
+        <ul>
+          {inputTypes.map((type) => {
+            return (
+              <li key={Math.random().toString()}>
+                <label>{type.title}</label>
+                <input
+                  type="checkbox"
+                  onChange={typesChangeHandler}
+                  value={type.title.toLowerCase()}
+                  checked={type.isChecked}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+
   return (
     <form onSubmit={submitHandler}>
-      <ul>
-        {inputQuestions.map((question, idx) => (
-          <ListItem
-            key={Math.random().toString()}
-            title={`Question ${idx + 1}: ${question.prompt}`}
-          />
-        ))}
-      </ul>
+      <div className={styles["edit-quiz__display"]}>
+        <ul>
+          {inputQuestions.map((question, idx) => (
+            <ListItem
+              key={Math.random().toString()}
+              title={`Question ${idx + 1}: ${question.prompt}`}
+            />
+          ))}
+        </ul>
 
-      <ul>
-        {inputAnswers.map((answer, idx) => (
-          <ListItem
-            key={Math.random().toString()}
-            title={`Answer ${idx + 1}: ${answer.text}`}
-          />
-        ))}
-      </ul>
+        <ul>
+          {inputAnswers.map((answer, idx) => (
+            <ListItem
+              key={Math.random().toString()}
+              title={`Answer ${idx + 1}: ${answer.text}`}
+            />
+          ))}
+        </ul>
+      </div>
 
-      <div className={styles["add-quiz__controls"]}>
-        <div className={styles["add-quiz__control"]}>
-          <div>
-            <div className={styles["add-quiz__control-prompt"]}>
-              <label>Prompt</label>
-              <input
-                type="text"
-                value={inputPrompt}
-                placeholder="Enter question prompt"
-                onChange={promptChangeHandler}
-              />
-            </div>
+      <div className={styles["edit-quiz__controls"]}>
+        {!showTypeForm && quizFormContent}
 
-            <div
-              className={styles["add-quiz__control-action"]}
-              onClick={addPromptHandler}
-            >
-              <AddIcon />
-            </div>
-          </div>
-
-          <div>
-            <div className={styles["add-quiz__control-answer"]}>
-              <label>Answer</label>
-              <input
-                type="text"
-                value={inputAnswer}
-                placeholder="Enter an answer"
-                onChange={answerChangeHandler}
-              />
-            </div>
-
-            <div
-              className={styles["add-quiz__control-action"]}
-              onClick={addAnswerHandler}
-            >
-              <AddIcon />
-            </div>
-          </div>
-
-          <div className={styles["add-quiz__control-types"]}>
-            <p>Types</p>
-            <ul>
-              {inputTypes.map((type) => {
-                return (
-                  <li key={Math.random().toString()}>
-                    <label>{type.title}</label>
-                    <input
-                      type="checkbox"
-                      onChange={typesChangeHandler}
-                      value={type.title.toLowerCase()}
-                      checked={type.isChecked}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {showTypeForm && (
+        {showTypeForm && (
+          <div className={styles["edit-quiz__control"]}>
             <TypeForm
               types={props.quiz.types}
               onAddNewType={addNewTypeHandler}
             />
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className={styles["add-quiz__actions"]}>
+        <div className={styles["edit-quiz__actions"]}>
           {!showTypeForm && (
             <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
           )}
