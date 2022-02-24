@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import styles from "./QuizzesSearchBar.module.css";
 import SearchBar from "../UI/SearchBar";
@@ -6,6 +6,7 @@ import SearchBar from "../UI/SearchBar";
 function QuizzesSearchBar(props) {
   const RESULTS_LIMIT = 5;
   const [suggestions, setSuggestions] = useState([]);
+  const searchBarRef = useRef("");
 
   const typeHandler = (e) => {
     const searchInput = e.target.value;
@@ -33,11 +34,14 @@ function QuizzesSearchBar(props) {
     );
     props.onViewQuiz(quiz);
     setSuggestions([]);
+    // Clear searchbar input field
+    searchBarRef.current.value = "";
   };
 
   return (
     <>
       <SearchBar
+        ref={searchBarRef}
         className={styles.searchbar}
         suggestions={suggestions}
         onType={typeHandler}

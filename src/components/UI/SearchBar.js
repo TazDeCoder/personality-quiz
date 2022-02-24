@@ -1,10 +1,13 @@
+import React from "react";
+
 import styles from "./SearchBar.module.css";
 
-function SearchBar(props) {
+const SearchBar = React.forwardRef((props, ref) => {
   return (
     <div className={`${styles.searchbar} ${props.className}`}>
       <div className={styles["searchbar-wrapper"]}>
         <input
+          ref={ref}
           className={styles["searchbar-wrapper__input"]}
           type="text"
           onChange={props.onType}
@@ -25,6 +28,6 @@ function SearchBar(props) {
       </ul>
     </div>
   );
-}
+});
 
 export default SearchBar;
