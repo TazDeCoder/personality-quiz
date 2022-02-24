@@ -59,7 +59,12 @@ const SAMPLE_QUIZZES = [
 ];
 
 function App() {
-  const [quizzes, setQuizzes] = useState(SAMPLE_QUIZZES);
+  // Retrive any saved quizzes in local storage
+  const quizzesStorage = localStorage.getItem("quizzes");
+
+  const [quizzes, setQuizzes] = useState(
+    quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
+  );
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [currentQuiz, setCurrentQuiz] = useState();
   const [viewQuiz, setViewQuiz] = useState();
@@ -71,6 +76,8 @@ function App() {
     );
     if (existingQuizIdx === -1) return;
     setCurrentQuiz(quizzes[existingQuizIdx]);
+    // Update quizzes in local storage
+    localStorage.setItem("quizzes", JSON.stringify(quizzes));
   }, [quizzes]);
 
   useEffect(() => {
