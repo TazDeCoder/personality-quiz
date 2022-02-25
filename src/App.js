@@ -6,6 +6,8 @@ import AddQuiz from "./components/AddQuiz/AddQuiz";
 import Modal from "./components/UI/Modal";
 import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
 import EditQuiz from "./components/EditQuiz/EditQuiz";
+import StartQuiz from "./components/StartQuiz/StartQuiz";
+import QuizResults from "./components/QuizResults/QuizResults";
 
 const SAMPLE_QUIZZES = [
   {
@@ -18,10 +20,26 @@ const SAMPLE_QUIZZES = [
         id: Math.random().toString(),
         prompt: "What is your favourite color",
         answers: [
-          { text: "Yellow", types: ["yellow"] },
-          { text: "Blue", types: ["blue"] },
-          { text: "Red", types: ["red"] },
-          { text: "Green", types: ["green"] },
+          {
+            id: Math.random().toString(),
+            text: "Yellow",
+            types: ["yellow"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Blue",
+            types: ["blue"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Red",
+            types: ["red"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Green",
+            types: ["green"],
+          },
         ],
       },
     ],
@@ -42,10 +60,26 @@ const SAMPLE_QUIZZES = [
         id: Math.random().toString(),
         prompt: "What is your favourite color",
         answers: [
-          { text: "Yellow", types: ["yellow"] },
-          { text: "Blue", types: ["blue"] },
-          { text: "Red", types: ["red"] },
-          { text: "Green", types: ["green"] },
+          {
+            id: Math.random().toString(),
+            text: "Yellow",
+            types: ["yellow"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Blue",
+            types: ["blue"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Red",
+            types: ["red"],
+          },
+          {
+            id: Math.random().toString(),
+            text: "Green",
+            types: ["green"],
+          },
         ],
       },
     ],
@@ -62,6 +96,7 @@ function App() {
   // Retrive any saved quizzes in local storage
   const quizzesStorage = localStorage.getItem("quizzes");
 
+  const [results, setResults] = useState(null);
   const [quizzes, setQuizzes] = useState(
     quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
   );
@@ -69,6 +104,7 @@ function App() {
   const [currentQuiz, setCurrentQuiz] = useState();
   const [viewQuiz, setViewQuiz] = useState();
   const [editQuiz, setEditQuiz] = useState();
+  const [startQuiz, setStartQuiz] = useState(false);
 
   useEffect(() => {
     const existingQuizIdx = quizzes.findIndex(
@@ -82,8 +118,15 @@ function App() {
 
   useEffect(() => {
     if (viewQuiz) setCurrentQuiz(viewQuiz);
-    else setCurrentQuiz(null);
   }, [viewQuiz]);
+
+  useEffect(() => {
+    if (startQuiz) setViewQuiz(null);
+  }, [startQuiz]);
+
+  useEffect(() => {
+    if (results) setStartQuiz(false);
+  }, [results]);
 
   const toggleQuizFormHandler = () => {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
@@ -105,6 +148,18 @@ function App() {
     setEditQuiz(null);
   };
 
+  const showStartQuizHandler = () => {
+    setStartQuiz(true);
+  };
+
+  const closeStartQuizHandler = () => {
+    setStartQuiz(false);
+  };
+
+  const closeQuizResultsHandler = () => {
+    setResults(null);
+  };
+
   const addQuizHandler = (newQuiz) => {
     setQuizzes((prevExpenses) => {
       return [...prevExpenses, newQuiz];
@@ -124,6 +179,10 @@ function App() {
     });
   };
 
+  const submitQuizResultsHandler = (quizResults) => {
+    setResults(quizResults);
+  };
+
   return (
     <>
       {showQuizForm && (
@@ -136,6 +195,7 @@ function App() {
           <ViewQuiz
             quiz={currentQuiz ? currentQuiz : viewQuiz}
             onEditQuiz={showEditQuizHandler}
+            onStartQuiz={showStartQuizHandler}
           />
         </Modal>
       )}
@@ -148,9 +208,26 @@ function App() {
           />
         </Modal>
       )}
-      <MainHeader onToggleQuizForm={toggleQuizFormHandler} />
+      {results && (
+        <Modal onClose={closeQuizResultsHandler}>
+          <QuizResults type={results} onClose={closeQuizResultsHandler} />
+        </Modal>
+      )}
+      <MainHeader
+        startQuiz={startQuiz}
+        onToggleQuizForm={toggleQuizFormHandler}
+        onClose={closeStartQuizHandler}
+      />
       <main>
-        <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />
+        {startQuiz && (
+          <StartQuiz
+            quiz={currentQuiz}
+            onSubmitQuizResults={submitQuizResultsHandler}
+          />
+        )}
+        {!startQuiz && (
+          <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />
+        )}
       </main>
     </>
   );

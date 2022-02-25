@@ -5,7 +5,11 @@ const MainHeader = (props) => {
   return (
     <header className={styles["main-header"]}>
       <h1>Personality Quiz</h1>
-      <Navigation onToggleForm={props.onToggleQuizForm} />
+      <Navigation
+        startQuiz={props?.startQuiz ?? false}
+        onToggleForm={props.onToggleQuizForm}
+        onClose={props.onClose}
+      />
     </header>
   );
 };

@@ -6,7 +6,12 @@ function Navigation(props) {
     <nav className={styles.nav}>
       <ul>
         <li>
-          <Button onClick={props.onToggleForm}>Add New Quiz</Button>
+          {!props.startQuiz && (
+            <Button onClick={props.onToggleForm}>Add New Quiz</Button>
+          )}
+          {props.startQuiz && (
+            <Button onClick={props.onClose}>Close Quiz</Button>
+          )}
         </li>
       </ul>
     </nav>

@@ -26,7 +26,9 @@ function ViewQuiz(props) {
 
       <div className={styles["view-quiz__actions"]}>
         <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
-        <Button disabled={!isQuizDraft}>Start Quiz</Button>
+        <Button disabled={!isQuizDraft} onClick={props.onStartQuiz}>
+          Start Quiz
+        </Button>
       </div>
     </div>
   );
