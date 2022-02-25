@@ -1,0 +1,28 @@
+.start-quiz {
+  height: 90vh;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+.start-quiz__controls {
+  margin: 2rem auto;
+}
+
+.start-quiz__control {
+  max-width: 50rem;
+  width: 95%;
+  padding: 0.5rem;
+  margin: 1rem auto;
+}
+
+.start-quiz__control h1 {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.start-quiz__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
