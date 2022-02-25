@@ -1,0 +1,24 @@
+.quiz-results {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  height: 60vh;
+}
+
+.quiz-results h1 {
+  text-align: start;
+  font-size: 1.9rem;
+}
+
+.quiz-results p {
+  margin: 2rem;
+  font-size: 1.3rem;
+  height: 20rem;
+  overflow: auto;
+}
+
+.quiz-results button {
+  max-width: 95%;
+  width: 10rem;
+  margin: 0 auto;
+}
