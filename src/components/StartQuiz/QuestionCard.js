@@ -17,9 +17,10 @@ function QuestionCard(props) {
             <input
               id={answer.id}
               type="radio"
-              name="answer"
+              name={props.groupName}
               value={answer.types}
               onChange={answerChangeHandler}
+              required
             />
           </li>
         ))}

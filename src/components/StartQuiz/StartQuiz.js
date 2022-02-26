@@ -53,6 +53,7 @@ function StartQuiz(props) {
                 <QuestionCard
                   prompt={question.prompt}
                   answers={question.answers}
+                  groupName={`answer${idx + 1}`}
                 />
               </div>
             </fieldset>
