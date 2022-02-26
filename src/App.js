@@ -54,6 +54,7 @@ const SAMPLE_QUIZZES = [
 ];
 
 function App() {
+  let mainContent, modalContent;
   // Retrive any saved quizzes in local storage
   const quizzesStorage = localStorage.getItem("quizzes");
 
@@ -136,47 +137,61 @@ function App() {
     setShowQuizResults(true);
   };
 
+  if (showQuizForm) {
+    modalContent = (
+      <Modal onClose={toggleQuizFormHandler}>
+        <AddQuiz onAddQuiz={addQuizHandler} />
+      </Modal>
+    );
+  }
+
+  if (showViewQuiz && !showEditQuiz && !showStartQuiz) {
+    modalContent = (
+      <Modal onClose={closeViewQuizHandler}>
+        <ViewQuiz
+          onEditQuiz={showEditQuizHandler}
+          onStartQuiz={showStartQuizHandler}
+        />
+      </Modal>
+    );
+  }
+
+  if (showEditQuiz) {
+    modalContent = (
+      <Modal>
+        <EditQuiz
+          onUpdateQuiz={updateQuizHandler}
+          onClose={closeEditQuizHandler}
+        />
+      </Modal>
+    );
+  }
+
+  if (showQuizResults) {
+    modalContent = (
+      <Modal onClose={toggleQuizResultsHandler}>
+        <QuizResults type={quizResults} onClose={toggleQuizResultsHandler} />
+      </Modal>
+    );
+  }
+
+  if (showStartQuiz) {
+    mainContent = <StartQuiz onSubmitQuizResults={submitQuizResultsHandler} />;
+  }
+
+  if (!showStartQuiz) {
+    mainContent = <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />;
+  }
+
   return (
     <QuizProvider>
-      {showQuizForm && (
-        <Modal onClose={toggleQuizFormHandler}>
-          <AddQuiz onAddQuiz={addQuizHandler} />
-        </Modal>
-      )}
-      {showViewQuiz && !showEditQuiz && !showStartQuiz && (
-        <Modal onClose={closeViewQuizHandler}>
-          <ViewQuiz
-            onEditQuiz={showEditQuizHandler}
-            onStartQuiz={showStartQuizHandler}
-          />
-        </Modal>
-      )}
-      {showEditQuiz && (
-        <Modal>
-          <EditQuiz
-            onUpdateQuiz={updateQuizHandler}
-            onClose={closeEditQuizHandler}
-          />
-        </Modal>
-      )}
-      {showQuizResults && (
-        <Modal onClose={toggleQuizResultsHandler}>
-          <QuizResults type={quizResults} onClose={toggleQuizResultsHandler} />
-        </Modal>
-      )}
+      {modalContent}
       <MainHeader
         startQuiz={showStartQuiz}
         onToggleQuizForm={toggleQuizFormHandler}
         onClose={closeStartQuizHandler}
       />
-      <main>
-        {showStartQuiz && (
-          <StartQuiz onSubmitQuizResults={submitQuizResultsHandler} />
-        )}
-        {!showStartQuiz && (
-          <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />
-        )}
-      </main>
+      <main>{mainContent}</main>
     </QuizProvider>
   );
 }
