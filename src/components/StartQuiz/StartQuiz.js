@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 
 import styles from "./StartQuiz.module.css";
 import Button from "../UI/Button";
 import QuestionCard from "./QuestionCard";
+import QuizContext from "../../store/quiz-context";
 
 function getMostFrequent(arr) {
   const hashmap = arr.reduce((acc, val) => {
@@ -16,6 +17,7 @@ function getMostFrequent(arr) {
 }
 
 function StartQuiz(props) {
+  const quizCtx = useContext(QuizContext);
   const questionsRef = useRef([]);
 
   const submitHandler = (e) => {
@@ -32,7 +34,7 @@ function StartQuiz(props) {
 
     const mostFrequentType = getMostFrequent(selectedAnswers);
 
-    const results = props.quiz.types.find(
+    const results = quizCtx.types.find(
       (type) => type.title.toLowerCase() === mostFrequentType
     );
 
@@ -43,7 +45,7 @@ function StartQuiz(props) {
     <form onSubmit={submitHandler}>
       <div className={styles["start-quiz"]}>
         <div className={styles["start-quiz__controls"]}>
-          {props.quiz.questions.map((question, idx, arr) => (
+          {quizCtx.questions.map((question, idx, arr) => (
             <fieldset
               ref={(el) => (questionsRef.current[idx] = el)}
               key={question.id}

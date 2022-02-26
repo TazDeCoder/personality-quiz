@@ -1,26 +1,29 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
-import Button from "../UI/Button";
 import styles from "./ViewQuiz.module.css";
+import Button from "../UI/Button";
+import QuizContext from "../../store/quiz-context";
 
 function ViewQuiz(props) {
+  const quizCtx = useContext(QuizContext);
+
   const [isQuizDraft, setIsQuizDraft] = useState(
-    props.quiz.questions.length !== 0
+    quizCtx.questions.length !== 0
   );
 
   return (
     <div className={styles["view-quiz"]}>
       <div className={styles["view-quiz__content"]}>
-        <h1>{props.quiz.title}</h1>
-        <p>{props.quiz.desc}</p>
+        <h1>{quizCtx.title}</h1>
+        <p>{quizCtx.desc}</p>
       </div>
 
       <div className={styles["view-quiz__meta"]}>
         <p>
-          Number of questions: <span>{props.quiz.questions.length}</span>
+          Number of questions: <span>{quizCtx.questions.length}</span>
         </p>
         <p>
-          Created By: <span>{props.quiz.author}</span>
+          Created By: <span>{quizCtx.author}</span>
         </p>
       </div>
 

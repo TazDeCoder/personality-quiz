@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
@@ -8,6 +8,7 @@ import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
 import EditQuiz from "./components/EditQuiz/EditQuiz";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
+import QuizProvider from "./store/QuizProvider";
 
 const SAMPLE_QUIZZES = [
   {
@@ -50,114 +51,61 @@ const SAMPLE_QUIZZES = [
       { title: "Green", description: "Apple" },
     ],
   },
-  {
-    id: Math.random().toString(),
-    title: "Test Quiz 2",
-    author: "Dev",
-    desc: "Lorem ipsum dolor sit amet, eos natum prima commodo at, movet probatus euripidis mea ea, est nusquam propriae ut. Sed augue noster cu. An adhuc tibique deseruisse sed. Vidisse regione te cum, pro movet assueverit ne, affert dicant periculis id est. Elaboraret quaerendum scribentur cum ei, an vocibus nominavi constituto mea. Has ut dolor clita, ei illud electram nec. Sit illud dolore ei, vix quot elaboraret ei. Cu eam eius impedit molestie, cu petentium sapientem mel. Brute vituperatoribus per te.  Aperiri facilis ne vim, per scriptorem persequeris ad. No qui nullam eruditi, et insolens instructior contentiones eum. His ne indoctum molestiae appellantur, ad placerat disputando instructior mel, in his vero mundi vocent. Sit veri paulo prompta in. Vidit vidisse mea ut, pri velit oporteat cu, in has diceret.",
-    questions: [
-      {
-        id: Math.random().toString(),
-        prompt: "What is your favourite color",
-        answers: [
-          {
-            id: Math.random().toString(),
-            text: "Yellow",
-            types: ["yellow"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Blue",
-            types: ["blue"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Red",
-            types: ["red"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Green",
-            types: ["green"],
-          },
-        ],
-      },
-    ],
-    types: [
-      { title: "Yellow", description: "Banana" },
-      { title: "Blue", description: "Blueberry" },
-      { title: "Red", description: "Strawberry" },
-      { title: "Green", description: "Apple" },
-    ],
-  },
 ];
 
 function App() {
   // Retrive any saved quizzes in local storage
   const quizzesStorage = localStorage.getItem("quizzes");
 
-  const [results, setResults] = useState(null);
   const [quizzes, setQuizzes] = useState(
     quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
   );
+  const [quizResults, setQuizResults] = useState();
+
   const [showQuizForm, setShowQuizForm] = useState(false);
-  const [currentQuiz, setCurrentQuiz] = useState();
-  const [viewQuiz, setViewQuiz] = useState();
-  const [editQuiz, setEditQuiz] = useState();
-  const [startQuiz, setStartQuiz] = useState(false);
+  const [showViewQuiz, setShowViewQuiz] = useState(false);
+  const [showEditQuiz, setShowEditQuiz] = useState(false);
+  const [showStartQuiz, setShowStartQuiz] = useState(false);
+  const [showQuizResults, setShowQuizResults] = useState(false);
 
   useEffect(() => {
-    const existingQuizIdx = quizzes.findIndex(
-      (quiz) => quiz?.id === currentQuiz?.id
-    );
-    if (existingQuizIdx === -1) return;
-    setCurrentQuiz(quizzes[existingQuizIdx]);
-    // Update quizzes in local storage
-    localStorage.setItem("quizzes", JSON.stringify(quizzes));
-  }, [quizzes]);
+    if (!showStartQuiz) setShowViewQuiz(false);
+  }, [showStartQuiz]);
 
   useEffect(() => {
-    if (viewQuiz) setCurrentQuiz(viewQuiz);
-  }, [viewQuiz]);
-
-  useEffect(() => {
-    if (startQuiz) setViewQuiz(null);
-  }, [startQuiz]);
-
-  useEffect(() => {
-    if (results) setStartQuiz(false);
-  }, [results]);
+    if (!showQuizResults) setShowStartQuiz(false);
+  }, [showQuizResults]);
 
   const toggleQuizFormHandler = () => {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
   };
 
-  const showViewQuizHandler = (quizId) => {
-    setViewQuiz(quizId);
+  const toggleQuizResultsHandler = () => {
+    setShowQuizResults((prevShowQuizResults) => !prevShowQuizResults);
+  };
+
+  const showViewQuizHandler = () => {
+    setShowViewQuiz(true);
   };
 
   const closeViewQuizHandler = () => {
-    setViewQuiz(null);
+    setShowViewQuiz(false);
   };
 
   const showEditQuizHandler = () => {
-    setEditQuiz(currentQuiz);
+    setShowEditQuiz(true);
   };
 
   const closeEditQuizHandler = () => {
-    setEditQuiz(null);
+    setShowEditQuiz(false);
   };
 
   const showStartQuizHandler = () => {
-    setStartQuiz(true);
+    setShowStartQuiz(true);
   };
 
   const closeStartQuizHandler = () => {
-    setStartQuiz(false);
-  };
-
-  const closeQuizResultsHandler = () => {
-    setResults(null);
+    setShowStartQuiz(false);
   };
 
   const addQuizHandler = (newQuiz) => {
@@ -166,6 +114,8 @@ function App() {
     });
     // Close quiz form
     setShowQuizForm(false);
+    // Update quizzes in local storage
+    localStorage.setItem("quizzes", JSON.stringify(quizzes));
   };
 
   const updateQuizHandler = (id, quizData) => {
@@ -177,59 +127,57 @@ function App() {
       updatedQuizzes[existingQuizIdx] = { ...quizData };
       return updatedQuizzes;
     });
+    // Update quizzes in local storage
+    localStorage.setItem("quizzes", JSON.stringify(quizzes));
   };
 
   const submitQuizResultsHandler = (quizResults) => {
-    setResults(quizResults);
+    setQuizResults(quizResults);
+    setShowQuizResults(true);
   };
 
   return (
-    <>
+    <QuizProvider>
       {showQuizForm && (
         <Modal onClose={toggleQuizFormHandler}>
           <AddQuiz onAddQuiz={addQuizHandler} />
         </Modal>
       )}
-      {viewQuiz && !editQuiz && (
+      {showViewQuiz && !showEditQuiz && !showStartQuiz && (
         <Modal onClose={closeViewQuizHandler}>
           <ViewQuiz
-            quiz={currentQuiz ? currentQuiz : viewQuiz}
             onEditQuiz={showEditQuizHandler}
             onStartQuiz={showStartQuizHandler}
           />
         </Modal>
       )}
-      {editQuiz && (
+      {showEditQuiz && (
         <Modal>
           <EditQuiz
-            quiz={currentQuiz ? currentQuiz : editQuiz}
             onUpdateQuiz={updateQuizHandler}
             onClose={closeEditQuizHandler}
           />
         </Modal>
       )}
-      {results && (
-        <Modal onClose={closeQuizResultsHandler}>
-          <QuizResults type={results} onClose={closeQuizResultsHandler} />
+      {showQuizResults && (
+        <Modal onClose={toggleQuizResultsHandler}>
+          <QuizResults type={quizResults} onClose={toggleQuizResultsHandler} />
         </Modal>
       )}
       <MainHeader
-        startQuiz={startQuiz}
+        startQuiz={showStartQuiz}
         onToggleQuizForm={toggleQuizFormHandler}
         onClose={closeStartQuizHandler}
       />
       <main>
-        {startQuiz && (
-          <StartQuiz
-            quiz={currentQuiz}
-            onSubmitQuizResults={submitQuizResultsHandler}
-          />
+        {showStartQuiz && (
+          <StartQuiz onSubmitQuizResults={submitQuizResultsHandler} />
         )}
-        {!startQuiz && (
+        {!showStartQuiz && (
           <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />
         )}
       </main>
-    </>
+    </QuizProvider>
   );
 }
 

@@ -6,7 +6,7 @@ const MainHeader = (props) => {
     <header className={styles["main-header"]}>
       <h1>Personality Quiz</h1>
       <Navigation
-        startQuiz={props?.startQuiz ?? false}
+        startQuiz={props.startQuiz}
         onToggleForm={props.onToggleQuizForm}
         onClose={props.onClose}
       />

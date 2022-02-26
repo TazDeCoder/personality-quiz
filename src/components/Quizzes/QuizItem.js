@@ -1,10 +1,16 @@
+import { useContext } from "react";
+
 import styles from "./QuizItem.module.css";
 import Button from "../UI/Button";
 import Card from "../UI/Card";
+import QuizContext from "../../store/quiz-context";
 
 function QuizItem(props) {
+  const quizCtx = useContext(QuizContext);
+
   const viewQuizItemHandler = () => {
-    props.onViewQuiz(props.id);
+    quizCtx.setQuiz(props.quiz);
+    props.onViewQuiz();
   };
 
   return (

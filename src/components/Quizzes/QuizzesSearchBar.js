@@ -1,9 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 
 import styles from "./QuizzesSearchBar.module.css";
 import SearchBar from "../UI/SearchBar";
+import QuizContext from "../../store/quiz-context";
 
 function QuizzesSearchBar(props) {
+  const quizCtx = useContext(QuizContext);
+
   const RESULTS_LIMIT = 5;
   const [suggestions, setSuggestions] = useState([]);
   const searchBarRef = useRef("");
@@ -32,10 +35,11 @@ function QuizzesSearchBar(props) {
     const quiz = props.quizzes.find(
       (quiz) => quiz.id === e.target.getAttribute("id")
     );
-    props.onViewQuiz(quiz);
-    setSuggestions([]);
-    // Clear searchbar input field
+    quizCtx.setQuiz(quiz);
+    props.onViewQuiz();
+    // Clear searchbar
     searchBarRef.current.value = "";
+    setSuggestions([]);
   };
 
   return (
