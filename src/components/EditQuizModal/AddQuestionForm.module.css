@@ -67,7 +67,17 @@
   margin: 1rem 0.5rem;
 }
 
-.edit-quiz__current-answers {
+.edit-quiz__answers {
   max-height: 8rem;
   overflow: auto;
+}
+
+.edit-quiz__answers ul > li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-quiz__answers button {
+  background: none;
+  border: none;
 }

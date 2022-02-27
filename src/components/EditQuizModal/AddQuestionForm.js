@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import styles from "./AddQuestionForm.module.css";
 import Button from "../UI/Button";
 import AddIcon from "../UI/AddIcon";
+import RemoveIcon from "../UI/RemoveIcon";
 import ListItem from "../UI/ListItem";
 import QuizContext from "../../store/quiz-context";
 
@@ -99,6 +100,23 @@ function QuizForm(props) {
     });
   };
 
+  const removeAnswerHandler = (answerId) => {
+    setInputAnswers((prevAnswers) => {
+      // Checking if answer already exists
+      const existingAnswerIdx = prevAnswers.findIndex(
+        (answer) => answer.id === answerId
+      );
+      if (existingAnswerIdx === -1) {
+        return;
+      }
+      // Remove selected answer
+      const updatedAnswers = [...prevAnswers];
+      updatedAnswers.pop(updatedAnswers[existingAnswerIdx]);
+      // Return updated types
+      return updatedAnswers;
+    });
+  };
+
   const addPromptHandler = () => {
     // Checking field validity
     if (inputPrompt.trim().length === 0) {
@@ -153,14 +171,22 @@ function QuizForm(props) {
   };
 
   const currentAnswersContent = (
-    <div className={styles["edit-quiz__current-answers"]}>
+    <div className={styles["edit-quiz__answers"]}>
       <ul>
-        {inputAnswers.map((answer, idx) => (
-          <ListItem
-            key={Math.random().toString()}
-            title={`Answer ${idx + 1}: ${answer.text}`}
-          />
-        ))}
+        {inputAnswers.map((answer, idx) => {
+          return (
+            <li>
+              <ListItem
+                key={Math.random().toString()}
+                title={`Answer ${idx + 1}: ${answer.text}`}
+              />
+
+              <Button onClick={removeAnswerHandler.bind(null, answer.id)}>
+                <RemoveIcon />
+              </Button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
