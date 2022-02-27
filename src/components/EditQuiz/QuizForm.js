@@ -1,32 +1,27 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import styles from "./QuizForm.module.css";
 import Button from "../UI/Button";
 import AddIcon from "../UI/AddIcon";
 import ListItem from "../UI/ListItem";
-import TypeForm from "./TypeForm";
+import QuizContext from "../../store/quiz-context";
 
 function QuizForm(props) {
+  const quizCtx = useContext(QuizContext);
   // Initial state data
-  const initialTypesData =
-    props.quiz?.types.map((type) => {
-      return {
-        title: type.title,
-        isChecked: false,
-      };
-    }) ?? [];
-  const initialQuestionsData = props.quiz?.questions ?? [];
+  const initialTypesData = quizCtx.types.map((type) => {
+    return {
+      title: type.title,
+      isChecked: false,
+    };
+  });
+  const initialQuestionsData = quizCtx.questions;
 
-  const [showTypeForm, setShowTypeForm] = useState(false);
   const [inputQuestions, setInputQuestions] = useState(initialQuestionsData);
+  const [inputTypes, setInputTypes] = useState(initialTypesData);
   const [inputPrompt, setInputPrompt] = useState("");
   const [inputAnswer, setInputAnswer] = useState("");
   const [inputAnswers, setInputAnswers] = useState([]);
-  const [inputTypes, setInputTypes] = useState(initialTypesData);
-
-  const toggleTypeFormHandler = () => {
-    setShowTypeForm((prevTypeForm) => !prevTypeForm);
-  };
 
   const promptChangeHandler = (e) => {
     setInputPrompt(e.target.value);
@@ -53,23 +48,6 @@ function QuizForm(props) {
     });
   };
 
-  const addNewTypeHandler = (typeData) => {
-    // Update types state
-    setInputTypes((prevInputTypes) => [
-      ...prevInputTypes,
-      {
-        title: typeData.title,
-        isChecked: false,
-      },
-    ]);
-    // Handle type data
-    props.onUpdateQuizData({
-      types: [typeData],
-    });
-    // Close type form
-    setShowTypeForm(false);
-  };
-
   const addAnswerHandler = () => {
     // Checking field validity
     const filteredTypes = inputTypes.filter((type) => type.isChecked);
@@ -83,6 +61,7 @@ function QuizForm(props) {
     const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
     // Create answer object
     const answerData = {
+      id: Math.random().toString(),
       text: inputAnswer,
       types: typesTitle,
     };
@@ -122,66 +101,67 @@ function QuizForm(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    let questionsData = [];
     // Checking field validity
-    let newQuestions = [];
     for (const iptQuestion of inputQuestions) {
-      if (
-        props.quiz.questions.some((question) => iptQuestion.id === question.id)
-      )
+      if (quizCtx.questions.some((question) => iptQuestion.id === question.id))
         continue;
-      else newQuestions.push(iptQuestion);
+      else questionsData.push(iptQuestion);
     }
     // Close modal if no new questions are added
-    if (newQuestions.length === 0) {
+    if (questionsData.length === 0) {
       props.onClose();
       return;
     }
     // Handle questions data
-    props.onUpdateQuizData({
-      questions: newQuestions,
-    });
+    questionsData.map((questionData) => props.onAddNewQuestion(questionData));
     // Close modal
     props.onClose();
   };
 
-  const quizFormContent = (
-    <div className={styles["edit-quiz__control"]}>
-      <div>
-        <div className={styles["edit-quiz__control-prompt"]}>
-          <label>Prompt</label>
-          <input
-            type="text"
-            value={inputPrompt}
-            placeholder="Enter question prompt"
-            onChange={promptChangeHandler}
+  const currentAnswersContent = (
+    <div className={styles["edit-quiz__current-answers"]}>
+      <ul>
+        {inputAnswers.map((answer, idx) => (
+          <ListItem
+            key={Math.random().toString()}
+            title={`Answer ${idx + 1}: ${answer.text}`}
           />
-        </div>
+        ))}
+      </ul>
+    </div>
+  );
 
-        <div
-          className={styles["edit-quiz__control-action"]}
-          onClick={addPromptHandler}
-        >
+  const formContent = (
+    <div className={styles["edit-quiz__controls"]}>
+      <div className={styles["edit-quiz__control-prompt"]}>
+        <label>Prompt</label>
+        <input
+          type="text"
+          value={inputPrompt}
+          placeholder="Enter question prompt"
+          onChange={promptChangeHandler}
+        />
+
+        <Button onClick={addPromptHandler}>
           <AddIcon />
-        </div>
+        </Button>
       </div>
 
-      <div>
-        <div className={styles["edit-quiz__control-answer"]}>
-          <label>Answer</label>
-          <input
-            type="text"
-            value={inputAnswer}
-            placeholder="Enter an answer"
-            onChange={answerChangeHandler}
-          />
-        </div>
+      {currentAnswersContent}
 
-        <div
-          className={styles["edit-quiz__control-action"]}
-          onClick={addAnswerHandler}
-        >
+      <div className={styles["edit-quiz__control-answer"]}>
+        <label>Answer</label>
+        <input
+          type="text"
+          value={inputAnswer}
+          placeholder="Enter an answer"
+          onChange={answerChangeHandler}
+        />
+
+        <Button onClick={addAnswerHandler}>
           <AddIcon />
-        </div>
+        </Button>
       </div>
 
       <div className={styles["edit-quiz__control-types"]}>
@@ -202,55 +182,14 @@ function QuizForm(props) {
           })}
         </ul>
       </div>
+
+      <div className={styles["edit-quiz__actions"]}>
+        <Button type="submit">Update Quiz</Button>
+      </div>
     </div>
   );
 
-  return (
-    <form onSubmit={submitHandler}>
-      <div className={styles["edit-quiz__display"]}>
-        <ul>
-          {inputQuestions.map((question, idx) => (
-            <ListItem
-              key={Math.random().toString()}
-              title={`Question ${idx + 1}: ${question.prompt}`}
-            />
-          ))}
-        </ul>
-
-        <ul>
-          {inputAnswers.map((answer, idx) => (
-            <ListItem
-              key={Math.random().toString()}
-              title={`Answer ${idx + 1}: ${answer.text}`}
-            />
-          ))}
-        </ul>
-      </div>
-
-      <div className={styles["edit-quiz__controls"]}>
-        {!showTypeForm && quizFormContent}
-
-        {showTypeForm && (
-          <div className={styles["edit-quiz__control"]}>
-            <TypeForm
-              types={props.quiz.types}
-              onAddNewType={addNewTypeHandler}
-            />
-          </div>
-        )}
-
-        <div className={styles["edit-quiz__actions"]}>
-          {!showTypeForm && (
-            <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
-          )}
-          {showTypeForm && (
-            <Button onClick={toggleTypeFormHandler}>Close</Button>
-          )}
-          <Button type="submit">Save Quiz</Button>
-        </div>
-      </div>
-    </form>
-  );
+  return <form onSubmit={submitHandler}>{formContent}</form>;
 }
 
 export default QuizForm;

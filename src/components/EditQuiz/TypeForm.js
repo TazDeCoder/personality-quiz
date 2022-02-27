@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import styles from "./TypeForm.module.css";
-import AddIcon from "../UI/AddIcon";
+import Button from "../UI/Button";
+import QuizContext from "../../store/quiz-context";
 
 function AddType(props) {
+  const quizCtx = useContext(QuizContext);
+
   const [inputTitle, setInputTitle] = useState("");
   const [inputDesc, setInputDesc] = useState("");
 
@@ -22,7 +25,7 @@ function AddType(props) {
       return;
     }
     // Checking if type already exists
-    const typeFoundIdx = props.types.findIndex(
+    const typeFoundIdx = quizCtx.types.findIndex(
       (type) => type.title.toLowerCase() === inputTitle.toLowerCase()
     );
     if (typeFoundIdx !== -1) {
@@ -38,38 +41,37 @@ function AddType(props) {
     // Clear input fields
     setInputTitle("");
     setInputDesc("");
+    // Close modal
+    props.onClose();
   };
 
   return (
     <form onSubmit={submitHandler}>
-      <div className={styles["type-form__action"]}>
-        <p>New Type</p>
-        <div onClick={submitHandler}>
-          <AddIcon>Add Type</AddIcon>
-        </div>
-      </div>
-
-      <div className={styles["type-form__control"]}>
-        <div>
+      <div className={styles["type-form__controls"]}>
+        <div className={styles["type-form__control"]}>
           <label>Title</label>
           <input
             type="text"
-            placeholder="Enter type title"
+            placeholder="Enter new type title"
             value={inputTitle}
             required
             onChange={typeTitleChangeHandler}
           />
         </div>
 
-        <div>
+        <div className={styles["type-form__control"]}>
           <label>Desc</label>
           <textarea
             value={inputDesc}
-            placeholder="Write description of type"
+            placeholder="Write a description of the type"
             maxLength="128"
             required
             onChange={typeDescChangeHandler}
           />
+        </div>
+
+        <div className={styles["type-form__actions"]}>
+          <Button type="submit">Add Type</Button>
         </div>
       </div>
     </form>
