@@ -2,9 +2,9 @@ import styles from "./ListItem.module.css";
 
 function ListItem(props) {
   return (
-    <li className={styles["list-item"]}>
+    <div className={styles["list-item"]}>
       <p>{props.title}</p>
-    </li>
+    </div>
   );
 }
 
