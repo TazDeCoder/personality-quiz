@@ -5,7 +5,7 @@ import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
 import Modal from "./components/UI/Modal";
 import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
-import EditQuiz from "./components/EditQuiz/EditQuiz";
+import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
 import QuizProvider from "./store/QuizProvider";
@@ -158,12 +158,10 @@ function App() {
 
   if (showEditQuiz) {
     modalContent = (
-      <Modal>
-        <EditQuiz
-          onUpdateQuiz={updateQuizHandler}
-          onClose={closeEditQuizHandler}
-        />
-      </Modal>
+      <EditQuizModal
+        onUpdateQuiz={updateQuizHandler}
+        onClose={closeEditQuizHandler}
+      />
     );
   }
 

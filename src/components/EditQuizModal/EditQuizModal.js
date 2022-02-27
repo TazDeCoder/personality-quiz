@@ -3,8 +3,8 @@ import { useState, useContext } from "react";
 import ErrorModal from "../UI/ErrorModal";
 import Modal from "../UI/Modal";
 import Button from "../UI/Button";
-import QuizForm from "./QuizForm";
-import TypeForm from "./TypeForm";
+import QuizForm from "./AddQuestionForm";
+import TypeForm from "./AddTypeForm";
 import QuizContext from "../../store/quiz-context";
 
 function EditQuiz(props) {

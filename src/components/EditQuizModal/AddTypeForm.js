@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 
-import styles from "./TypeForm.module.css";
+import styles from "./AddTypeForm.module.css";
 import Button from "../UI/Button";
 import QuizContext from "../../store/quiz-context";
 

@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 
-import styles from "./QuizForm.module.css";
+import styles from "./AddQuestionForm.module.css";
 import Button from "../UI/Button";
 import AddIcon from "../UI/AddIcon";
 import ListItem from "../UI/ListItem";
