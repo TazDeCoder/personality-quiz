@@ -8,6 +8,7 @@ import QuizContext from "../../store/quiz-context";
 
 function QuizForm(props) {
   const quizCtx = useContext(QuizContext);
+
   // Initial state data
   const initialTypesData = quizCtx.types.map((type) => {
     return {
@@ -49,17 +50,34 @@ function QuizForm(props) {
   };
 
   const addAnswerHandler = () => {
-    // Checking field validity
     const filteredTypes = inputTypes.filter((type) => type.isChecked);
-    if (
-      inputAnswer.trim().length === 0 ||
-      inputAnswers.length > 3 ||
-      filteredTypes.length === 0
-    )
+    // Checking field validity
+    if (filteredTypes.length === 0) {
+      props.onError({
+        title: "No types checked",
+        message: "Must select a type that this answer belongs to (min 1)",
+      });
       return;
-    // Get types title
+    }
+
+    if (inputAnswer.trim().length === 0) {
+      props.onError({
+        title: "Invalid answer",
+        message: "Must specify a valid answer for the question",
+      });
+      return;
+    }
+
+    if (inputAnswers.length > 3) {
+      props.onError({
+        title: "Answers limit reached",
+        message: "Remove an existing answer to add your answer (max 4)",
+      });
+      return;
+    }
+    // Extract title from types
     const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
-    // Create answer object
+    // Data provided is valid. Create answer object
     const answerData = {
       id: Math.random().toString(),
       text: inputAnswer,
@@ -83,14 +101,28 @@ function QuizForm(props) {
 
   const addPromptHandler = () => {
     // Checking field validity
-    if (inputPrompt.trim().length === 0 || inputAnswers.length === 0) return;
-    // Create question object
+    if (inputPrompt.trim().length === 0) {
+      props.onError({
+        title: "Invalid prompt",
+        message: "Must specify a valid prompt for the question",
+      });
+      return;
+    }
+
+    if (inputAnswers.length === 0) {
+      props.onError({
+        title: "No answers provided",
+        message: "Must create answers for the question (min 1)",
+      });
+      return;
+    }
+    // Data provided is valid. Create question object
     const questionData = {
       id: Math.random().toString(),
       prompt: inputPrompt,
       answers: inputAnswers,
     };
-    // Update questions array
+    // Update questions state
     setInputQuestions((prevQuestions) => {
       return [...prevQuestions, questionData];
     });
@@ -104,18 +136,19 @@ function QuizForm(props) {
     let questionsData = [];
     // Checking field validity
     for (const iptQuestion of inputQuestions) {
+      // Checking if any new questions are added
       if (quizCtx.questions.some((question) => iptQuestion.id === question.id))
         continue;
       else questionsData.push(iptQuestion);
     }
-    // Close modal if no new questions are added
+    // Close modal window if no new questions are added
     if (questionsData.length === 0) {
       props.onClose();
       return;
     }
-    // Handle questions data
+    // Handle question data
     questionsData.map((questionData) => props.onAddNewQuestion(questionData));
-    // Close modal
+    // Close modal window
     props.onClose();
   };
 

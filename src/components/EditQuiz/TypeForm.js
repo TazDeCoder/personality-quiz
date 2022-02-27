@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 
 import styles from "./TypeForm.module.css";
 import Button from "../UI/Button";
@@ -22,6 +22,17 @@ function AddType(props) {
     e.preventDefault();
     // Checking field validity
     if (inputTitle.trim().length === 0) {
+      props.onError({
+        title: "Invalid title",
+        message: "Must specify a valid title for the type",
+      });
+      return;
+    }
+    if (inputDesc.trim().length === 0) {
+      props.onError({
+        title: "Invalid description",
+        message: "Must specify a valid description for the type",
+      });
       return;
     }
     // Checking if type already exists
@@ -29,9 +40,13 @@ function AddType(props) {
       (type) => type.title.toLowerCase() === inputTitle.toLowerCase()
     );
     if (typeFoundIdx !== -1) {
+      props.onError({
+        title: "Type with same title exists",
+        message: "Use a another title that has not been already used",
+      });
       return;
     }
-    // Create type object
+    // Data provided is valid. Create type object
     const typeData = {
       title: inputTitle,
       description: inputDesc,
@@ -41,7 +56,7 @@ function AddType(props) {
     // Clear input fields
     setInputTitle("");
     setInputDesc("");
-    // Close modal
+    // Close modal window
     props.onClose();
   };
 
