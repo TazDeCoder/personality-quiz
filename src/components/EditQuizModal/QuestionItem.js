@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import styles from "./QuestionItem.module.css";
 import ListItem from "../UI/ListItem/ListItem";
+import Button from "../UI/Button/Button";
+import RemoveIcon from "../UI/Icons/RemoveIcon";
 
 function QuestionItem(props) {
   const [showAnswers, setShowAnswers] = useState(false);
@@ -12,9 +14,14 @@ function QuestionItem(props) {
 
   return (
     <li className={styles["question-item"]}>
-      <ListItem title={props.title} onClick={toggleQuestionHandler} />
+      <div className={styles["question-item__prompt"]}>
+        <ListItem title={props.title} onClick={toggleQuestionHandler} />
+        <Button onClick={props.onRemove}>
+          <RemoveIcon />
+        </Button>
+      </div>
       {showAnswers && (
-        <ul>
+        <ul className={styles["question-item__answers"]}>
           {props.answers.map((answer) => (
             <li key={answer.id}>
               <ListItem title={answer.text} />

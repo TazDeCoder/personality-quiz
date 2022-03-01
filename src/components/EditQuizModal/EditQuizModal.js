@@ -61,6 +61,28 @@ function EditQuiz(props) {
     props.onUpdateQuiz(quizCtx.id, quizData);
   };
 
+  const removeQuestionHandler = (id) => {
+    // Check if quiz exists before removing
+    const existingQuizIdx = quizQuestions.findIndex(
+      (question) => question.id === id
+    );
+    if (existingQuizIdx === -1) return;
+    // Filter out removed question
+    const updatedQuestions = quizQuestions.filter(
+      (question) => question.id !== id
+    );
+    // Create new quiz data object
+    const quizData = {
+      ...quizCtx,
+      questions: [...updatedQuestions],
+    };
+    // Update neccessary state
+    setQuizQuestions(quizData.questions);
+    // Handle updating quiz
+    quizCtx.updateQuiz(quizData);
+    props.onUpdateQuiz(quizCtx.id, quizData);
+  };
+
   if (!showTypeForm && !showViewQuestions) {
     modalContent = (
       <Modal>
@@ -97,6 +119,7 @@ function EditQuiz(props) {
           questions={quizQuestions}
           onClose={toggleViewQuestionsHandler}
           onError={errorHandler}
+          onRemove={removeQuestionHandler}
         />
         <Button onClick={toggleViewQuestionsHandler}>Close</Button>
       </Modal>

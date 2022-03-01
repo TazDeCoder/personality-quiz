@@ -2,14 +2,34 @@
   margin: 0.25rem 0;
 }
 
-.question-item ul > li {
-  width: 20%;
+.question-item button {
+  background: none;
+  border: none;
+}
+
+.question-item__prompt {
+  display: flex;
+  justify-content: space-between;
+}
+
+.question-item__answers li {
+  width: 25%;
   margin: 0 1rem;
-  overflow: hidden;
   transition: all 1s;
 }
 
-.question-item ul > li:hover {
+.question-item__answers li:hover {
   width: 100%;
   transition: all 1s;
+}
+
+.question-item__answers li > div {
+  height: 2rem;
+}
+
+.question-item__answers p {
+  height: 2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
