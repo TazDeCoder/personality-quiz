@@ -5,6 +5,14 @@
   border-radius: 12px;
 }
 
+.view-quiz__remove {
+  text-align: right;
+}
+
+.view-quiz__remove button {
+  border-radius: 12px;
+}
+
 .view-quiz__content {
   padding: 0.5rem;
   margin: 1rem auto;

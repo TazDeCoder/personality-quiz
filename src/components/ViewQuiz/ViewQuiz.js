@@ -7,12 +7,16 @@ import QuizContext from "../../store/quiz-context";
 function ViewQuiz(props) {
   const quizCtx = useContext(QuizContext);
 
-  const [isQuizDraft, setIsQuizDraft] = useState(
-    quizCtx.questions.length !== 0
-  );
+  const [isQuizDraft] = useState(quizCtx.questions.length === 0);
 
   return (
     <div className={styles["view-quiz"]}>
+      <div className={styles["view-quiz__remove"]}>
+        <Button onClick={props.onRemoveQuiz.bind(null, quizCtx.id)}>
+          Remove Quiz
+        </Button>
+      </div>
+
       <div className={styles["view-quiz__content"]}>
         <h1>{quizCtx.title}</h1>
         <p>{quizCtx.desc}</p>
@@ -29,7 +33,7 @@ function ViewQuiz(props) {
 
       <div className={styles["view-quiz__actions"]}>
         <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
-        <Button disabled={!isQuizDraft} onClick={props.onStartQuiz}>
+        <Button disabled={isQuizDraft} onClick={props.onStartQuiz}>
           Start Quiz
         </Button>
       </div>
