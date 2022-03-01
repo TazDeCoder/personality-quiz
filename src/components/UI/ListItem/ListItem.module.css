@@ -6,3 +6,8 @@
   background-color: #d7d7d7;
   border-radius: 7px;
 }
+
+.list-item:hover {
+  cursor: pointer;
+  background-color: #c7c7c7;
+}
