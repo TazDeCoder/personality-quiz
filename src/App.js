@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
-import Modal from "./components/UI/Modal";
+import Modal from "./components/UI/Modal/Modal";
 import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
 import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";

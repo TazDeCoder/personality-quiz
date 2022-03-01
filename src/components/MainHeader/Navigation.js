@@ -1,5 +1,5 @@
 import styles from "./Navigation.module.css";
-import Button from "../UI/Button";
+import Button from "../UI/Button/Button";
 
 function Navigation(props) {
   return (

@@ -1,7 +1,7 @@
 import { useRef, useContext } from "react";
 
 import styles from "./StartQuiz.module.css";
-import Button from "../UI/Button";
+import Button from "../UI/Button/Button";
 import QuestionCard from "./QuestionCard";
 import QuizContext from "../../store/quiz-context";
 

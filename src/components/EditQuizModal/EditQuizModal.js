@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 
-import ErrorModal from "../UI/ErrorModal";
-import Modal from "../UI/Modal";
-import Button from "../UI/Button";
+import ErrorModal from "../UI/ErrorModal/ErrorModal";
+import Modal from "../UI/Modal/Modal";
+import Button from "../UI/Button/Button";
 import QuizForm from "./AddQuestionForm";
 import TypeForm from "./AddTypeForm";
 import QuizContext from "../../store/quiz-context";

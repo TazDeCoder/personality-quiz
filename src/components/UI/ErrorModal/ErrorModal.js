@@ -1,8 +1,8 @@
 import { createPortal } from "react-dom";
 
 import styles from "./ErrorModal.module.css";
-import Card from "./Card";
-import Button from "./Button";
+import Button from "../Button/Button";
+import Card from "../Card/Card";
 
 function Backdrop(props) {
   return <div className={styles.backdrop} onClick={props.onClose}></div>;

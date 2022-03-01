@@ -1,6 +1,6 @@
 import styles from "./QuizResults.module.css";
 
-import Button from "../UI/Button";
+import Button from "../UI/Button/Button";
 
 function QuizResults(props) {
   return (

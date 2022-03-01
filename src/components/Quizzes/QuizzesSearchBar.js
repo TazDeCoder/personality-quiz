@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from "react";
 
 import styles from "./QuizzesSearchBar.module.css";
-import SearchBar from "../UI/SearchBar";
+import SearchBar from "../UI/SearchBar/SearchBar";
 import QuizContext from "../../store/quiz-context";
 
 function QuizzesSearchBar(props) {

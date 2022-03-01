@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 
 import styles from "./AddTypeForm.module.css";
-import Button from "../UI/Button";
+import Button from "../UI/Button/Button";
 import QuizContext from "../../store/quiz-context";
 
 function AddType(props) {

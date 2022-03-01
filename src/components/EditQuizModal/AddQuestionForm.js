@@ -1,10 +1,10 @@
 import { useState, useContext } from "react";
 
 import styles from "./AddQuestionForm.module.css";
-import Button from "../UI/Button";
-import AddIcon from "../UI/AddIcon";
-import RemoveIcon from "../UI/RemoveIcon";
-import ListItem from "../UI/ListItem";
+import AddIcon from "../UI/Icons/AddIcon";
+import RemoveIcon from "../UI/Icons/RemoveIcon";
+import Button from "../UI/Button/Button";
+import ListItem from "../UI/ListItem/ListItem";
 import QuizContext from "../../store/quiz-context";
 
 function QuizForm(props) {

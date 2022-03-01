@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import styles from "./QuizForm.module.css";
-import Button from "../UI/Button";
+import Button from "../UI/Button/Button";
 
 function QuizForm(props) {
   const [inputTitle, setInputTitle] = useState("");

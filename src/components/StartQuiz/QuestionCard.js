@@ -1,6 +1,5 @@
 import styles from "./QuestionCard.module.css";
-
-import Card from "../UI/Card";
+import Card from "../UI/Card/Card";
 
 function QuestionCard(props) {
   const answerChangeHandler = (e) => {
