@@ -6,6 +6,7 @@ import Button from "../UI/Button/Button";
 import QuizForm from "./AddQuestionForm";
 import TypeForm from "./AddTypeForm";
 import QuizContext from "../../store/quiz-context";
+import ViewQuestions from "./ViewQuestions";
 
 function EditQuiz(props) {
   let modalContent;
@@ -16,6 +17,7 @@ function EditQuiz(props) {
   const [quizQuestions, setQuizQuestions] = useState(quizCtx.questions);
   const [quizTypes, setQuizTypes] = useState(quizCtx.types);
   const [showTypeForm, setShowTypeForm] = useState(false);
+  const [showViewQuestions, setShowViewQuestions] = useState(false);
 
   const errorHandler = (error) => {
     setError({ ...error });
@@ -27,6 +29,10 @@ function EditQuiz(props) {
 
   const toggleTypeFormHandler = () => {
     setShowTypeForm((prevTypeForm) => !prevTypeForm);
+  };
+
+  const toggleViewQuestionsHandler = () => {
+    setShowViewQuestions((prevViewQuestions) => !prevViewQuestions);
   };
 
   const addNewTypeHandler = (newType) => {
@@ -55,9 +61,12 @@ function EditQuiz(props) {
     props.onUpdateQuiz(quizCtx.id, quizData);
   };
 
-  if (!showTypeForm) {
+  if (!showTypeForm && !showViewQuestions) {
     modalContent = (
       <Modal>
+        <Button onClick={toggleViewQuestionsHandler}>
+          View Current Questions
+        </Button>
         <QuizForm
           onAddNewQuestion={addNewQuestionHandler}
           onClose={props.onClose}
@@ -77,6 +86,19 @@ function EditQuiz(props) {
           onError={errorHandler}
         />
         <Button onClick={toggleTypeFormHandler}>Close</Button>
+      </Modal>
+    );
+  }
+
+  if (showViewQuestions) {
+    modalContent = (
+      <Modal>
+        <ViewQuestions
+          questions={quizQuestions}
+          onClose={toggleViewQuestionsHandler}
+          onError={errorHandler}
+        />
+        <Button onClick={toggleViewQuestionsHandler}>Close</Button>
       </Modal>
     );
   }
