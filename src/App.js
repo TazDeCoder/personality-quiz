@@ -77,6 +77,11 @@ function App() {
     if (!showQuizResults) setShowStartQuiz(false);
   }, [showQuizResults]);
 
+  useEffect(() => {
+    // Update quizzes in local storage
+    localStorage.setItem("quizzes", JSON.stringify(quizzes));
+  }, [quizzes]);
+
   const toggleQuizFormHandler = () => {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
   };
@@ -115,8 +120,6 @@ function App() {
     });
     // Close quiz form
     setShowQuizForm(false);
-    // Update quizzes in local storage
-    localStorage.setItem("quizzes", JSON.stringify(quizzes));
   };
 
   const updateQuizHandler = (id, quizData) => {
@@ -128,8 +131,19 @@ function App() {
       updatedQuizzes[existingQuizIdx] = { ...quizData };
       return updatedQuizzes;
     });
-    // Update quizzes in local storage
-    localStorage.setItem("quizzes", JSON.stringify(quizzes));
+  };
+
+  const removeQuizHandler = (id) => {
+    // Check if quiz exists before removing
+    const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === id);
+    if (existingQuizIdx === -1) return;
+    // Update quizzes
+    setQuizzes((prevQuizzes) => {
+      // Filter out removed question
+      const updatedQuizzes = prevQuizzes.filter((quiz) => quiz.id !== id);
+      return updatedQuizzes;
+    });
+    setShowViewQuiz(false);
   };
 
   const submitQuizResultsHandler = (quizResults) => {
@@ -151,6 +165,7 @@ function App() {
         <ViewQuiz
           onEditQuiz={showEditQuizHandler}
           onStartQuiz={showStartQuizHandler}
+          onRemoveQuiz={removeQuizHandler}
         />
       </Modal>
     );
