@@ -1,0 +1,13 @@
+.view-questions {
+  padding: 1rem;
+}
+
+.view-questions h1 {
+  margin: 0 1rem;
+  font-size: 1.7rem;
+  line-height: 1.2;
+}
+
+.view-questions ul {
+  margin: 1rem 0;
+}

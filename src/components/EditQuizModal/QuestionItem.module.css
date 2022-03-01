@@ -1,0 +1,15 @@
+.question-item {
+  margin: 0.25rem 0;
+}
+
+.question-item ul > li {
+  width: 20%;
+  margin: 0 1rem;
+  overflow: hidden;
+  transition: all 1s;
+}
+
+.question-item ul > li:hover {
+  width: 100%;
+  transition: all 1s;
+}
