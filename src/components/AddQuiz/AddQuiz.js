@@ -13,6 +13,7 @@ function AddQuiz(props) {
 
   return (
     <>
+      <h1>Create New Quiz</h1>
       <QuizForm onSaveQuizData={saveQuizDataHandler} />
     </>
   );

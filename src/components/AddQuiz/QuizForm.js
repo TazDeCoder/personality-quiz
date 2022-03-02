@@ -1,80 +1,108 @@
-import { useState } from "react";
-
 import styles from "./QuizForm.module.css";
 import Button from "../UI/Button/Button";
+import useInput from "../../hooks/use-input";
 
 function QuizForm(props) {
-  const [inputTitle, setInputTitle] = useState("");
-  const [inputAuthor, setInputAuthor] = useState("");
-  const [inputDesc, setInputDesc] = useState("");
+  let formIsValid = false;
 
-  const titleChangeHandler = (e) => {
-    setInputTitle(e.target.value);
-  };
+  const {
+    value: enteredTitle,
+    isValid: enteredTitleIsValid,
+    hasErrors: enteredTitleHasErrors,
+    inputChangeHandler: titleChangedHandler,
+    inputBlurHandler: titleBlurHandler,
+  } = useInput((value) => value.trim().length !== 0);
 
-  const authorChangeHandler = (e) => {
-    setInputAuthor(e.target.value);
-  };
+  const titleInputClasses = enteredTitleHasErrors
+    ? `${styles["quiz-form__control"]} ${styles.invalid}`
+    : styles["quiz-form__control"];
 
-  const descChangeHandler = (e) => {
-    setInputDesc(e.target.value);
-  };
+  const {
+    value: enteredAuthor,
+    isValid: enteredAuthorIsValid,
+    hasErrors: enteredAuthorHasErrors,
+    inputChangeHandler: authorChangedHandler,
+    inputBlurHandler: authorBlurHandler,
+  } = useInput((value) => value.trim().length !== 0);
+
+  const authorInputClasses = enteredAuthorHasErrors
+    ? `${styles["quiz-form__control"]} ${styles.invalid}`
+    : styles["quiz-form__control"];
+
+  const {
+    value: enteredDesc,
+    isValid: enteredDescIsValid,
+    hasErrors: enteredDescHasErrors,
+    inputChangeHandler: descChangedHandler,
+    inputBlurHandler: descBlurHandler,
+  } = useInput((value) => value.trim().length !== 0);
+
+  const descInputClasses = enteredDescHasErrors
+    ? `${styles["quiz-form__control"]} ${styles.invalid}`
+    : styles["quiz-form__control"];
+
+  if (enteredTitleIsValid && enteredAuthorIsValid && enteredDescIsValid)
+    formIsValid = true;
 
   const submitHandler = (e) => {
     e.preventDefault();
     // Create quiz data object
     const quizData = {
-      title: inputTitle,
-      author: inputAuthor,
-      desc: inputDesc,
+      title: enteredTitle,
+      author: enteredAuthor,
+      desc: enteredDesc,
     };
-    // Clear input fields
-    setInputTitle("");
-    setInputAuthor("");
-    setInputDesc("");
     // Save quiz data
     props.onSaveQuizData(quizData);
   };
 
   return (
     <form onSubmit={submitHandler}>
-      <div className={styles["add-quiz__controls"]}>
-        <div className={styles["add-quiz__control"]}>
-          <label>Title</label>
+      <div className={styles["quiz-form__controls"]}>
+        <div className={titleInputClasses}>
+          <label htmlFor="title">Title</label>
           <input
+            id="title"
             type="text"
-            value={inputTitle}
-            placeholder="Enter title of quiz"
-            onChange={titleChangeHandler}
+            value={enteredTitle}
+            placeholder="Enter quiz title"
             maxLength="128"
             required
+            onChange={titleChangedHandler}
+            onBlur={titleBlurHandler}
           />
         </div>
 
-        <div className={styles["add-quiz__control"]}>
-          <label>Author</label>
+        <div className={authorInputClasses}>
+          <label htmlFor="author">Author</label>
           <input
+            id="author"
             type="text"
-            value={inputAuthor}
+            value={enteredAuthor}
             placeholder="Enter your username"
-            onChange={authorChangeHandler}
             required
+            onChange={authorChangedHandler}
+            onBlur={authorBlurHandler}
           />
         </div>
 
-        <div className={styles["add-quiz__control"]}>
-          <label>Desc</label>
+        <div className={descInputClasses}>
+          <label htmlFor="desc">Desc</label>
           <textarea
-            value={inputDesc}
-            placeholder="Fill in details of the quiz"
-            onChange={descChangeHandler}
-            maxLength="960"
+            id="desc"
+            value={enteredDesc}
+            placeholder="Write brief description of quiz"
+            maxLength="400"
             required
+            onChange={descChangedHandler}
+            onBlur={descBlurHandler}
           />
         </div>
 
-        <div className={styles["add-quiz__actions"]}>
-          <Button type="submit">Create Quiz Draft</Button>
+        <div className={styles["quiz-form__actions"]}>
+          <Button type="submit" disabled={!formIsValid}>
+            Create Draft
+          </Button>
         </div>
       </div>
     </form>
