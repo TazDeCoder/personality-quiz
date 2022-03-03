@@ -1,13 +1,20 @@
 import styles from "./QuizResults.module.css";
 
-import Button from "../UI/Button/Button";
-
 function QuizResults(props) {
   return (
     <div className={styles["quiz-results"]}>
-      <h1>Personality Type: {props.type.title}</h1>
+      <button
+        className={styles["quiz-results__btn--close"]}
+        onClick={props.onClose}
+      >
+        &times;
+      </button>
+
+      <header className={styles["quiz-results__header"]}>
+        <h1>Personality Type: {props.type.title}</h1>
+      </header>
+
       <p>{props.type.description}</p>
-      <Button onClick={props.onClose}>Close</Button>
     </div>
   );
 }
