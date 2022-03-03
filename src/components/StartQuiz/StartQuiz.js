@@ -22,22 +22,23 @@ function StartQuiz(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-
     let selectedAnswers = [];
-
+    // Get selected answers
     for (const questionRef of questionsRef.current) {
       const selectedAnswer = Array.from(questionRef.elements).find(
         (el) => el.checked
       );
       selectedAnswers.push(selectedAnswer.value);
     }
-
+    // Get type based on frequently answered
     const mostFrequentType = getMostFrequent(selectedAnswers);
-
+    //
     const results = quizCtx.types.find(
       (type) => type.title.toLowerCase() === mostFrequentType
     );
-
+    // Close modal window
+    props.onClose();
+    // Handle results data
     props.onSubmitQuizResults(results);
   };
 
@@ -62,7 +63,7 @@ function StartQuiz(props) {
           ))}
         </div>
         <div className={styles["start-quiz__actions"]}>
-          <Button type="submit">Get Quiz Results</Button>
+          <Button type="submit">Get Results</Button>
         </div>
       </div>
     </form>

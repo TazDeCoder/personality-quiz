@@ -1,6 +1,6 @@
 .start-quiz {
-  /* max-height: 100vh; */
-  /* height: 90vh; */
+  max-height: 100vh;
+  height: 90vh;
   padding: 1rem;
   background-color: #fff;
 }
