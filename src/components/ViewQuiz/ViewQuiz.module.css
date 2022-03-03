@@ -1,6 +1,6 @@
 .view-quiz {
-  padding: 1rem;
-  background-color: #f7f7f7;
+  padding: 0.5rem;
+  background-color: #4a93bb;
   border: 2px solid #000;
   border-radius: 12px;
 }
@@ -14,22 +14,23 @@
 }
 
 .view-quiz__content {
-  padding: 0.5rem;
-  margin: 1rem auto;
+  margin: 0.5rem auto;
   font-size: 1.1rem;
 }
 
 .view-quiz__content h1 {
   font-size: 1.9rem;
+  color: #fff;
 }
 
 .view-quiz__content p {
-  height: 8rem;
+  height: 10rem;
   padding: 0.5rem;
   margin: 0.5rem auto;
   overflow: auto;
   line-height: 1.2;
-  background-color: #fff;
+  background-color: #f7f7f7;
+  border-radius: 7px;
 }
 
 .view-quiz__meta {
@@ -40,6 +41,7 @@
 
 .view-quiz__meta p {
   padding: 0.5rem;
+  color: #fff;
 }
 
 .view-quiz__meta span {
@@ -54,4 +56,5 @@
 
 .view-quiz__actions button {
   margin: 0 0.5rem;
+  border-radius: 12px;
 }
