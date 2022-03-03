@@ -3,32 +3,46 @@ import { useState, useContext } from "react";
 import styles from "./AddTypeForm.module.css";
 import Button from "../UI/Button/Button";
 import QuizContext from "../../store/quiz-context";
+import useInput from "../../hooks/use-input";
 
 function AddType(props) {
   const quizCtx = useContext(QuizContext);
 
-  const [inputTitle, setInputTitle] = useState("");
-  const [inputDesc, setInputDesc] = useState("");
+  const {
+    value: enteredTitle,
+    hasErrors: enteredTitleHasErrors,
+    inputChangeHandler: titleChangedHandler,
+    inputBlurHandler: titleBlurHandler,
+    inputResetHandler: resetEnteredTitle,
+  } = useInput((value) => value.trim().length !== 0);
 
-  const typeTitleChangeHandler = (e) => {
-    setInputTitle(e.target.value);
-  };
+  const titleNameClasses = enteredTitleHasErrors
+    ? `${styles["type-form__control"]} ${styles.invalid}`
+    : styles["type-form__control"];
 
-  const typeDescChangeHandler = (e) => {
-    setInputDesc(e.target.value);
-  };
+  const {
+    value: enteredDesc,
+    hasErrors: enteredDescHasErrors,
+    inputChangeHandler: descChangedHandler,
+    inputBlurHandler: descBlurHandler,
+    inputResetHandler: resetEnteredDesc,
+  } = useInput((value) => value.trim().length !== 0);
+
+  const descNameClasses = enteredDescHasErrors
+    ? `${styles["type-form__control"]} ${styles.invalid}`
+    : styles["type-form__control"];
 
   const submitHandler = (e) => {
     e.preventDefault();
     // Checking field validity
-    if (inputTitle.trim().length === 0) {
+    if (enteredTitle.trim().length === 0) {
       props.onError({
         title: "Invalid title",
         message: "Must specify a valid title for the type",
       });
       return;
     }
-    if (inputDesc.trim().length === 0) {
+    if (enteredDesc.trim().length === 0) {
       props.onError({
         title: "Invalid description",
         message: "Must specify a valid description for the type",
@@ -37,7 +51,7 @@ function AddType(props) {
     }
     // Checking if type already exists
     const typeFoundIdx = quizCtx.types.findIndex(
-      (type) => type.title.toLowerCase() === inputTitle.toLowerCase()
+      (type) => type.title.toLowerCase() === enteredTitle.toLowerCase()
     );
     if (typeFoundIdx !== -1) {
       props.onError({
@@ -48,40 +62,42 @@ function AddType(props) {
     }
     // Data provided is valid. Create type object
     const typeData = {
-      title: inputTitle,
-      description: inputDesc,
+      title: enteredTitle,
+      description: enteredDesc,
     };
-    // Handle type data
-    props.onAddNewType(typeData);
     // Clear input fields
-    setInputTitle("");
-    setInputDesc("");
+    resetEnteredTitle();
+    resetEnteredDesc();
     // Close modal window
     props.onClose();
+    // Handle type data
+    props.onAddNewType(typeData);
   };
 
   return (
     <form onSubmit={submitHandler}>
       <div className={styles["type-form__controls"]}>
-        <div className={styles["type-form__control"]}>
+        <div className={titleNameClasses}>
           <label>Title</label>
           <input
             type="text"
-            placeholder="Enter new type title"
-            value={inputTitle}
+            placeholder="Enter type title"
+            value={enteredTitle}
             required
-            onChange={typeTitleChangeHandler}
+            onChange={titleChangedHandler}
+            onBlur={titleBlurHandler}
           />
         </div>
 
-        <div className={styles["type-form__control"]}>
+        <div className={descNameClasses}>
           <label>Desc</label>
           <textarea
-            value={inputDesc}
-            placeholder="Write a description of the type"
+            value={enteredDesc}
+            placeholder="Write description of type"
             maxLength="128"
             required
-            onChange={typeDescChangeHandler}
+            onChange={descChangedHandler}
+            onBlur={descBlurHandler}
           />
         </div>
 

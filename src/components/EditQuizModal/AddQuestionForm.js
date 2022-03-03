@@ -6,32 +6,45 @@ import RemoveIcon from "../UI/Icons/RemoveIcon";
 import Button from "../UI/Button/Button";
 import ListItem from "../UI/ListItem/ListItem";
 import QuizContext from "../../store/quiz-context";
+import useInput from "../../hooks/use-input";
 
 function QuizForm(props) {
   const quizCtx = useContext(QuizContext);
 
-  // Initial state data
-  const initialTypesData = quizCtx.types.map((type) => {
+  const initialTypesState = quizCtx.types.map((type) => {
     return {
       title: type.title,
       isChecked: false,
     };
   });
-  const initialQuestionsData = quizCtx.questions;
 
-  const [inputQuestions, setInputQuestions] = useState(initialQuestionsData);
-  const [inputTypes, setInputTypes] = useState(initialTypesData);
-  const [inputPrompt, setInputPrompt] = useState("");
-  const [inputAnswer, setInputAnswer] = useState("");
+  const [inputQuestions, setInputQuestions] = useState(quizCtx.questions);
   const [inputAnswers, setInputAnswers] = useState([]);
+  const [inputTypes, setInputTypes] = useState(initialTypesState);
 
-  const promptChangeHandler = (e) => {
-    setInputPrompt(e.target.value);
-  };
+  const {
+    value: enteredPrompt,
+    hasErrors: enteredPromptHasErrors,
+    inputChangeHandler: promptChangedHandler,
+    inputBlurHandler: promptBlurHandler,
+    inputResetHandler: resetEnteredPrompt,
+  } = useInput((value) => value.trim().length !== 0);
 
-  const answerChangeHandler = (e) => {
-    setInputAnswer(e.target.value);
-  };
+  const promptNameClasses = enteredPromptHasErrors
+    ? `${styles["edit-quiz__control"]} ${styles.invalid}`
+    : styles["edit-quiz__control"];
+
+  const {
+    value: enteredAnswer,
+    hasErrors: enteredAnswerHasErrors,
+    inputChangeHandler: answerChangedHandler,
+    inputBlurHandler: answerBlurHandler,
+    inputResetHandler: resetEnteredAnswer,
+  } = useInput((value) => value.trim().length !== 0);
+
+  const answerNameClasses = enteredAnswerHasErrors
+    ? `${styles["edit-quiz__control"]} ${styles.invalid}`
+    : styles["edit-quiz__control"];
 
   const typesChangeHandler = (e) => {
     setInputTypes((prevTypes) => {
@@ -61,7 +74,7 @@ function QuizForm(props) {
       return;
     }
 
-    if (inputAnswer.trim().length === 0) {
+    if (enteredAnswer.trim().length === 0) {
       props.onError({
         title: "Invalid answer",
         message: "Must specify a valid answer for the question",
@@ -81,15 +94,15 @@ function QuizForm(props) {
     // Data provided is valid. Create answer object
     const answerData = {
       id: Math.random().toString(),
-      text: inputAnswer,
+      text: enteredAnswer,
       types: typesTitle,
     };
+
     // Update answers state
     setInputAnswers((prevAnswers) => {
       return [...prevAnswers, answerData];
     });
-    // Clear input fields
-    setInputAnswer("");
+    // Update types state
     setInputTypes((prevTypes) => {
       return prevTypes.map((type) => {
         return {
@@ -98,6 +111,8 @@ function QuizForm(props) {
         };
       });
     });
+    // Clear input field
+    resetEnteredAnswer();
   };
 
   const removeAnswerHandler = (answerId) => {
@@ -119,7 +134,7 @@ function QuizForm(props) {
 
   const addPromptHandler = () => {
     // Checking field validity
-    if (inputPrompt.trim().length === 0) {
+    if (enteredPrompt.trim().length === 0) {
       props.onError({
         title: "Invalid prompt",
         message: "Must specify a valid prompt for the question",
@@ -137,16 +152,18 @@ function QuizForm(props) {
     // Data provided is valid. Create question object
     const questionData = {
       id: Math.random().toString(),
-      prompt: inputPrompt,
+      prompt: enteredPrompt,
       answers: inputAnswers,
     };
+
     // Update questions state
     setInputQuestions((prevQuestions) => {
       return [...prevQuestions, questionData];
     });
-    // Clear input fields
-    setInputPrompt("");
+    // Cleae answers state
     setInputAnswers([]);
+    // Clear input field
+    resetEnteredPrompt();
   };
 
   const submitHandler = (e) => {
@@ -193,13 +210,14 @@ function QuizForm(props) {
 
   const formContent = (
     <div className={styles["edit-quiz__controls"]}>
-      <div className={styles["edit-quiz__control-prompt"]}>
+      <div className={promptNameClasses}>
         <label>Prompt</label>
         <input
           type="text"
-          value={inputPrompt}
+          value={enteredPrompt}
           placeholder="Enter question prompt"
-          onChange={promptChangeHandler}
+          onChange={promptChangedHandler}
+          onBlur={promptBlurHandler}
         />
 
         <Button onClick={addPromptHandler}>
@@ -209,13 +227,14 @@ function QuizForm(props) {
 
       {currentAnswersContent}
 
-      <div className={styles["edit-quiz__control-answer"]}>
+      <div className={answerNameClasses}>
         <label>Answer</label>
         <input
           type="text"
-          value={inputAnswer}
-          placeholder="Enter an answer"
-          onChange={answerChangeHandler}
+          value={enteredAnswer}
+          placeholder="Enter answer to prompt"
+          onChange={answerChangedHandler}
+          onBlur={answerBlurHandler}
         />
 
         <Button onClick={addAnswerHandler}>
@@ -223,7 +242,7 @@ function QuizForm(props) {
         </Button>
       </div>
 
-      <div className={styles["edit-quiz__control-types"]}>
+      <div className={styles["edit-quiz__control"]}>
         <p>Types</p>
         <ul>
           {inputTypes.map((type) => {

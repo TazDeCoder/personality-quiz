@@ -8,7 +8,6 @@ function ViewQuestions(props) {
 
   return (
     <div className={styles["view-questions"]}>
-      <h1>Current Questions</h1>
       <ul>
         {props.questions.length > 0 ? (
           props.questions.map((question, idx) => {

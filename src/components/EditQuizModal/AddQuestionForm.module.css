@@ -1,3 +1,14 @@
+.invalid input {
+  color: #b40e0e;
+  background-color: #fddddd;
+  border: 1px solid #b40e0e;
+}
+
+.invalid input:focus {
+  background-color: #fbe8d2;
+  border-color: #ff8800;
+}
+
 .edit-quiz__controls {
   display: flex;
   flex-direction: column;
@@ -7,56 +18,51 @@
 }
 
 .edit-quiz__controls label {
-  font-size: 1.1rem;
   width: 4rem;
+  font-size: 1.1rem;
 }
 
 .edit-quiz__controls input {
-  font-size: 1rem;
   padding: 0.25rem;
+  font-size: 1rem;
 }
 
-.edit-quiz__control-prompt input,
-.edit-quiz__control-answer input {
-  width: 20rem;
+.edit-quiz__control {
+  display: flex;
+  align-items: baseline;
+}
+
+.edit-quiz__control input[type="text"] {
   max-width: 95%;
+  width: 20rem;
   margin: 0.5rem;
 }
 
-.edit-quiz__control-prompt button,
-.edit-quiz__control-answer button {
+.edit-quiz__control input:focus {
+  background-color: #cee3f0;
+}
+
+.edit-quiz__control button {
   background: none;
   border: none;
 }
 
-.edit-quiz__control-prompt {
-  display: flex;
-  align-items: center;
-}
-
-.edit-quiz__control-answer {
-  display: flex;
-  align-items: center;
-}
-
-.edit-quiz__control-types {
-  display: flex;
-  align-items: center;
-}
-
-.edit-quiz__control-types p {
+.edit-quiz__control p {
   font-size: 1.1rem;
   margin-right: 1rem;
 }
 
-.edit-quiz__control-types ul {
+.edit-quiz__control ul {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  max-width: 95%;
+  width: 20rem;
+  margin: 0.5rem;
 }
 
-.edit-quiz__control-types ul > li {
-  margin: 2px;
+.edit-quiz__control ul > li {
+  margin: 0 2px;
 }
 
 .edit-quiz__actions {

@@ -1,0 +1,24 @@
+.edit-quiz-modal__header h1 {
+  line-height: 1.2;
+  font-size: 1.3rem;
+}
+
+.edit-quiz-modal__btn--close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 4rem;
+  color: #333;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.edit-quiz-modal__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.edit-quiz-modal__actions button {
+  margin: 0 0.5rem;
+}

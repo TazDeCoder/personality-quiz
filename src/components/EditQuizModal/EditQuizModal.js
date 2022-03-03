@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 
+import styles from "./EditQuizModal.module.css";
 import ErrorModal from "../UI/ErrorModal/ErrorModal";
 import Modal from "../UI/Modal/Modal";
 import Button from "../UI/Button/Button";
@@ -86,15 +87,27 @@ function EditQuiz(props) {
   if (!showTypeForm && !showViewQuestions) {
     modalContent = (
       <Modal>
-        <Button onClick={toggleViewQuestionsHandler}>
-          View Current Questions
-        </Button>
+        <button
+          className={styles["edit-quiz-modal__btn--close"]}
+          onClick={props.onClose}
+        >
+          &times;
+        </button>
+
+        <header className={styles["edit-quiz-modal__header"]}>
+          <h1>Create New Question</h1>
+        </header>
+
         <QuizForm
           onAddNewQuestion={addNewQuestionHandler}
           onClose={props.onClose}
           onError={errorHandler}
         />
-        <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
+
+        <div className={styles["edit-quiz-modal__actions"]}>
+          <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
+          <Button onClick={toggleViewQuestionsHandler}>View Questions</Button>
+        </div>
       </Modal>
     );
   }
@@ -102,12 +115,22 @@ function EditQuiz(props) {
   if (showTypeForm) {
     modalContent = (
       <Modal>
+        <button
+          className={styles["edit-quiz-modal__btn--close"]}
+          onClick={toggleTypeFormHandler}
+        >
+          &times;
+        </button>
+
+        <header className={styles["edit-quiz-modal__header"]}>
+          <h1>Create New Type</h1>
+        </header>
+
         <TypeForm
           onAddNewType={addNewTypeHandler}
           onClose={toggleTypeFormHandler}
           onError={errorHandler}
         />
-        <Button onClick={toggleTypeFormHandler}>Close</Button>
       </Modal>
     );
   }
@@ -115,13 +138,23 @@ function EditQuiz(props) {
   if (showViewQuestions) {
     modalContent = (
       <Modal>
+        <button
+          className={styles["edit-quiz-modal__btn--close"]}
+          onClick={toggleViewQuestionsHandler}
+        >
+          &times;
+        </button>
+
+        <header className={styles["edit-quiz-modal__header"]}>
+          <h1>Current Questions</h1>
+        </header>
+
         <ViewQuestions
           questions={quizQuestions}
           onClose={toggleViewQuestionsHandler}
           onError={errorHandler}
           onRemove={removeQuestionHandler}
         />
-        <Button onClick={toggleViewQuestionsHandler}>Close</Button>
       </Modal>
     );
   }
