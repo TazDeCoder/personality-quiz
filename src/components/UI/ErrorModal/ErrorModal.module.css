@@ -19,11 +19,12 @@
 }
 
 .header {
-  background: #4f005f;
+  background-color: #1c658c;
   padding: 1rem;
 }
 
 .header h2 {
+  font-size: 1.3rem;
   color: #fff;
 }
 
@@ -35,6 +36,18 @@
   display: flex;
   justify-content: flex-end;
   padding: 1rem;
+}
+
+.actions button {
+  width: 5rem;
+  color: #fff;
+  background-color: #398ab9;
+  border-radius: 12px;
+}
+
+.actions button:hover {
+  background-color: #337ca7;
+  outline: #88b9d5 solid;
 }
 
 @media (min-width: 768px) {
