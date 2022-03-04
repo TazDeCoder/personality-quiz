@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 import styles from "./QuestionItem.module.css";
-import ListItem from "../UI/ListItem/ListItem";
-import Button from "../UI/Button/Button";
-import RemoveIcon from "../UI/Icons/RemoveIcon";
+import ListItem from "../../UI/ListItem/ListItem";
+import Button from "../../UI/Button/Button";
+import RemoveIcon from "../../UI/Icons/RemoveIcon";
 
 function QuestionItem(props) {
   const [showAnswers, setShowAnswers] = useState(false);

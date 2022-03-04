@@ -1,9 +1,9 @@
 import { useContext } from "react";
 
 import styles from "./QuizItem.module.css";
-import Button from "../UI/Button/Button";
-import Card from "../UI/Card/Card";
-import QuizContext from "../../store/quiz-context";
+import Button from "../../UI/Button/Button";
+import Card from "../../UI/Card/Card";
+import QuizContext from "../../../store/quiz-context";
 
 function QuizItem(props) {
   const quizCtx = useContext(QuizContext);

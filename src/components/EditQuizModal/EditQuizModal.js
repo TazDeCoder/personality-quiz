@@ -4,10 +4,10 @@ import styles from "./EditQuizModal.module.css";
 import ErrorModal from "../UI/ErrorModal/ErrorModal";
 import Modal from "../UI/Modal/Modal";
 import Button from "../UI/Button/Button";
-import QuizForm from "./AddQuestionForm";
-import TypeForm from "./AddTypeForm";
+import QuizForm from "./AddQuestionForm/AddQuestionForm";
+import TypeForm from "./AddTypeForm/AddTypeForm";
 import QuizContext from "../../store/quiz-context";
-import ViewQuestions from "./ViewQuestions";
+import ViewQuestions from "./ViewQuestions/ViewQuestions";
 
 function EditQuiz(props) {
   let modalContent;

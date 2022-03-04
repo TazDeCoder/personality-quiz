@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
 
 import styles from "./AddTypeForm.module.css";
-import Button from "../UI/Button/Button";
-import QuizContext from "../../store/quiz-context";
-import useInput from "../../hooks/use-input";
+import Button from "../../UI/Button/Button";
+import QuizContext from "../../../store/quiz-context";
+import useInput from "../../../hooks/use-input";
 
 function AddType(props) {
   const quizCtx = useContext(QuizContext);

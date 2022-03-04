@@ -1,6 +1,6 @@
 import styles from "./Quizzes.module.css";
 import Card from "../UI/Card/Card";
-import QuizzesList from "./QuizzesList";
+import QuizzesList from "./QuizzesList/QuizzesList";
 import QuizzesSearchBar from "./QuizzesSearchBar";
 
 function Quizzes(props) {
