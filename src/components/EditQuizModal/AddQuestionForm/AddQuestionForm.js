@@ -194,7 +194,7 @@ function QuizForm(props) {
       <ul>
         {inputAnswers.map((answer, idx) => {
           return (
-            <li>
+            <li key={answer.id}>
               <ListItem
                 key={Math.random().toString()}
                 title={`Answer ${idx + 1}: ${answer.text}`}
