@@ -14,6 +14,22 @@
   border: none;
 }
 
+.edit-quiz-modal__list {
+  max-width: 30rem;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.edit-quiz-modal__list li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-quiz-modal__list li > button {
+  background: none;
+  border: none;
+}
+
 .edit-quiz-modal__actions {
   display: flex;
   justify-content: center;

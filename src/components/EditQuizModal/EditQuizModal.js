@@ -8,6 +8,8 @@ import QuizForm from "./AddQuestionForm/AddQuestionForm";
 import TypeForm from "./AddTypeForm/AddTypeForm";
 import QuizContext from "../../store/quiz-context";
 import ViewQuestions from "./ViewQuestions/ViewQuestions";
+import ListItem from "../UI/ListItem/ListItem";
+import RemoveIcon from "../UI/Icons/RemoveIcon";
 
 function EditQuiz(props) {
   let modalContent;
@@ -15,6 +17,7 @@ function EditQuiz(props) {
   const quizCtx = useContext(QuizContext);
 
   const [error, setError] = useState();
+  const [modifiedQuestions, setModifiedQuestions] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState(quizCtx.questions);
   const [quizTypes, setQuizTypes] = useState(quizCtx.types);
   const [showTypeForm, setShowTypeForm] = useState(false);
@@ -50,6 +53,11 @@ function EditQuiz(props) {
   };
 
   const addNewQuestionHandler = (newQuestion) => {
+    // Check if quiz exists in modified before adding
+    const existingQuizIdx = modifiedQuestions.findIndex(
+      (question) => question.id === newQuestion.id
+    );
+    if (existingQuizIdx === -1) return;
     // Create new quiz data object
     const quizData = {
       ...quizCtx,
@@ -84,6 +92,28 @@ function EditQuiz(props) {
     props.onUpdateQuiz(quizCtx.id, quizData);
   };
 
+  const updateModifiedQuestionsHandler = (newQuestion) => {
+    setModifiedQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.concat(newQuestion);
+      return updatedQuestions;
+    });
+  };
+
+  const removeModifiedQuestionHandler = (id) => {
+    setModifiedQuestions((prevQuestions) => {
+      // Check if quiz exists before removing
+      const existingQuizIdx = prevQuestions.findIndex(
+        (question) => question.id === id
+      );
+      if (existingQuizIdx === -1) return prevQuestions;
+      // Filter out removed question
+      const updatedQuestions = prevQuestions.filter(
+        (question) => question.id !== id
+      );
+      return updatedQuestions;
+    });
+  };
+
   if (!showTypeForm && !showViewQuestions) {
     modalContent = (
       <Modal>
@@ -98,8 +128,27 @@ function EditQuiz(props) {
           <h1>Create New Question</h1>
         </header>
 
+        {modifiedQuestions.length > 0 && (
+          <ul className={styles["edit-quiz-modal__list"]}>
+            {modifiedQuestions.map((question) => (
+              <li key={question.id}>
+                <ListItem title={question.prompt} />
+                <Button
+                  onClick={removeModifiedQuestionHandler.bind(
+                    null,
+                    question.id
+                  )}
+                >
+                  <RemoveIcon />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <QuizForm
           onAddNewQuestion={addNewQuestionHandler}
+          onUpdateModifiedQuestions={updateModifiedQuestionsHandler}
           onClose={props.onClose}
           onError={errorHandler}
         />

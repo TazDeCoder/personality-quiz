@@ -164,6 +164,8 @@ function QuizForm(props) {
     setInputAnswers([]);
     // Clear input field
     resetEnteredPrompt();
+    // Handle question data
+    props.onUpdateModifiedQuestions(questionData);
   };
 
   const submitHandler = (e) => {
