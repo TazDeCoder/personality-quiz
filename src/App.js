@@ -189,7 +189,12 @@ function App() {
   }
 
   if (showStartQuiz) {
-    mainContent = <StartQuiz onSubmitQuizResults={submitQuizResultsHandler} />;
+    mainContent = (
+      <StartQuiz
+        onSubmitQuizResults={submitQuizResultsHandler}
+        onClose={closeStartQuizHandler}
+      />
+    );
   }
 
   if (!showStartQuiz) {
