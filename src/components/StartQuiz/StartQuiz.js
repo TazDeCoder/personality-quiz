@@ -23,6 +23,7 @@ function StartQuiz(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     let selectedAnswers = [];
+    let formattedAnswers = [];
     // Get selected answers
     for (const questionRef of questionsRef.current) {
       const selectedAnswer = Array.from(questionRef.elements).find(
@@ -30,9 +31,13 @@ function StartQuiz(props) {
       );
       selectedAnswers.push(selectedAnswer.value);
     }
+    // Format selected answers
+    for (const answer of selectedAnswers) {
+      const formattedAnswer = answer.includes(",") ? answer.split(",") : answer;
+      formattedAnswers.push(...formattedAnswer);
+    }
     // Get type based on frequently answered
-    const mostFrequentType = getMostFrequent(selectedAnswers);
-    //
+    const mostFrequentType = getMostFrequent(formattedAnswers);
     const results = quizCtx.types.find(
       (type) => type.title.toLowerCase() === mostFrequentType
     );
