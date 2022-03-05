@@ -8,7 +8,7 @@
 .searchbar {
   position: relative;
   width: 100%;
-  max-width: 30rem;
+  max-width: 40rem;
   padding: 0.25rem 0.5rem;
   margin: 1rem auto;
   border-top-left-radius: 7px;
@@ -25,11 +25,22 @@
 
 .searchbar-wrapper__input {
   width: 100%;
-  padding: 0.25rem 0.5rem;
-  font-size: 1.1rem;
+  padding: 1rem 1.25rem;
+  font-size: 1.3rem;
   font-weight: 500;
   border: inherit;
   box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+}
+
+.searchbar-wrapper__btn--clear {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  font-size: 2.5rem;
+  color: #333;
+  cursor: pointer;
+  background: none;
+  border: none;
 }
 
 .searchbar-list {
@@ -37,7 +48,7 @@
   z-index: 10;
   left: 0;
   width: 100%;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   background-color: var(--primary-color);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -51,9 +62,11 @@
   color: var(--font-color);
   background-color: var(--secondary-color);
   border-radius: 3px;
+  cursor: pointer;
 }
 
-.searchbar-list__item:hover {
-  cursor: pointer;
+.searchbar-list__item:hover,
+.selected {
   background-color: var(--tertiary-color);
+  outline: #fff solid;
 }
