@@ -1,8 +1,10 @@
 import { useContext } from "react";
 
 import styles from "./QuizItem.module.css";
+// COMPONENTS
 import Button from "../../UI/Button/Button";
 import Card from "../../UI/Card/Card";
+// CONTEXTS
 import QuizContext from "../../../store/quiz-context";
 
 function QuizItem(props) {
@@ -30,7 +32,7 @@ function QuizItem(props) {
         <p
           className={`${styles["quiz-item__label"]} ${styles["label--author"]}`}
         >
-          Created By:{" "}
+          Created By:
           <span className={styles["span--bold"]}>{props.author}</span>
         </p>
       </Card>

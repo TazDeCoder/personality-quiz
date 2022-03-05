@@ -1,14 +1,22 @@
 import { useState, useContext } from "react";
 
 import styles from "./AddQuestionForm.module.css";
+// COMPONENTS
 import AddIcon from "../../UI/Icons/AddIcon";
 import RemoveIcon from "../../UI/Icons/RemoveIcon";
 import Button from "../../UI/Button/Button";
 import ListItem from "../../UI/ListItem/ListItem";
+// CONTEXTS
 import QuizContext from "../../../store/quiz-context";
+// CUSTOM HOOKS
 import useInput from "../../../hooks/use-input";
 
 function QuizForm(props) {
+  ////////////////////////////////////////////////
+  ////// Declaring states and context
+  ////// (+ conditional classes)
+  ///////////////////////////////////////////////
+
   const quizCtx = useContext(QuizContext);
 
   const initialTypesState = quizCtx.types.map((type) => {
@@ -22,6 +30,7 @@ function QuizForm(props) {
   const [inputAnswers, setInputAnswers] = useState([]);
   const [inputTypes, setInputTypes] = useState(initialTypesState);
 
+  // PROMPT STATE + HANDLERS
   const {
     value: enteredPrompt,
     hasErrors: enteredPromptHasErrors,
@@ -29,11 +38,12 @@ function QuizForm(props) {
     inputBlurHandler: promptBlurHandler,
     inputResetHandler: resetEnteredPrompt,
   } = useInput((value) => value.trim().length !== 0);
-
+  // PROMPT CLASSES
   const promptNameClasses = enteredPromptHasErrors
-    ? `${styles["edit-quiz__control"]} ${styles.invalid}`
-    : styles["edit-quiz__control"];
+    ? `${styles["question-form__control"]} ${styles.invalid}`
+    : styles["question-form__control"];
 
+  // ANSWER STATE + HANDLERS
   const {
     value: enteredAnswer,
     hasErrors: enteredAnswerHasErrors,
@@ -41,43 +51,54 @@ function QuizForm(props) {
     inputBlurHandler: answerBlurHandler,
     inputResetHandler: resetEnteredAnswer,
   } = useInput((value) => value.trim().length !== 0);
-
+  // ANSWER CLASSES
   const answerNameClasses = enteredAnswerHasErrors
-    ? `${styles["edit-quiz__control"]} ${styles.invalid}`
-    : styles["edit-quiz__control"];
+    ? `${styles["question-form__control"]} ${styles.invalid}`
+    : styles["question-form__control"];
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
+
+  // STATE UPDATING HANDLERS
 
   const typesChangeHandler = (e) => {
     setInputTypes((prevTypes) => {
       // Checking if type already exists
-      const typeFoundIdx = prevTypes.findIndex(
+      const existingTypeIdx = prevTypes.findIndex(
         (type) => type.title.toLowerCase() === e.target.value
       );
-      if (typeFoundIdx === -1) {
-        return;
-      }
+      if (existingTypeIdx === -1) return;
       // Update selected type
       const updatedTypes = [...prevTypes];
-      updatedTypes[typeFoundIdx].isChecked = e.target.checked;
-      // Return updated types
+      updatedTypes[existingTypeIdx].isChecked = e.target.checked;
       return updatedTypes;
     });
   };
 
+  const removeAnswerHandler = (answerId) => {
+    setInputAnswers((prevAnswers) => {
+      // Checking if answer already exists
+      const existingAnswerIdx = prevAnswers.findIndex(
+        (answer) => answer.id === answerId
+      );
+      if (existingAnswerIdx === -1) return;
+      // Remove selected answer
+      const updatedAnswers = [...prevAnswers];
+      updatedAnswers.splice(existingAnswerIdx, 1);
+      return updatedAnswers;
+    });
+  };
+
+  // DATA PROCESSING HANDLERS
+
   const addAnswerHandler = () => {
     const filteredTypes = inputTypes.filter((type) => type.isChecked);
-    // Checking field validity
+    // Checking fields and stored inputs for data validity
     if (filteredTypes.length === 0) {
       props.onError({
         title: "No types checked",
         message: "Must select a type that this answer belongs to (min 1)",
-      });
-      return;
-    }
-
-    if (enteredAnswer.trim().length === 0) {
-      props.onError({
-        title: "Invalid answer",
-        message: "Must specify a valid answer for the question",
       });
       return;
     }
@@ -89,59 +110,42 @@ function QuizForm(props) {
       });
       return;
     }
+
+    if (enteredAnswer.trim().length === 0) {
+      props.onError({
+        title: "Invalid answer",
+        message: "Must specify a valid answer for the question",
+      });
+      return;
+    }
     // Extract title from types
     const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
-    // Data provided is valid. Create answer object
+    // Data provided is valid. Create answer data object
     const answerData = {
       id: Math.random().toString(),
       text: enteredAnswer,
       types: typesTitle,
     };
-
     // Update answers state
     setInputAnswers((prevAnswers) => {
-      return [...prevAnswers, answerData];
+      const updatedAnswers = prevAnswers.concat(answerData);
+      return updatedAnswers;
     });
-    // Update types state
-    setInputTypes((prevTypes) => {
-      return prevTypes.map((type) => {
+    // Reset types state
+    setInputTypes((prevTypes) =>
+      prevTypes.map((type) => {
         return {
           ...type,
           isChecked: false,
         };
-      });
-    });
+      })
+    );
     // Clear input field
     resetEnteredAnswer();
   };
 
-  const removeAnswerHandler = (answerId) => {
-    setInputAnswers((prevAnswers) => {
-      // Checking if answer already exists
-      const existingAnswerIdx = prevAnswers.findIndex(
-        (answer) => answer.id === answerId
-      );
-      if (existingAnswerIdx === -1) {
-        return;
-      }
-      // Remove selected answer
-      const updatedAnswers = [...prevAnswers];
-      updatedAnswers.pop(updatedAnswers[existingAnswerIdx]);
-      // Return updated types
-      return updatedAnswers;
-    });
-  };
-
   const addPromptHandler = () => {
-    // Checking field validity
-    if (enteredPrompt.trim().length === 0) {
-      props.onError({
-        title: "Invalid prompt",
-        message: "Must specify a valid prompt for the question",
-      });
-      return;
-    }
-
+    // Checking fields and stored inputs for data validity
     if (inputAnswers.length === 0) {
       props.onError({
         title: "No answers provided",
@@ -149,127 +153,133 @@ function QuizForm(props) {
       });
       return;
     }
-    // Data provided is valid. Create question object
+
+    if (enteredPrompt.trim().length === 0) {
+      props.onError({
+        title: "Invalid prompt",
+        message: "Must specify a valid prompt for the question",
+      });
+      return;
+    }
+    // Data provided is valid. Create question data object
     const questionData = {
       id: Math.random().toString(),
       prompt: enteredPrompt,
       answers: inputAnswers,
     };
-
     // Update questions state
     setInputQuestions((prevQuestions) => {
-      return [...prevQuestions, questionData];
+      const updatedQuestions = prevQuestions.concat(questionData);
+      return updatedQuestions;
     });
-    // Cleae answers state
+    // Handle question data
+    props.onUpdateModifiedQuestions(questionData);
+    // Clear answers state
     setInputAnswers([]);
     // Clear input field
     resetEnteredPrompt();
-    // Handle question data
-    props.onUpdateModifiedQuestions(questionData);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
     let questionsData = [];
-    // Checking field validity
+    // Checking stored inputs for data validity
     for (const iptQuestion of inputQuestions) {
       // Checking if any new questions are added
       if (quizCtx.questions.some((question) => iptQuestion.id === question.id))
         continue;
       else questionsData.push(iptQuestion);
     }
-    // Close modal window if no new questions are added
+    // Check if any new questions are added
     if (questionsData.length === 0) {
       props.onClose();
       return;
     }
-    // Handle question data
-    questionsData.map((questionData) => props.onAddNewQuestion(questionData));
+    // Handle questions data
+    questionsData.map((questionData) => props.onAddQuestion(questionData));
     // Close modal window
     props.onClose();
   };
 
-  const currentAnswersContent = (
-    <div className={styles["edit-quiz__answers"]}>
-      <ul>
-        {inputAnswers.map((answer, idx) => {
-          return (
-            <li key={answer.id}>
-              <ListItem
-                key={Math.random().toString()}
-                title={`Answer ${idx + 1}: ${answer.text}`}
-              />
-
-              <Button onClick={removeAnswerHandler.bind(null, answer.id)}>
-                <RemoveIcon />
-              </Button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-
-  const formContent = (
-    <div className={styles["edit-quiz__controls"]}>
-      <div className={promptNameClasses}>
-        <label>Prompt</label>
-        <input
-          type="text"
-          value={enteredPrompt}
-          placeholder="Enter question prompt"
-          onChange={promptChangedHandler}
-          onBlur={promptBlurHandler}
+  const answersContent = inputAnswers.map((answer, idx) => {
+    return (
+      <li key={answer.id}>
+        <ListItem
+          key={Math.random().toString()}
+          title={`Answer ${idx + 1}: ${answer.text}`}
         />
 
-        <Button onClick={addPromptHandler}>
-          <AddIcon />
+        <Button onClick={removeAnswerHandler.bind(null, answer.id)}>
+          <RemoveIcon />
         </Button>
-      </div>
+      </li>
+    );
+  });
 
-      {currentAnswersContent}
-
-      <div className={answerNameClasses}>
-        <label>Answer</label>
+  const typesContent = inputTypes.map((type) => {
+    return (
+      <li key={Math.random().toString()}>
+        <label>{type.title}</label>
         <input
-          type="text"
-          value={enteredAnswer}
-          placeholder="Enter answer to prompt"
-          onChange={answerChangedHandler}
-          onBlur={answerBlurHandler}
+          type="checkbox"
+          value={type.title.toLowerCase()}
+          checked={type.isChecked}
+          onChange={typesChangeHandler}
         />
+      </li>
+    );
+  });
 
-        <Button onClick={addAnswerHandler}>
-          <AddIcon />
-        </Button>
-      </div>
+  return (
+    <form onSubmit={submitHandler}>
+      <div className={styles["question-form__controls"]}>
+        <div className={promptNameClasses}>
+          <label>Prompt</label>
+          <input
+            type="text"
+            value={enteredPrompt}
+            placeholder="Enter question prompt"
+            onChange={promptChangedHandler}
+            onBlur={promptBlurHandler}
+          />
 
-      <div className={styles["edit-quiz__control"]}>
-        <p>Types</p>
-        <ul>
-          {inputTypes.map((type) => {
-            return (
-              <li key={Math.random().toString()}>
-                <label>{type.title}</label>
-                <input
-                  type="checkbox"
-                  onChange={typesChangeHandler}
-                  value={type.title.toLowerCase()}
-                  checked={type.isChecked}
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+          <Button onClick={addPromptHandler}>
+            <AddIcon />
+          </Button>
+        </div>
 
-      <div className={styles["edit-quiz__actions"]}>
-        <Button type="submit">Update Quiz</Button>
+        <div className={styles["question-form__answers"]}>
+          <ul>{answersContent}</ul>
+        </div>
+
+        <div className={answerNameClasses}>
+          <label>Answer</label>
+          <input
+            type="text"
+            value={enteredAnswer}
+            placeholder="Enter answer to prompt"
+            onChange={answerChangedHandler}
+            onBlur={answerBlurHandler}
+          />
+
+          <Button onClick={addAnswerHandler}>
+            <AddIcon />
+          </Button>
+        </div>
+
+        <div className={styles["question-form__control"]}>
+          <p>Types</p>
+          <ul>{typesContent}</ul>
+        </div>
+
+        <div className={styles["question-form__actions"]}>
+          <Button type="submit" disabled={!props.isQuizModified}>
+            Save Questions
+          </Button>
+        </div>
       </div>
-    </div>
+    </form>
   );
-
-  return <form onSubmit={submitHandler}>{formContent}</form>;
 }
 
 export default QuizForm;

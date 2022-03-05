@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
@@ -9,6 +9,7 @@ import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
 import QuizProvider from "./store/QuizProvider";
+import QuizContext from "./store/quiz-context";
 
 const SAMPLE_QUIZZES = [
   {
@@ -45,29 +46,36 @@ const SAMPLE_QUIZZES = [
       },
     ],
     types: [
-      { title: "Yellow", description: "Banana" },
-      { title: "Blue", description: "Blueberry" },
-      { title: "Red", description: "Strawberry" },
-      { title: "Green", description: "Apple" },
+      { title: "Yellow", desc: "Banana" },
+      { title: "Blue", desc: "Blueberry" },
+      { title: "Red", desc: "Strawberry" },
+      { title: "Green", desc: "Apple" },
     ],
   },
 ];
 
 function App() {
   let mainContent, modalContent;
-  // Retrive any saved quizzes in local storage
+  // Retrive any saved quizzes in localStorage
   const quizzesStorage = localStorage.getItem("quizzes");
 
-  const [quizzes, setQuizzes] = useState(
-    quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
-  );
-  const [quizResults, setQuizResults] = useState();
+  ////////////////////////////////////////////////
+  ////// Declaring states and context
+  ////// (+ adding side-effects)
+  ///////////////////////////////////////////////
+
+  const quizCtx = useContext(QuizContext);
 
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [showViewQuiz, setShowViewQuiz] = useState(false);
   const [showEditQuiz, setShowEditQuiz] = useState(false);
   const [showStartQuiz, setShowStartQuiz] = useState(false);
   const [showQuizResults, setShowQuizResults] = useState(false);
+
+  const [quizzes, setQuizzes] = useState(
+    quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
+  );
+  const [quizResults, setQuizResults] = useState();
 
   useEffect(() => {
     if (!showStartQuiz) setShowViewQuiz(false);
@@ -78,9 +86,14 @@ function App() {
   }, [showQuizResults]);
 
   useEffect(() => {
-    // Update quizzes in local storage
     localStorage.setItem("quizzes", JSON.stringify(quizzes));
   }, [quizzes]);
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
+
+  // TOGGLE HANDLERS
 
   const toggleQuizFormHandler = () => {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
@@ -89,6 +102,8 @@ function App() {
   const toggleQuizResultsHandler = () => {
     setShowQuizResults((prevShowQuizResults) => !prevShowQuizResults);
   };
+
+  // SHOW/CLOSE HANDLERS
 
   const showViewQuizHandler = () => {
     setShowViewQuiz(true);
@@ -114,33 +129,37 @@ function App() {
     setShowStartQuiz(false);
   };
 
+  // PROPS HANDLERS
+
   const addQuizHandler = (newQuiz) => {
-    setQuizzes((prevExpenses) => {
-      return [...prevExpenses, newQuiz];
+    setQuizzes((prevQuizzes) => {
+      const updatedQuizzes = prevQuizzes.concat(newQuiz);
+      return updatedQuizzes;
     });
-    // Close quiz form
-    setShowQuizForm(false);
   };
 
-  const updateQuizHandler = (id, quizData) => {
-    const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === id);
-    if (existingQuizIdx === -1) return;
-    // Update quizzes
+  const updateQuizHandler = (quizData) => {
     setQuizzes((prevQuizzes) => {
+      // Checking if quiz already exists
+      const existingQuizIdx = prevQuizzes.findIndex(
+        (quiz) => quiz.id === quizCtx.id
+      );
+      if (existingQuizIdx === -1) return;
+      // Update quiz from quizzes state
       const updatedQuizzes = [...prevQuizzes];
       updatedQuizzes[existingQuizIdx] = { ...quizData };
       return updatedQuizzes;
     });
   };
 
-  const removeQuizHandler = (id) => {
-    // Check if quiz exists before removing
-    const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === id);
-    if (existingQuizIdx === -1) return;
-    // Update quizzes
+  const removeQuizHandler = (quizId) => {
     setQuizzes((prevQuizzes) => {
-      // Filter out removed question
-      const updatedQuizzes = prevQuizzes.filter((quiz) => quiz.id !== id);
+      // Checking if quiz already exists
+      const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === quizId);
+      if (existingQuizIdx === -1) return;
+      // Remove quiz from quizzes state
+      const updatedQuizzes = [...prevQuizzes];
+      updatedQuizzes.splice(existingQuizIdx, 1);
       return updatedQuizzes;
     });
     setShowViewQuiz(false);
@@ -151,10 +170,14 @@ function App() {
     setShowQuizResults(true);
   };
 
+  ////////////////////////////////////////////////
+  ////// Defining conditonal JSX content
+  ///////////////////////////////////////////////
+
   if (showQuizForm) {
     modalContent = (
       <Modal onClose={toggleQuizFormHandler}>
-        <AddQuiz onAddQuiz={addQuizHandler} />
+        <AddQuiz onAddQuiz={addQuizHandler} onClose={toggleQuizFormHandler} />
       </Modal>
     );
   }

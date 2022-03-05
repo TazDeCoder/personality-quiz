@@ -1,7 +1,9 @@
 import styles from "./Quizzes.module.css";
-import Card from "../UI/Card/Card";
+// COMPONENTS
 import QuizzesList from "./QuizzesList/QuizzesList";
 import QuizzesSearchBar from "./QuizzesSearchBar";
+// --- UI ---
+import Card from "../UI/Card/Card";
 
 function Quizzes(props) {
   return (

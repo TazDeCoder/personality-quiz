@@ -1,7 +1,9 @@
 import { useContext } from "react";
 
 import styles from "./MainHeader.module.css";
+// COMPONENTS
 import Navigation from "./Navigation";
+// CONTEXTS
 import QuizContext from "../../store/quiz-context";
 
 const MainHeader = (props) => {

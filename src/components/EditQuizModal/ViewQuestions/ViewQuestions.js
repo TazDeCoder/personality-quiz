@@ -1,29 +1,27 @@
-import QuestionItem from "./QuestionItem";
 import styles from "./ViewQuestions.module.css";
+// COMPONENTS
+import QuestionItem from "./QuestionItem";
 
 function ViewQuestions(props) {
-  const removeHandler = (id) => {
-    props.onRemove(id);
-  };
+  const questionsContent =
+    props.questions.length > 0 ? (
+      props.questions.map((question, idx) => {
+        return (
+          <QuestionItem
+            key={question.id}
+            title={`Q${idx + 1}: ${question.prompt}`}
+            answers={question.answers}
+            onRemove={props.onRemoveQuestion.bind(null, question.id)}
+          />
+        );
+      })
+    ) : (
+      <p>No questions found.</p>
+    );
 
   return (
     <div className={styles["view-questions"]}>
-      <ul>
-        {props.questions.length > 0 ? (
-          props.questions.map((question, idx) => {
-            return (
-              <QuestionItem
-                key={question.id}
-                title={`Q${idx + 1}: ${question.prompt}`}
-                answers={question.answers}
-                onRemove={removeHandler.bind(null, question.id)}
-              />
-            );
-          })
-        ) : (
-          <p>No questions found.</p>
-        )}
-      </ul>
+      <ul>{questionsContent}</ul>
     </div>
   );
 }

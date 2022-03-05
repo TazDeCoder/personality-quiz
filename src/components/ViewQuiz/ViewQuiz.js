@@ -1,13 +1,13 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 
 import styles from "./ViewQuiz.module.css";
+// COMPONENTS
 import Button from "../UI/Button/Button";
+// CONTEXTS
 import QuizContext from "../../store/quiz-context";
 
 function ViewQuiz(props) {
   const quizCtx = useContext(QuizContext);
-
-  const [isQuizDraft] = useState(quizCtx.questions.length === 0);
 
   return (
     <div className={styles["view-quiz"]}>
@@ -33,7 +33,10 @@ function ViewQuiz(props) {
 
       <div className={styles["view-quiz__actions"]}>
         <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
-        <Button disabled={isQuizDraft} onClick={props.onStartQuiz}>
+        <Button
+          disabled={quizCtx.questions.length === 0}
+          onClick={props.onStartQuiz}
+        >
           Start Quiz
         </Button>
       </div>

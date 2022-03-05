@@ -9,6 +9,8 @@ function AddQuiz(props) {
       types: [],
     };
     props.onAddQuiz(quizData);
+    // Close modal window
+    props.onClose();
   };
 
   return (

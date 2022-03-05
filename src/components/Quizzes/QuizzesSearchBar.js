@@ -1,17 +1,36 @@
 import { useState, useRef, useContext } from "react";
 
 import styles from "./QuizzesSearchBar.module.css";
+// COMPONENTS
 import SearchBar from "../UI/SearchBar/SearchBar";
+// CONTEXTS
 import QuizContext from "../../store/quiz-context";
 
 function QuizzesSearchBar(props) {
-  const quizCtx = useContext(QuizContext);
-
   const RESULTS_LIMIT = 5;
+
+  ////////////////////////////////////////////////
+  ////// Declaring states, ref and context
+  ///////////////////////////////////////////////
+
+  const quizCtx = useContext(QuizContext);
 
   const searchBarRef = useRef();
   const [searchTerms, setSearchTerms] = useState([]);
   const [cursor, setCursor] = useState(0);
+
+  ////////////////////////////////////////////////
+  ////// Helper functions
+  ///////////////////////////////////////////////
+
+  const resetSearchBar = () => {
+    searchBarRef.current.value = "";
+    setSearchTerms([]);
+  };
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
 
   const searchBarTypeHandler = (e) => {
     const searchInput = e.target.value;
@@ -33,13 +52,11 @@ function QuizzesSearchBar(props) {
     setSearchTerms(filteredQuizzes);
   };
 
-  const searchbarClearHandler = (e) => {
-    // Clear searchbar
-    searchBarRef.current.value = "";
-    setSearchTerms([]);
+  const searchbarClearHandler = () => {
+    resetSearchBar();
   };
 
-  const searchBarBlurHandler = (e) => {
+  const searchBarBlurHandler = () => {
     setTimeout(() => {
       setCursor(0);
       setSearchTerms([]);
@@ -53,15 +70,14 @@ function QuizzesSearchBar(props) {
       const quiz = props.quizzes.find((quiz) => quiz.id === searchTerm.id);
       quizCtx.setQuiz(quiz);
       props.onViewQuiz();
-      // Clear searchbar
-      searchBarRef.current.value = "";
-      setSearchTerms([]);
+      // Clear searchbar field
+      resetSearchBar();
     }
-    // Arrow up
+    // Arrow-up
     if (e.keyCode === 38 && cursor > 0) {
       setCursor((prevCursor) => --prevCursor);
     }
-    // Arrow down
+    // Arrow-down
     if (e.keyCode === 40 && cursor < searchTerms.length - 1) {
       setCursor((prevCursor) => ++prevCursor);
     }
@@ -73,9 +89,8 @@ function QuizzesSearchBar(props) {
     );
     quizCtx.setQuiz(quiz);
     props.onViewQuiz();
-    // Clear searchbar
-    searchBarRef.current.value = "";
-    setSearchTerms([]);
+    // Clear searchbar field
+    resetSearchBar();
   };
 
   const searchTermMouseEnterHandler = (e) => {
@@ -85,20 +100,18 @@ function QuizzesSearchBar(props) {
   };
 
   return (
-    <>
-      <SearchBar
-        ref={searchBarRef}
-        className={styles.searchbar}
-        searchTerms={searchTerms}
-        cursor={cursor}
-        onType={searchBarTypeHandler}
-        onClear={searchbarClearHandler}
-        onBlur={searchBarBlurHandler}
-        onKeyDown={searchBarKeydownChangeHandler}
-        onClick={searchTermClickHandler}
-        onMouseEnter={searchTermMouseEnterHandler}
-      />
-    </>
+    <SearchBar
+      ref={searchBarRef}
+      className={styles.searchbar}
+      searchTerms={searchTerms}
+      cursor={cursor}
+      onType={searchBarTypeHandler}
+      onClear={searchbarClearHandler}
+      onBlur={searchBarBlurHandler}
+      onKeyDown={searchBarKeydownChangeHandler}
+      onClick={searchTermClickHandler}
+      onMouseEnter={searchTermMouseEnterHandler}
+    />
   );
 }
 

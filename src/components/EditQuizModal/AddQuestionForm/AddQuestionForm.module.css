@@ -9,7 +9,7 @@
   border-color: #ff8800;
 }
 
-.edit-quiz__controls {
+.question-form__controls {
   display: flex;
   flex-direction: column;
   max-width: 30rem;
@@ -17,42 +17,42 @@
   margin: 0 auto;
 }
 
-.edit-quiz__controls label {
+.question-form__controls label {
   width: 4rem;
   font-size: 1.1rem;
 }
 
-.edit-quiz__controls input {
+.question-form__controls input {
   padding: 0.25rem;
   font-size: 1rem;
 }
 
-.edit-quiz__control {
+.question-form__control {
   display: flex;
   align-items: baseline;
 }
 
-.edit-quiz__control input[type="text"] {
+.question-form__control input[type="text"] {
   max-width: 95%;
   width: 20rem;
   margin: 0.5rem;
 }
 
-.edit-quiz__control input:focus {
+.question-form__control input:focus {
   background-color: #cee3f0;
 }
 
-.edit-quiz__control button {
+.question-form__control button {
   background: none;
   border: none;
 }
 
-.edit-quiz__control p {
+.question-form__control p {
   font-size: 1.1rem;
   margin-right: 1rem;
 }
 
-.edit-quiz__control ul {
+.question-form__control ul {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -61,11 +61,11 @@
   margin: 0.5rem;
 }
 
-.edit-quiz__control ul > li {
+.question-form__control ul > li {
   margin: 0 2px;
 }
 
-.edit-quiz__actions {
+.question-form__actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -73,17 +73,17 @@
   margin: 1rem 0.5rem;
 }
 
-.edit-quiz__answers {
+.question-form__answers {
   max-height: 8rem;
   overflow: auto;
 }
 
-.edit-quiz__answers ul > li {
+.question-form__answers ul > li {
   display: flex;
   justify-content: space-between;
 }
 
-.edit-quiz__answers button {
+.question-form__answers button {
   background: none;
   border: none;
 }

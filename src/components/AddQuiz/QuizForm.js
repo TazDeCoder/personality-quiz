@@ -1,10 +1,18 @@
 import styles from "./QuizForm.module.css";
+// COMPONENTS
 import Button from "../UI/Button/Button";
+// CUSTOM HOOKS
 import useInput from "../../hooks/use-input";
 
 function QuizForm(props) {
   let formIsValid = false;
 
+  ////////////////////////////////////////////////
+  ////// Declaring states
+  ////// (+ conditonal classes and variables)
+  ///////////////////////////////////////////////
+
+  // TITLE STATE + HANDLERS
   const {
     value: enteredTitle,
     isValid: enteredTitleIsValid,
@@ -12,11 +20,12 @@ function QuizForm(props) {
     inputChangeHandler: titleChangedHandler,
     inputBlurHandler: titleBlurHandler,
   } = useInput((value) => value.trim().length !== 0);
-
+  // TITLE CLASSES
   const titleInputClasses = enteredTitleHasErrors
     ? `${styles["quiz-form__control"]} ${styles.invalid}`
     : styles["quiz-form__control"];
 
+  // AUTHOR STATE + HANDLERS
   const {
     value: enteredAuthor,
     isValid: enteredAuthorIsValid,
@@ -24,7 +33,7 @@ function QuizForm(props) {
     inputChangeHandler: authorChangedHandler,
     inputBlurHandler: authorBlurHandler,
   } = useInput((value) => value.trim().length !== 0);
-
+  // AUTHOR CLASSES
   const authorInputClasses = enteredAuthorHasErrors
     ? `${styles["quiz-form__control"]} ${styles.invalid}`
     : styles["quiz-form__control"];
@@ -41,8 +50,13 @@ function QuizForm(props) {
     ? `${styles["quiz-form__control"]} ${styles.invalid}`
     : styles["quiz-form__control"];
 
+  // Checking if all inputs provided are valid
   if (enteredTitleIsValid && enteredAuthorIsValid && enteredDescIsValid)
     formIsValid = true;
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -52,7 +66,7 @@ function QuizForm(props) {
       author: enteredAuthor,
       desc: enteredDesc,
     };
-    // Save quiz data
+    // Handle quiz data
     props.onSaveQuizData(quizData);
   };
 

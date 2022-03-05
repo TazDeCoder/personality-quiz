@@ -1,77 +1,101 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 
 import styles from "./AddTypeForm.module.css";
+// COMPONENTS
 import Button from "../../UI/Button/Button";
+// CONTEXTS
 import QuizContext from "../../../store/quiz-context";
+// CUSTOM HOOKS
 import useInput from "../../../hooks/use-input";
 
 function AddType(props) {
+  let formIsValid = false;
+
+  ////////////////////////////////////////////////
+  ////// Declaring states
+  ////// (+ conditonal classes and variables)
+  ///////////////////////////////////////////////
+
   const quizCtx = useContext(QuizContext);
 
+  // TITLE STATE + HANDLERS
   const {
     value: enteredTitle,
+    isValid: enteredTitleIsValid,
     hasErrors: enteredTitleHasErrors,
     inputChangeHandler: titleChangedHandler,
     inputBlurHandler: titleBlurHandler,
     inputResetHandler: resetEnteredTitle,
   } = useInput((value) => value.trim().length !== 0);
-
+  // TITLE CLASSES
   const titleNameClasses = enteredTitleHasErrors
     ? `${styles["type-form__control"]} ${styles.invalid}`
     : styles["type-form__control"];
 
+  // DESC STATE + HANDLERS
   const {
     value: enteredDesc,
+    isValid: enteredDescIsValid,
     hasErrors: enteredDescHasErrors,
     inputChangeHandler: descChangedHandler,
     inputBlurHandler: descBlurHandler,
     inputResetHandler: resetEnteredDesc,
   } = useInput((value) => value.trim().length !== 0);
-
+  // DESC CLASSES
   const descNameClasses = enteredDescHasErrors
     ? `${styles["type-form__control"]} ${styles.invalid}`
     : styles["type-form__control"];
 
+  // Checking if all inputs provided are valid
+  if (enteredTitleIsValid && enteredDescIsValid) formIsValid = true;
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
+
   const submitHandler = (e) => {
     e.preventDefault();
     // Checking field validity
-    if (enteredTitle.trim().length === 0) {
-      props.onError({
-        title: "Invalid title",
-        message: "Must specify a valid title for the type",
-      });
-      return;
-    }
-    if (enteredDesc.trim().length === 0) {
-      props.onError({
-        title: "Invalid description",
-        message: "Must specify a valid description for the type",
-      });
+    if (enteredTitleHasErrors || enteredDescHasErrors) {
+      if (enteredTitle.trim().length === 0) {
+        props.onError({
+          title: "Invalid title",
+          message: "Must specify a valid title for the type",
+        });
+      }
+
+      if (enteredDesc.trim().length === 0) {
+        props.onError({
+          title: "Invalid description",
+          message: "Must specify a valid description for the type",
+        });
+      }
+
       return;
     }
     // Checking if type already exists
-    const typeFoundIdx = quizCtx.types.findIndex(
+    const existingTypeIdx = quizCtx.types.findIndex(
       (type) => type.title.toLowerCase() === enteredTitle.toLowerCase()
     );
-    if (typeFoundIdx !== -1) {
+    if (existingTypeIdx !== -1) {
       props.onError({
         title: "Type with same title exists",
         message: "Use a another title that has not been already used",
       });
       return;
     }
-    // Data provided is valid. Create type object
+    // Data provided is valid. Create type data object
     const typeData = {
       title: enteredTitle,
       description: enteredDesc,
     };
+    // Handle type data
+    props.onAddNewType(typeData);
     // Clear input fields
     resetEnteredTitle();
     resetEnteredDesc();
     // Close modal window
     props.onClose();
-    // Handle type data
-    props.onAddNewType(typeData);
   };
 
   return (
@@ -102,7 +126,9 @@ function AddType(props) {
         </div>
 
         <div className={styles["type-form__actions"]}>
-          <Button type="submit">Add Type</Button>
+          <Button type="submit" disabled={!formIsValid}>
+            Add Type
+          </Button>
         </div>
       </div>
     </form>

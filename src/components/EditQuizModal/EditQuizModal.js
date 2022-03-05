@@ -1,27 +1,49 @@
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import styles from "./EditQuizModal.module.css";
+// COMPONENTS
+import QuizForm from "./AddQuestionForm/AddQuestionForm";
+import TypeForm from "./AddTypeForm/AddTypeForm";
+import ViewQuestions from "./ViewQuestions/ViewQuestions";
+// --- UI ---
 import ErrorModal from "../UI/ErrorModal/ErrorModal";
 import Modal from "../UI/Modal/Modal";
 import Button from "../UI/Button/Button";
-import QuizForm from "./AddQuestionForm/AddQuestionForm";
-import TypeForm from "./AddTypeForm/AddTypeForm";
-import QuizContext from "../../store/quiz-context";
-import ViewQuestions from "./ViewQuestions/ViewQuestions";
 import ListItem from "../UI/ListItem/ListItem";
 import RemoveIcon from "../UI/Icons/RemoveIcon";
+// CONTEXTS
+import QuizContext from "../../store/quiz-context";
 
 function EditQuiz(props) {
   let modalContent;
 
+  ////////////////////////////////////////////////
+  ////// Declaring states and context
+  ////// (+ adding side-effects)
+  ///////////////////////////////////////////////
+
   const quizCtx = useContext(QuizContext);
 
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
+  const [isQuizModified, setIsQuizModified] = useState(false);
+  const [showTypeForm, setShowTypeForm] = useState(false);
+  const [showViewQuestions, setShowViewQuestions] = useState(false);
   const [modifiedQuestions, setModifiedQuestions] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState(quizCtx.questions);
   const [quizTypes, setQuizTypes] = useState(quizCtx.types);
-  const [showTypeForm, setShowTypeForm] = useState(false);
-  const [showViewQuestions, setShowViewQuestions] = useState(false);
+
+  // SIDE-EFFECTS
+
+  useEffect(() => {
+    if (modifiedQuestions.length === 0) setIsQuizModified(false);
+    else setIsQuizModified(true);
+  }, [modifiedQuestions]);
+
+  ////////////////////////////////////////////////
+  ////// Event handlers
+  ///////////////////////////////////////////////
+
+  // ERROR HANDLERS
 
   const errorHandler = (error) => {
     setError({ ...error });
@@ -31,6 +53,8 @@ function EditQuiz(props) {
     setError(null);
   };
 
+  // TOGGLE HANDLERS
+
   const toggleTypeFormHandler = () => {
     setShowTypeForm((prevTypeForm) => !prevTypeForm);
   };
@@ -39,84 +63,107 @@ function EditQuiz(props) {
     setShowViewQuestions((prevViewQuestions) => !prevViewQuestions);
   };
 
-  const addNewTypeHandler = (newType) => {
-    // Create new quiz data object
+  // PROPS HANDLERS
+
+  const addTypeHandler = (newType) => {
+    // Create quiz data object
     const quizData = {
       ...quizCtx,
       types: [...quizTypes, newType],
     };
-    // Update neccessary state
-    setQuizTypes(quizData.types);
-    // Handle updating quiz
+    // Update quiz types state
+    setQuizTypes((prevTypes) => {
+      const updatedTypes = prevTypes.concat(newType);
+      return updatedTypes;
+    });
+    // Handle quiz data
     quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizCtx.id, quizData);
+    props.onUpdateQuiz(quizData);
   };
 
-  const addNewQuestionHandler = (newQuestion) => {
-    // Check if quiz exists in modified before adding
-    const existingQuizIdx = modifiedQuestions.findIndex(
-      (question) => question.id === newQuestion.id
-    );
-    if (existingQuizIdx === -1) return;
-    // Create new quiz data object
+  const addQuestionHandler = (newQuestion) => {
+    // Create quiz data object
     const quizData = {
       ...quizCtx,
       questions: [...quizQuestions, newQuestion],
     };
-    // Update neccessary state
-    setQuizQuestions(quizData.questions);
-    // Handle updating quiz
-    quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizCtx.id, quizData);
-  };
-
-  const removeQuestionHandler = (id) => {
-    // Check if quiz exists before removing
-    const existingQuizIdx = quizQuestions.findIndex(
-      (question) => question.id === id
-    );
-    if (existingQuizIdx === -1) return;
-    // Filter out removed question
-    const updatedQuestions = quizQuestions.filter(
-      (question) => question.id !== id
-    );
-    // Create new quiz data object
-    const quizData = {
-      ...quizCtx,
-      questions: [...updatedQuestions],
-    };
-    // Update neccessary state
-    setQuizQuestions(quizData.questions);
-    // Handle updating quiz
-    quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizCtx.id, quizData);
-  };
-
-  const updateModifiedQuestionsHandler = (newQuestion) => {
-    setModifiedQuestions((prevQuestions) => {
+    // Update quiz questions state
+    setQuizQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.concat(newQuestion);
       return updatedQuestions;
     });
+    // Handle quiz data
+    quizCtx.updateQuiz(quizData);
+    props.onUpdateQuiz(quizData);
   };
 
-  const removeModifiedQuestionHandler = (id) => {
+  const removeQuestionHandler = (questionId) => {
+    // Checking if question already exists
+    const existingQuestionIdx = quizQuestions.findIndex(
+      (question) => question.id === questionId
+    );
+    if (existingQuestionIdx === -1) return;
+    // Create quiz data object
+    const quizData = {
+      ...quizCtx,
+      questions: quizQuestions.splice(existingQuestionIdx, 1),
+    };
+    // Update quiz questions state
+    setQuizQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions.splice(existingQuestionIdx, 1);
+      return updatedQuestions;
+    });
+    // Handle quiz data
+    quizCtx.updateQuiz(quizData);
+    props.onUpdateQuiz(quizData);
+  };
+
+  // STATE UPDATING HANDLERS
+
+  const updateModifiedQuestionsHandler = (newModifiedQuestion) => {
     setModifiedQuestions((prevQuestions) => {
-      // Check if quiz exists before removing
-      const existingQuizIdx = prevQuestions.findIndex(
-        (question) => question.id === id
-      );
-      if (existingQuizIdx === -1) return prevQuestions;
-      // Filter out removed question
-      const updatedQuestions = prevQuestions.filter(
-        (question) => question.id !== id
-      );
+      const updatedQuestions = prevQuestions.concat(newModifiedQuestion);
       return updatedQuestions;
     });
   };
 
+  const removeModifiedQuestionHandler = (questionId) => {
+    setModifiedQuestions((prevQuestions) => {
+      // Checking if question already exists
+      const existingQuestionIdx = prevQuestions.findIndex(
+        (question) => question.id === questionId
+      );
+      if (existingQuestionIdx === -1) return prevQuestions;
+      // Remove question from modified questions state
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions.splice(existingQuestionIdx, 1);
+      return updatedQuestions;
+    });
+  };
+
+  ////////////////////////////////////////////////
+  ////// Defining conditonal JSX content
+  ///////////////////////////////////////////////
+
   if (!showTypeForm && !showViewQuestions) {
+    let listContent;
+
+    if (modifiedQuestions.length > 0) {
+      listContent = modifiedQuestions.map((question) => (
+        <li key={question.id}>
+          <ListItem title={question.prompt} />
+          <Button
+            onClick={removeModifiedQuestionHandler.bind(null, question.id)}
+          >
+            <RemoveIcon />
+          </Button>
+        </li>
+      ));
+    }
+
     modalContent = (
-      <Modal>
+      <>
         <button
           className={styles["edit-quiz-modal__btn--close"]}
           onClick={props.onClose}
@@ -128,26 +175,11 @@ function EditQuiz(props) {
           <h1>Create New Question</h1>
         </header>
 
-        {modifiedQuestions.length > 0 && (
-          <ul className={styles["edit-quiz-modal__list"]}>
-            {modifiedQuestions.map((question) => (
-              <li key={question.id}>
-                <ListItem title={question.prompt} />
-                <Button
-                  onClick={removeModifiedQuestionHandler.bind(
-                    null,
-                    question.id
-                  )}
-                >
-                  <RemoveIcon />
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className={styles["edit-quiz-modal__list"]}>{listContent}</ul>
 
         <QuizForm
-          onAddNewQuestion={addNewQuestionHandler}
+          isQuizModified={isQuizModified}
+          onAddQuestion={addQuestionHandler}
           onUpdateModifiedQuestions={updateModifiedQuestionsHandler}
           onClose={props.onClose}
           onError={errorHandler}
@@ -157,13 +189,13 @@ function EditQuiz(props) {
           <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
           <Button onClick={toggleViewQuestionsHandler}>View Questions</Button>
         </div>
-      </Modal>
+      </>
     );
   }
 
   if (showTypeForm) {
     modalContent = (
-      <Modal>
+      <>
         <button
           className={styles["edit-quiz-modal__btn--close"]}
           onClick={toggleTypeFormHandler}
@@ -176,17 +208,17 @@ function EditQuiz(props) {
         </header>
 
         <TypeForm
-          onAddNewType={addNewTypeHandler}
+          onAddType={addTypeHandler}
           onClose={toggleTypeFormHandler}
           onError={errorHandler}
         />
-      </Modal>
+      </>
     );
   }
 
   if (showViewQuestions) {
     modalContent = (
-      <Modal>
+      <>
         <button
           className={styles["edit-quiz-modal__btn--close"]}
           onClick={toggleViewQuestionsHandler}
@@ -200,11 +232,11 @@ function EditQuiz(props) {
 
         <ViewQuestions
           questions={quizQuestions}
+          onRemoveQuestion={removeQuestionHandler}
           onClose={toggleViewQuestionsHandler}
           onError={errorHandler}
-          onRemove={removeQuestionHandler}
         />
-      </Modal>
+      </>
     );
   }
 
@@ -217,7 +249,7 @@ function EditQuiz(props) {
           onConfirm={confirmErrorHandler}
         />
       )}
-      {modalContent}
+      <Modal>{modalContent}</Modal>
     </>
   );
 }

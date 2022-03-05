@@ -1,16 +1,31 @@
 import { useState } from "react";
 
 import styles from "./QuestionItem.module.css";
+// COMPONENTS
 import ListItem from "../../UI/ListItem/ListItem";
 import Button from "../../UI/Button/Button";
 import RemoveIcon from "../../UI/Icons/RemoveIcon";
 
 function QuestionItem(props) {
+  let answersContent;
+
   const [showAnswers, setShowAnswers] = useState(false);
 
   const toggleQuestionHandler = (e) => {
     setShowAnswers((prevShowAnswers) => !prevShowAnswers);
   };
+
+  if (showAnswers) {
+    answersContent = (
+      <ul className={styles["question-item__answers"]}>
+        {props.answers.map((answer) => (
+          <li key={answer.id}>
+            <ListItem title={answer.text} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   return (
     <li className={styles["question-item"]}>
@@ -20,15 +35,7 @@ function QuestionItem(props) {
           <RemoveIcon />
         </Button>
       </div>
-      {showAnswers && (
-        <ul className={styles["question-item__answers"]}>
-          {props.answers.map((answer) => (
-            <li key={answer.id}>
-              <ListItem title={answer.text} />
-            </li>
-          ))}
-        </ul>
-      )}
+      {answersContent}
     </li>
   );
 }
