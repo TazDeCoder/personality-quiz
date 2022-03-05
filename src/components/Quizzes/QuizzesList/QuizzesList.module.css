@@ -9,5 +9,16 @@
   .quizzes-list {
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: flex-start;
+    max-width: 95%;
+    width: 44rem;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (min-width: 1163px) {
+  .quizzes-list {
+    max-width: 66rem;
+    width: auto;
   }
 }
