@@ -14,7 +14,7 @@ function QuizResults(props) {
         <h1>Personality Type: {props.type.title}</h1>
       </header>
 
-      <p>{props.type.desc}</p>
+      <p>{props.type.description}</p>
     </div>
   );
 }
