@@ -9,7 +9,11 @@ function Quizzes(props) {
   return (
     <Card className={styles.quizzes}>
       <QuizzesSearchBar quizzes={props.items} onViewQuiz={props.onViewQuiz} />
-      <QuizzesList quizzes={props.items} onViewQuiz={props.onViewQuiz} />
+      <QuizzesList
+        quizzes={props.items}
+        onViewQuiz={props.onViewQuiz}
+        onError={props.onError}
+      />
     </Card>
   );
 }

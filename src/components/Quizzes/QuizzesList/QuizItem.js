@@ -10,9 +10,34 @@ import QuizContext from "../../../store/quiz-context";
 function QuizItem(props) {
   const quizCtx = useContext(QuizContext);
 
-  const viewQuizItemHandler = () => {
-    quizCtx.setQuiz(props.quiz);
-    props.onViewQuiz();
+  const viewQuizItemHandler = async () => {
+    try {
+      const response = await fetch(`/api/quiz/${props.id}`);
+
+      if (!response.ok) {
+        const err = new Error("Failed to fetch quiz");
+        err.status = response.status;
+      }
+
+      const data = await response.json();
+
+      const transformedQuiz = {
+        _id: data._id,
+        title: data.title,
+        author: props.author,
+        desc: data.description,
+        questions: data.questions,
+        types: data.types,
+      };
+
+      quizCtx.setQuiz(transformedQuiz);
+      props.onViewQuiz();
+    } catch (err) {
+      props.onError({
+        title: `Something went wrong! (${err.status})`,
+        message: err.message,
+      });
+    }
   };
 
   return (

@@ -83,12 +83,38 @@ function QuizzesSearchBar(props) {
     }
   };
 
-  const searchTermClickHandler = (e) => {
+  const searchTermClickHandler = async (e) => {
     const quiz = props.quizzes.find(
       (quiz) => quiz.id === e.target.getAttribute("id")
     );
-    quizCtx.setQuiz(quiz);
-    props.onViewQuiz();
+
+    try {
+      const response = await fetch(`/api/quiz/${quiz.id}`);
+
+      if (!response.ok) {
+        const err = new Error("Failed to fetch quiz");
+        err.status = response.status;
+      }
+
+      const data = await response.json();
+
+      const transformedQuiz = {
+        _id: data._id,
+        title: data.title,
+        author: props.author,
+        desc: data.description,
+        questions: data.questions,
+        types: data.types,
+      };
+
+      quizCtx.setQuiz(transformedQuiz);
+      props.onViewQuiz();
+    } catch (err) {
+      props.onError({
+        title: `Something went wrong! (${err.status})`,
+        message: err.message,
+      });
+    }
     // Clear searchbar field
     resetSearchBar();
   };

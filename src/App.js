@@ -1,63 +1,22 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 
+// COMPONENTS
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
-import Modal from "./components/UI/Modal/Modal";
 import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
 import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
+// --- UI ---
+import Modal from "./components/UI/Modal/Modal";
+import ErrorModal from "./components/UI/ErrorModal/ErrorModal";
+// CONTEXTS
 import QuizProvider from "./store/QuizProvider";
 import QuizContext from "./store/quiz-context";
 
-const SAMPLE_QUIZZES = [
-  {
-    id: Math.random().toString(),
-    title: "Test Quiz 1",
-    author: "Dev",
-    desc: "Lorem ipsum dolor sit amet, id sale regione iuvaret pro. Usu an doming omnium scripserit, sed ne quod iusto salutatus. At eam enim eruditi expetendis, eu eos aperiri appareat signiferumque. Eum melius accommodare id, an his assum dolore. Eu mea facer soluta constituto, ei probo nonumy sit. Eu his dicta nihil dolorum, mei ea salutandi qualisque. Solum viderer vim at, habemus philosophia cu nam. Usu assum ocurreret percipitur at. Te detracto voluptatum liberavisse vim, ei pri minimum nostrum. Ad putant forensibus mei. Eu affert aeterno urbanitas cum, est idque movet iudico eu. Ea tractatos complectitur sit, an harum repudiandae sea. Vel ignota menandri eloquentiam ea, duo ut ullum nostrud fastidii, eu mea stet feugiat. Deleniti hendrerit pro ne, nec veritus efficiendi cu, an appetere patrioque nam. Eu vide.",
-    questions: [
-      {
-        id: Math.random().toString(),
-        prompt: "What is your favourite color",
-        answers: [
-          {
-            id: Math.random().toString(),
-            text: "Yellow",
-            types: ["yellow"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Blue",
-            types: ["blue"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Red",
-            types: ["red"],
-          },
-          {
-            id: Math.random().toString(),
-            text: "Green",
-            types: ["green"],
-          },
-        ],
-      },
-    ],
-    types: [
-      { title: "Yellow", desc: "Banana" },
-      { title: "Blue", desc: "Blueberry" },
-      { title: "Red", desc: "Strawberry" },
-      { title: "Green", desc: "Apple" },
-    ],
-  },
-];
-
 function App() {
   let mainContent, modalContent;
-  // Retrive any saved quizzes in localStorage
-  const quizzesStorage = localStorage.getItem("quizzes");
 
   ////////////////////////////////////////////////
   ////// Declaring states and context
@@ -66,16 +25,13 @@ function App() {
 
   const quizCtx = useContext(QuizContext);
 
+  const [error, setError] = useState(null);
+
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [showViewQuiz, setShowViewQuiz] = useState(false);
   const [showEditQuiz, setShowEditQuiz] = useState(false);
   const [showStartQuiz, setShowStartQuiz] = useState(false);
   const [showQuizResults, setShowQuizResults] = useState(false);
-
-  const [quizzes, setQuizzes] = useState(
-    quizzesStorage ? JSON.parse(quizzesStorage) : SAMPLE_QUIZZES
-  );
-  const [quizResults, setQuizResults] = useState();
 
   useEffect(() => {
     if (!showStartQuiz) setShowViewQuiz(false);
@@ -85,13 +41,59 @@ function App() {
     if (!showQuizResults) setShowStartQuiz(false);
   }, [showQuizResults]);
 
-  useEffect(() => {
-    localStorage.setItem("quizzes", JSON.stringify(quizzes));
-  }, [quizzes]);
+  const [quizzes, setQuizzes] = useState([]);
+  const [quizResults, setQuizResults] = useState();
 
   ////////////////////////////////////////////////
   ////// Event handlers
   ///////////////////////////////////////////////
+
+  // ERROR HANDLERS
+
+  const errorHandler = (error) => {
+    setError({ ...error });
+  };
+
+  const confirmErrorHandler = () => {
+    setError(null);
+  };
+
+  // HTTP REQUEST HANDLERS
+
+  const fetchQuizzesHandler = useCallback(async () => {
+    setError(null);
+
+    try {
+      const response = await fetch("/api/quizzes");
+
+      if (!response.ok) {
+        const err = new Error("Failed to fetch quizzes");
+        err.status = response.status;
+        throw err;
+      }
+
+      const data = await response.json();
+
+      const transformedQuizzes = data.quizList.map((quizData) => {
+        return {
+          id: quizData._id,
+          title: quizData.title,
+          author: quizData.created_by.username,
+        };
+      });
+
+      setQuizzes(transformedQuizzes);
+    } catch (err) {
+      setError({
+        title: `Something went wrong! (${err.status})`,
+        message: err.message,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchQuizzesHandler();
+  }, [fetchQuizzesHandler]);
 
   // TOGGLE HANDLERS
 
@@ -174,6 +176,16 @@ function App() {
   ////// Defining conditonal JSX content
   ///////////////////////////////////////////////
 
+  if (error) {
+    modalContent = (
+      <ErrorModal
+        title={error.title}
+        message={error.message}
+        onConfirm={confirmErrorHandler}
+      />
+    );
+  }
+
   if (showQuizForm) {
     modalContent = (
       <Modal onClose={toggleQuizFormHandler}>
@@ -221,7 +233,13 @@ function App() {
   }
 
   if (!showStartQuiz) {
-    mainContent = <Quizzes items={quizzes} onViewQuiz={showViewQuizHandler} />;
+    mainContent = (
+      <Quizzes
+        items={quizzes}
+        onViewQuiz={showViewQuizHandler}
+        onError={errorHandler}
+      />
+    );
   }
 
   return (
