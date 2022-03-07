@@ -22,15 +22,16 @@ function QuizItem(props) {
       const data = await response.json();
 
       const transformedQuiz = {
-        _id: data._id,
+        id: data._id,
         title: data.title,
         author: props.author,
         desc: data.description,
         questions: data.questions,
         types: data.types,
       };
-
+      // Update current quiz
       quizCtx.setQuiz(transformedQuiz);
+      // Open quiz
       props.onViewQuiz();
     } catch (err) {
       props.onError({

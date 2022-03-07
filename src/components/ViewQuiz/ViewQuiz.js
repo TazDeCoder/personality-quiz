@@ -4,18 +4,32 @@ import styles from "./ViewQuiz.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
 // CONTEXTS
+import UserContext from "../../store/user-context";
 import QuizContext from "../../store/quiz-context";
 
 function ViewQuiz(props) {
+  let removeButton;
+
+  const userCtx = useContext(UserContext);
   const quizCtx = useContext(QuizContext);
 
-  return (
-    <div className={styles["view-quiz"]}>
+  if (
+    userCtx.isLoggedIn &&
+    userCtx.username === quizCtx.author &&
+    userCtx.status >= 2
+  ) {
+    removeButton = (
       <div className={styles["view-quiz__remove"]}>
         <Button onClick={props.onRemoveQuiz.bind(null, quizCtx.id)}>
           Remove Quiz
         </Button>
       </div>
+    );
+  }
+
+  return (
+    <div className={styles["view-quiz"]}>
+      {removeButton}
 
       <div className={styles["view-quiz__content"]}>
         <h1>{quizCtx.title}</h1>
