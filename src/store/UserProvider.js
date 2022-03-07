@@ -1,12 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import UserContext from "./user-context";
 
 function UserProvider(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userToken, setUserToken] = useState("");
+  const [token, setToken] = useState("");
+  const [id, setId] = useState("");
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    const storedUserTokenInformation = localStorage?.getItem("userToken") ?? "";
+
+    if (storedUserTokenInformation.length !== 0) {
+      setToken(storedUserTokenInformation);
+    }
+
     const storedUserLoggedInInformation = localStorage.getItem("isLoggedIn");
 
     if (storedUserLoggedInInformation === "true") {
@@ -18,7 +26,7 @@ function UserProvider(props) {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
     localStorage.removeItem("userToken");
-    setUserToken("");
+    setToken("");
   };
 
   const loginHandler = async (user) => {
@@ -38,17 +46,48 @@ function UserProvider(props) {
       }
 
       const { token } = await response.json();
+      setToken(token);
       localStorage.setItem("userToken", token);
-      localStorage.setItem("isLoggedIn", "true");
+
       setIsLoggedIn(true);
+      localStorage.setItem("isLoggedIn", "true");
     } catch (err) {
       throw err;
     }
   };
 
+  const fetchUserDetail = useCallback(async () => {
+    try {
+      const response = await fetch("/users/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const err = new Error("Something went wrong!");
+        err.status = response.status;
+      }
+
+      const data = await response.json();
+
+      setId(data._id);
+      setUsername(data.username);
+    } catch (err) {
+      throw err;
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn) fetchUserDetail();
+  }, [fetchUserDetail]);
+
   const userContext = {
     isLoggedIn,
-    userToken,
+    token,
+    id,
+    username,
     onLogout: logoutHandler,
     onLogin: loginHandler,
   };

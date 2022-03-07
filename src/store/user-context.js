@@ -2,7 +2,9 @@ import { createContext } from "react";
 
 const UserContext = createContext({
   isLoggedIn: false,
-  userToken: "",
+  token: "",
+  id: "",
+  username: "",
   onLogout: () => {},
   onLogin: (user) => {},
 });
