@@ -8,10 +8,12 @@ import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
 import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
+import Login from "./components/Login/Login";
 // --- UI ---
 import Modal from "./components/UI/Modal/Modal";
 import ErrorModal from "./components/UI/ErrorModal/ErrorModal";
-// CONTEXTS
+// STORES
+import UserContext from "./store/user-context";
 import QuizProvider from "./store/QuizProvider";
 import QuizContext from "./store/quiz-context";
 
@@ -23,10 +25,13 @@ function App() {
   ////// (+ adding side-effects)
   ///////////////////////////////////////////////
 
+  const userCtx = useContext(UserContext);
   const quizCtx = useContext(QuizContext);
 
   const [error, setError] = useState(null);
 
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showSignupForm, setShowSignupForm] = useState(false);
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [showViewQuiz, setShowViewQuiz] = useState(false);
   const [showEditQuiz, setShowEditQuiz] = useState(false);
@@ -97,6 +102,14 @@ function App() {
 
   // TOGGLE HANDLERS
 
+  const toggleLoginFormHandler = () => {
+    setShowLoginForm((prevShowLoginForm) => !prevShowLoginForm);
+  };
+
+  const toggleSignupFormHandler = () => {
+    setShowSignupForm((prevShowSignupForm) => !prevShowSignupForm);
+  };
+
   const toggleQuizFormHandler = () => {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
   };
@@ -133,11 +146,22 @@ function App() {
 
   // PROPS HANDLERS
 
-  const addQuizHandler = (newQuiz) => {
-    setQuizzes((prevQuizzes) => {
-      const updatedQuizzes = prevQuizzes.concat(newQuiz);
-      return updatedQuizzes;
+  const addQuizHandler = async (newQuiz) => {
+    const response = await fetch("/api/quiz", {
+      method: "POST",
+      body: JSON.stringify(newQuiz),
+      headers: {
+        Authorization: `bearer ${userCtx.token}`,
+        "Content-Type": "application/json",
+      },
     });
+
+    if (!response.ok) {
+      setError({
+        title: `Something went wrong! (${response.status})`,
+        message: "Failed to add quiz. Try again!",
+      });
+    }
   };
 
   const updateQuizHandler = (quizData) => {
@@ -167,6 +191,12 @@ function App() {
     setShowViewQuiz(false);
   };
 
+  // Fetch quizzes whenever a quiz is: ADDED, UPDATED or REMOVED
+
+  useEffect(() => {
+    fetchQuizzesHandler();
+  }, [addQuizHandler, updateQuizHandler, removeQuizHandler]);
+
   const submitQuizResultsHandler = (quizResults) => {
     setQuizResults(quizResults);
     setShowQuizResults(true);
@@ -176,14 +206,16 @@ function App() {
   ////// Defining conditonal JSX content
   ///////////////////////////////////////////////
 
-  if (error) {
+  if (showLoginForm) {
     modalContent = (
-      <ErrorModal
-        title={error.title}
-        message={error.message}
-        onConfirm={confirmErrorHandler}
-      />
+      <Modal onClose={toggleLoginFormHandler}>
+        <Login onClose={toggleLoginFormHandler} onError={errorHandler} />
+      </Modal>
     );
+  }
+
+  if (showSignupForm) {
+    modalContent = <Modal onClose={toggleSignupFormHandler}></Modal>;
   }
 
   if (showQuizForm) {
@@ -223,6 +255,16 @@ function App() {
     );
   }
 
+  if (error) {
+    modalContent = (
+      <ErrorModal
+        title={error.title}
+        message={error.message}
+        onConfirm={confirmErrorHandler}
+      />
+    );
+  }
+
   if (showStartQuiz) {
     mainContent = (
       <StartQuiz
@@ -247,6 +289,8 @@ function App() {
       {modalContent}
       <MainHeader
         startQuiz={showStartQuiz}
+        onToggleLoginForm={toggleLoginFormHandler}
+        onToggleSignupForm={toggleSignupFormHandler}
         onToggleQuizForm={toggleQuizFormHandler}
         onClose={closeStartQuizHandler}
       />
