@@ -25,19 +25,7 @@ function QuizForm(props) {
     ? `${styles["quiz-form__control"]} ${styles.invalid}`
     : styles["quiz-form__control"];
 
-  // AUTHOR STATE + HANDLERS
-  const {
-    value: enteredAuthor,
-    isValid: enteredAuthorIsValid,
-    hasErrors: enteredAuthorHasErrors,
-    inputChangeHandler: authorChangedHandler,
-    inputBlurHandler: authorBlurHandler,
-  } = useInput((value) => value.trim().length !== 0);
-  // AUTHOR CLASSES
-  const authorInputClasses = enteredAuthorHasErrors
-    ? `${styles["quiz-form__control"]} ${styles.invalid}`
-    : styles["quiz-form__control"];
-
+  // DESC STATE + HANDLERS
   const {
     value: enteredDesc,
     isValid: enteredDescIsValid,
@@ -45,14 +33,13 @@ function QuizForm(props) {
     inputChangeHandler: descChangedHandler,
     inputBlurHandler: descBlurHandler,
   } = useInput((value) => value.trim().length !== 0);
-
+  // DESC STATE + HANDLERS
   const descInputClasses = enteredDescHasErrors
     ? `${styles["quiz-form__control"]} ${styles.invalid}`
     : styles["quiz-form__control"];
 
   // Checking if all inputs provided are valid
-  if (enteredTitleIsValid && enteredAuthorIsValid && enteredDescIsValid)
-    formIsValid = true;
+  if (enteredTitleIsValid && enteredDescIsValid) formIsValid = true;
 
   ////////////////////////////////////////////////
   ////// Event handlers
@@ -63,8 +50,7 @@ function QuizForm(props) {
     // Create quiz data object
     const quizData = {
       title: enteredTitle,
-      author: enteredAuthor,
-      desc: enteredDesc,
+      description: enteredDesc,
     };
     // Handle quiz data
     props.onSaveQuizData(quizData);
@@ -84,19 +70,6 @@ function QuizForm(props) {
             required
             onChange={titleChangedHandler}
             onBlur={titleBlurHandler}
-          />
-        </div>
-
-        <div className={authorInputClasses}>
-          <label htmlFor="author">Author</label>
-          <input
-            id="author"
-            type="text"
-            value={enteredAuthor}
-            placeholder="Enter your username"
-            required
-            onChange={authorChangedHandler}
-            onBlur={authorBlurHandler}
           />
         </div>
 
