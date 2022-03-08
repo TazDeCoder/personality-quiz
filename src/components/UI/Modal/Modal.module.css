@@ -1,3 +1,7 @@
+:root {
+  --primary-color: #fff;
+}
+
 .backdrop {
   position: fixed;
   top: 0;
@@ -16,7 +20,7 @@
   width: 90%;
   max-height: 30rem;
   padding: 1rem;
-  background-color: #fff;
+  background-color: var(--primary-color);
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   animation: slide-down 300ms ease-out forwards;

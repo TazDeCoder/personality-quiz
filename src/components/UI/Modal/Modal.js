@@ -8,7 +8,7 @@ function Backdrop(props) {
 
 function ModalOverlay(props) {
   return (
-    <div className={styles.modal}>
+    <div className={`${styles.modal} ${props.className}`}>
       <div className={styles.content}>{props.children}</div>
     </div>
   );
