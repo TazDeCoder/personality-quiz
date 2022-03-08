@@ -162,6 +162,9 @@ function App() {
         message: "Failed to add quiz. Try again!",
       });
     }
+
+    // SUCCESS. Fetch quizzes
+    fetchQuizzesHandler();
   };
 
   const updateQuizHandler = (quizData) => {
@@ -178,24 +181,34 @@ function App() {
     });
   };
 
-  const removeQuizHandler = (quizId) => {
-    setQuizzes((prevQuizzes) => {
-      // Checking if quiz already exists
-      const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === quizId);
-      if (existingQuizIdx === -1) return;
-      // Remove quiz from quizzes state
-      const updatedQuizzes = [...prevQuizzes];
-      updatedQuizzes.splice(existingQuizIdx, 1);
-      return updatedQuizzes;
+  const removeQuizHandler = async (quizId) => {
+    // Checking if quiz already exists
+    const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === quizId);
+    if (existingQuizIdx === -1) return;
+    // Remove quiz from quiz
+    const response = await fetch(`/api/quiz/${quizId}`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        id: userCtx.id,
+      }),
+      headers: {
+        Authorization: `bearer ${userCtx.token}`,
+        "Content-Type": "application/json",
+      },
     });
+
+    if (!response.ok) {
+      setError({
+        title: `Something went wrong! (${response.status})`,
+        message: "Failed to add quiz. Try again!",
+      });
+    }
+
     setShowViewQuiz(false);
-  };
 
-  // Fetch quizzes whenever a quiz is: ADDED, UPDATED or REMOVED
-
-  useEffect(() => {
+    // SUCCESS. Fetch quizzes
     fetchQuizzesHandler();
-  }, [addQuizHandler, updateQuizHandler, removeQuizHandler]);
+  };
 
   const submitQuizResultsHandler = (quizResults) => {
     setQuizResults(quizResults);
