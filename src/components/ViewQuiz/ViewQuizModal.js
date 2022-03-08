@@ -1,11 +1,12 @@
 import { useContext } from "react";
 
-import styles from "./ViewQuiz.module.css";
+import styles from "./ViewQuizModal.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
 // CONTEXTS
 import UserContext from "../../store/user-context";
 import QuizContext from "../../store/quiz-context";
+import Modal from "../UI/Modal/Modal";
 
 function ViewQuiz(props) {
   let removeButton;
@@ -13,13 +14,9 @@ function ViewQuiz(props) {
   const userCtx = useContext(UserContext);
   const quizCtx = useContext(QuizContext);
 
-  if (
-    userCtx.isLoggedIn &&
-    userCtx.username === quizCtx.author &&
-    userCtx.status >= 2
-  ) {
+  if (userCtx.isLoggedIn && userCtx.username === quizCtx.author) {
     removeButton = (
-      <div className={styles["view-quiz__remove"]}>
+      <div className={styles["view-quiz-modal__remove"]}>
         <Button onClick={props.onRemoveQuiz.bind(null, quizCtx.id)}>
           Remove Quiz
         </Button>
@@ -28,15 +25,15 @@ function ViewQuiz(props) {
   }
 
   return (
-    <div className={styles["view-quiz"]}>
+    <Modal className={styles["view-quiz-modal"]} onClose={props.onClose}>
       {removeButton}
 
-      <div className={styles["view-quiz__content"]}>
+      <div className={styles["view-quiz-modal__content"]}>
         <h1>{quizCtx.title}</h1>
         <p>{quizCtx.desc}</p>
       </div>
 
-      <div className={styles["view-quiz__meta"]}>
+      <div className={styles["view-quiz-modal__meta"]}>
         <p>
           Number of questions: <span>{quizCtx.questions.length}</span>
         </p>
@@ -45,8 +42,10 @@ function ViewQuiz(props) {
         </p>
       </div>
 
-      <div className={styles["view-quiz__actions"]}>
-        <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
+      <div className={styles["view-quiz-modal__actions"]}>
+        {userCtx.isLoggedIn && userCtx.username === quizCtx.author && (
+          <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
+        )}
         <Button
           disabled={quizCtx.questions.length === 0}
           onClick={props.onStartQuiz}
@@ -54,7 +53,7 @@ function ViewQuiz(props) {
           Start Quiz
         </Button>
       </div>
-    </div>
+    </Modal>
   );
 }
 
