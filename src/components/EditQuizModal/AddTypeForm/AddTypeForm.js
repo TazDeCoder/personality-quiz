@@ -90,7 +90,7 @@ function AddType(props) {
       description: enteredDesc,
     };
     // Handle type data
-    props.onAddNewType(typeData);
+    props.onAddType(typeData);
     // Clear input fields
     resetEnteredTitle();
     resetEnteredDesc();

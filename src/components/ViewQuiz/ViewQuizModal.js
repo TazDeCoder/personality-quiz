@@ -3,30 +3,28 @@ import { useContext } from "react";
 import styles from "./ViewQuizModal.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
+import Modal from "../UI/Modal/Modal";
 // CONTEXTS
 import UserContext from "../../store/user-context";
 import QuizContext from "../../store/quiz-context";
-import Modal from "../UI/Modal/Modal";
 
 function ViewQuiz(props) {
-  let removeButton;
-
   const userCtx = useContext(UserContext);
   const quizCtx = useContext(QuizContext);
 
-  if (userCtx.isLoggedIn && userCtx.username === quizCtx.author) {
-    removeButton = (
-      <div className={styles["view-quiz-modal__remove"]}>
-        <Button onClick={props.onRemoveQuiz.bind(null, quizCtx.id)}>
-          Remove Quiz
-        </Button>
-      </div>
-    );
-  }
+  const isUserValid =
+    (userCtx.isLoggedIn && userCtx.username === quizCtx.author) ||
+    userCtx.isAdmin;
 
   return (
     <Modal className={styles["view-quiz-modal"]} onClose={props.onClose}>
-      {removeButton}
+      {isUserValid && (
+        <div className={styles["view-quiz-modal__remove"]}>
+          <Button onClick={props.onRemoveQuiz.bind(null, quizCtx.id)}>
+            Remove Quiz
+          </Button>
+        </div>
+      )}
 
       <div className={styles["view-quiz-modal__content"]}>
         <h1>{quizCtx.title}</h1>
@@ -43,9 +41,7 @@ function ViewQuiz(props) {
       </div>
 
       <div className={styles["view-quiz-modal__actions"]}>
-        {userCtx.isLoggedIn && userCtx.username === quizCtx.author && (
-          <Button onClick={props.onEditQuiz}>Edit Quiz</Button>
-        )}
+        {isUserValid && <Button onClick={props.onEditQuiz}>Edit Quiz</Button>}
         <Button
           disabled={quizCtx.questions.length === 0}
           onClick={props.onStartQuiz}

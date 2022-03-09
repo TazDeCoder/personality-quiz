@@ -4,8 +4,8 @@ import UserContext from "./user-context";
 
 function UserProvider(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState("");
-  const [id, setId] = useState("");
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -46,6 +46,7 @@ function UserProvider(props) {
       }
 
       const { token } = await response.json();
+
       setToken(token);
       localStorage.setItem("userToken", token);
 
@@ -70,23 +71,23 @@ function UserProvider(props) {
         err.status = response.status;
       }
 
-      const data = await response.json();
+      const { isAdmin, username } = await response.json();
 
-      setId(data._id);
-      setUsername(data.username);
+      setIsAdmin(isAdmin);
+      setUsername(username);
     } catch (err) {
       throw err;
     }
-  }, [isLoggedIn]);
+  }, [isAdmin, token]);
 
   useEffect(() => {
     if (isLoggedIn) fetchUserDetail();
-  }, [fetchUserDetail]);
+  }, [fetchUserDetail, isLoggedIn]);
 
   const userContext = {
     isLoggedIn,
+    isAdmin,
     token,
-    id,
     username,
     onLogout: logoutHandler,
     onLogin: loginHandler,

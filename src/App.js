@@ -4,7 +4,7 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import MainHeader from "./components/MainHeader/MainHeader";
 import Quizzes from "./components/Quizzes/Quizzes";
 import AddQuiz from "./components/AddQuiz/AddQuiz";
-import ViewQuiz from "./components/ViewQuiz/ViewQuiz";
+import ViewQuizModal from "./components/ViewQuiz/ViewQuizModal";
 import EditQuizModal from "./components/EditQuizModal/EditQuizModal";
 import StartQuiz from "./components/StartQuiz/StartQuiz";
 import QuizResults from "./components/QuizResults/QuizResults";
@@ -114,34 +114,20 @@ function App() {
     setShowQuizForm((prevShowQuizForm) => !prevShowQuizForm);
   };
 
+  const toggleViewQuizHandler = () => {
+    setShowViewQuiz((prevShowViewQuiz) => !prevShowViewQuiz);
+  };
+
+  const toggleEditQuizHandler = () => {
+    setShowEditQuiz((prevEditViewQuiz) => !prevEditViewQuiz);
+  };
+
+  const toggleStartQuizHandler = () => {
+    setShowStartQuiz((prevShowStartQuiz) => !prevShowStartQuiz);
+  };
+
   const toggleQuizResultsHandler = () => {
     setShowQuizResults((prevShowQuizResults) => !prevShowQuizResults);
-  };
-
-  // SHOW/CLOSE HANDLERS
-
-  const showViewQuizHandler = () => {
-    setShowViewQuiz(true);
-  };
-
-  const closeViewQuizHandler = () => {
-    setShowViewQuiz(false);
-  };
-
-  const showEditQuizHandler = () => {
-    setShowEditQuiz(true);
-  };
-
-  const closeEditQuizHandler = () => {
-    setShowEditQuiz(false);
-  };
-
-  const showStartQuizHandler = () => {
-    setShowStartQuiz(true);
-  };
-
-  const closeStartQuizHandler = () => {
-    setShowStartQuiz(false);
   };
 
   // PROPS HANDLERS
@@ -188,9 +174,6 @@ function App() {
     // Remove quiz from quiz
     const response = await fetch(`/api/quiz/${quizId}`, {
       method: "DELETE",
-      body: JSON.stringify({
-        id: userCtx.id,
-      }),
       headers: {
         Authorization: `bearer ${userCtx.token}`,
         "Content-Type": "application/json",
@@ -241,13 +224,12 @@ function App() {
 
   if (showViewQuiz && !showEditQuiz && !showStartQuiz) {
     modalContent = (
-      <Modal onClose={closeViewQuizHandler}>
-        <ViewQuiz
-          onEditQuiz={showEditQuizHandler}
-          onStartQuiz={showStartQuizHandler}
-          onRemoveQuiz={removeQuizHandler}
-        />
-      </Modal>
+      <ViewQuizModal
+        onEditQuiz={toggleEditQuizHandler}
+        onStartQuiz={toggleStartQuizHandler}
+        onRemoveQuiz={removeQuizHandler}
+        onClose={toggleViewQuizHandler}
+      />
     );
   }
 
@@ -255,7 +237,7 @@ function App() {
     modalContent = (
       <EditQuizModal
         onUpdateQuiz={updateQuizHandler}
-        onClose={closeEditQuizHandler}
+        onClose={toggleEditQuizHandler}
       />
     );
   }
@@ -282,7 +264,7 @@ function App() {
     mainContent = (
       <StartQuiz
         onSubmitQuizResults={submitQuizResultsHandler}
-        onClose={closeStartQuizHandler}
+        onClose={toggleStartQuizHandler}
       />
     );
   }
@@ -291,7 +273,7 @@ function App() {
     mainContent = (
       <Quizzes
         items={quizzes}
-        onViewQuiz={showViewQuizHandler}
+        onViewQuiz={toggleViewQuizHandler}
         onError={errorHandler}
       />
     );
@@ -305,7 +287,7 @@ function App() {
         onToggleLoginForm={toggleLoginFormHandler}
         onToggleSignupForm={toggleSignupFormHandler}
         onToggleQuizForm={toggleQuizFormHandler}
-        onClose={closeStartQuizHandler}
+        onClose={toggleStartQuizHandler}
       />
       <main>{mainContent}</main>
     </QuizProvider>
