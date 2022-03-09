@@ -1,5 +1,5 @@
-:root {
-  --primary-color: #4a93bb !important;
+.view-quiz-modal {
+  background-color: #4a93bb !important;
 }
 
 .view-quiz-modal__remove {

@@ -1,6 +1,17 @@
-:root {
-  --primary-color: #8cc8e8 !important;
-  --secondary-color: #7eb4d1 !important;
-  --tertiary-color: #71a2bc !important;
-  --font-color: #fff !important;
+.searchbar {
+  background-color: #8cc8e8 !important;
+}
+
+.searchbar-wrapper input {
+  outline-color: #00f !important;
+}
+
+.searchbar-list li {
+  color: #fff !important;
+  background-color: #7eb4d1 !important;
+}
+
+.searchbar-list li:hover,
+.selected {
+  background-color: #71a2bc !important;
 }

@@ -129,7 +129,7 @@ function QuizzesSearchBar(props) {
   return (
     <SearchBar
       ref={searchBarRef}
-      className={styles.searchbar}
+      className={styles}
       searchTerms={searchTerms}
       cursor={cursor}
       onType={searchBarTypeHandler}

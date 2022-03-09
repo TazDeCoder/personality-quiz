@@ -8,8 +8,8 @@ function Backdrop(props) {
 
 function ModalOverlay(props) {
   return (
-    <div className={`${styles.modal} ${props.className}`}>
-      <div className={styles.content}>{props.children}</div>
+    <div className={`${styles.modal} ${props.className ?? ""}`.trim()}>
+      {props.children}
     </div>
   );
 }
@@ -20,7 +20,12 @@ function Modal(props) {
   return (
     <>
       {createPortal(<Backdrop onClose={props.onClose} />, portalEl)}
-      {createPortal(<ModalOverlay>{props.children}</ModalOverlay>, portalEl)}
+      {createPortal(
+        <ModalOverlay className={props.className}>
+          {props.children}
+        </ModalOverlay>,
+        portalEl
+      )}
     </>
   );
 }
