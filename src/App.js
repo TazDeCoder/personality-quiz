@@ -15,7 +15,7 @@ import ErrorModal from "./components/UI/ErrorModal/ErrorModal";
 // STORES
 import UserContext from "./store/user-context";
 import QuizProvider from "./store/QuizProvider";
-import QuizContext from "./store/quiz-context";
+import Signup from "./components/Signup/Signup";
 
 function App() {
   let mainContent, modalContent;
@@ -26,7 +26,6 @@ function App() {
   ///////////////////////////////////////////////
 
   const userCtx = useContext(UserContext);
-  const quizCtx = useContext(QuizContext);
 
   const [error, setError] = useState(null);
 
@@ -132,6 +131,24 @@ function App() {
 
   // PROPS HANDLERS
 
+  const createUserHandler = async (newUser) => {
+    const response = await fetch("/signup", {
+      method: "POST",
+      body: JSON.stringify(newUser),
+      headers: {
+        Authorization: `bearer ${userCtx.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      setError({
+        title: `Something went wrong! (${response.status})`,
+        message: "Failed to add user. Try again!",
+      });
+    }
+  };
+
   const addQuizHandler = async (newQuiz) => {
     const response = await fetch("/api/quiz", {
       method: "POST",
@@ -153,18 +170,25 @@ function App() {
     fetchQuizzesHandler();
   };
 
-  const updateQuizHandler = (quizData) => {
-    setQuizzes((prevQuizzes) => {
-      // Checking if quiz already exists
-      const existingQuizIdx = prevQuizzes.findIndex(
-        (quiz) => quiz.id === quizCtx.id
-      );
-      if (existingQuizIdx === -1) return;
-      // Update quiz from quizzes state
-      const updatedQuizzes = [...prevQuizzes];
-      updatedQuizzes[existingQuizIdx] = { ...quizData };
-      return updatedQuizzes;
+  const updateQuizHandler = async (updatedQuiz, quizId) => {
+    const response = await fetch(`/api/quiz/${quizId}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedQuiz),
+      headers: {
+        Authorization: `bearer ${userCtx.token}`,
+        "Content-Type": "application/json",
+      },
     });
+
+    if (!response.ok) {
+      setError({
+        title: `Something went wrong! (${response.status})`,
+        message: "Failed to update quiz. Try again!",
+      });
+    }
+
+    // SUCCESS. Fetch quizzes
+    fetchQuizzesHandler();
   };
 
   const removeQuizHandler = async (quizId) => {
@@ -211,7 +235,15 @@ function App() {
   }
 
   if (showSignupForm) {
-    modalContent = <Modal onClose={toggleSignupFormHandler}></Modal>;
+    modalContent = (
+      <Modal onClose={toggleSignupFormHandler}>
+        <Signup
+          onSignup={createUserHandler}
+          onClose={toggleSignupFormHandler}
+          onError={errorHandler}
+        />
+      </Modal>
+    );
   }
 
   if (showQuizForm) {
