@@ -71,14 +71,22 @@ function EditQuiz(props) {
       ...quizCtx,
       types: [...quizTypes, newType],
     };
+    // Update current quiz with quiz data
+    quizCtx.updateQuiz(quizData);
+    // Create updated quiz data object
+    const updatedQuizData = {
+      title: quizCtx.title,
+      description: quizCtx.desc,
+      questions: quizCtx.questions,
+      types: [...quizTypes, newType],
+    };
+    // Handle updated quiz data
+    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
     // Update quiz types state
     setQuizTypes((prevTypes) => {
       const updatedTypes = prevTypes.concat(newType);
       return updatedTypes;
     });
-    // Handle quiz data
-    quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizData);
   };
 
   const addQuestionHandler = (newQuestion) => {
@@ -87,14 +95,22 @@ function EditQuiz(props) {
       ...quizCtx,
       questions: [...quizQuestions, newQuestion],
     };
+    // Update current quiz with quiz data
+    quizCtx.updateQuiz(quizData);
+    // Create updated quiz data object
+    const updatedQuizData = {
+      title: quizCtx.title,
+      description: quizCtx.desc,
+      questions: [...quizQuestions, newQuestion],
+      types: quizCtx.types,
+    };
+    // Handle updated quiz data
+    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
     // Update quiz questions state
     setQuizQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.concat(newQuestion);
       return updatedQuestions;
     });
-    // Handle quiz data
-    quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizData);
   };
 
   const removeQuestionHandler = (questionId) => {
@@ -108,15 +124,23 @@ function EditQuiz(props) {
       ...quizCtx,
       questions: quizQuestions.splice(existingQuestionIdx, 1),
     };
+    // Update current quiz with quiz data
+    quizCtx.updateQuiz(quizData);
+    // Create updated quiz data object
+    const updatedQuizData = {
+      title: quizCtx.title,
+      description: quizCtx.desc,
+      questions: quizQuestions.splice(existingQuestionIdx, 1),
+      types: quizCtx.types,
+    };
+    // Handle updated quiz data
+    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
     // Update quiz questions state
     setQuizQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions];
       updatedQuestions.splice(existingQuestionIdx, 1);
       return updatedQuestions;
     });
-    // Handle quiz data
-    quizCtx.updateQuiz(quizData);
-    props.onUpdateQuiz(quizData);
   };
 
   // STATE UPDATING HANDLERS
