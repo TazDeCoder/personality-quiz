@@ -42,7 +42,7 @@ function Navigation(props) {
   if (props.startQuiz) {
     listContent = (
       <li>
-        <Button onClick={props.onClose}>Close Quiz</Button>
+        <Button onClick={props.onClose}>Home</Button>
       </li>
     );
   }

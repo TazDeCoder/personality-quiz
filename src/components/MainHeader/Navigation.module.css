@@ -1,10 +1,20 @@
+.nav {
+  margin: 0.75rem auto;
+}
+
 .nav ul {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.nav li {
-  margin-left: 2rem;
+.nav ul > li {
+  margin: 0 0.5rem;
+}
+
+.nav ul > li button {
+  width: 8rem;
+  font-weight: 500;
 }
 
 .nav a {
@@ -33,4 +43,10 @@
 
 .nav button:focus {
   outline: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .nav {
+    margin: initial;
+  }
 }
