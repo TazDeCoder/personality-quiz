@@ -216,19 +216,24 @@ function QuizForm(props) {
     );
   });
 
-  const typesContent = inputTypes.map((type) => {
-    return (
-      <li key={Math.random().toString()}>
-        <label>{type.title}</label>
-        <input
-          type="checkbox"
-          value={type.title.toLowerCase()}
-          checked={type.isChecked}
-          onChange={typesChangeHandler}
-        />
-      </li>
+  const typesContent =
+    inputTypes.length > 0 ? (
+      inputTypes.map((type) => {
+        return (
+          <li key={Math.random().toString()}>
+            <label>{type.title}</label>
+            <input
+              type="checkbox"
+              value={type.title.toLowerCase()}
+              checked={type.isChecked}
+              onChange={typesChangeHandler}
+            />
+          </li>
+        );
+      })
+    ) : (
+      <p>No types created</p>
     );
-  });
 
   return (
     <form onSubmit={submitHandler}>

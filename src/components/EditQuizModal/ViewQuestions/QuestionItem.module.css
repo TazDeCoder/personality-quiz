@@ -5,6 +5,7 @@
 .question-item button {
   background: none;
   border: none;
+  border-radius: 50%;
 }
 
 .question-item__prompt {

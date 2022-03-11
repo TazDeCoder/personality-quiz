@@ -1,3 +1,8 @@
+.edit-quiz-modal {
+  top: 10vh;
+  max-height: 40rem;
+}
+
 .edit-quiz-modal__header h1 {
   line-height: 1.2;
   font-size: 1.3rem;

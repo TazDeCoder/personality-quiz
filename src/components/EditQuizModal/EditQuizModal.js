@@ -11,8 +11,10 @@ import Modal from "../UI/Modal/Modal";
 import Button from "../UI/Button/Button";
 import ListItem from "../UI/ListItem/ListItem";
 import RemoveIcon from "../UI/Icons/RemoveIcon";
+import ArrowLeft from "../UI/Icons/ArrowLeft";
 // CONTEXTS
 import QuizContext from "../../store/quiz-context";
+import UpdateQuizForm from "./UpdateQuizForm/UpdateQuizForm";
 
 function EditQuiz(props) {
   let modalContent;
@@ -26,8 +28,8 @@ function EditQuiz(props) {
 
   const [error, setError] = useState(null);
   const [isQuizModified, setIsQuizModified] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [showTypeForm, setShowTypeForm] = useState(false);
-  const [showViewQuestions, setShowViewQuestions] = useState(false);
   const [modifiedQuestions, setModifiedQuestions] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState(quizCtx.questions);
   const [quizTypes, setQuizTypes] = useState(quizCtx.types);
@@ -59,11 +61,31 @@ function EditQuiz(props) {
     setShowTypeForm((prevTypeForm) => !prevTypeForm);
   };
 
-  const toggleViewQuestionsHandler = () => {
-    setShowViewQuestions((prevViewQuestions) => !prevViewQuestions);
+  const toggleQuestionFormHandler = () => {
+    setShowQuestionForm((prevQuestionForm) => !prevQuestionForm);
   };
 
   // PROPS HANDLERS
+
+  const updateQuizDataHandler = (inputQuizData) => {
+    // Create quiz data object
+    const quizData = {
+      ...quizCtx,
+      title: inputQuizData.title,
+      desc: inputQuizData.description,
+    };
+    console.log(quizData);
+    // Update current quiz with quiz data
+    quizCtx.updateQuiz(quizData);
+    // Create updated quiz data object
+    const updatedQuizData = {
+      ...inputQuizData,
+      questions: quizCtx.questions,
+      types: quizCtx.types,
+    };
+    // Handle updated quiz data
+    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
+  };
 
   const addTypeHandler = (newType) => {
     // Create quiz data object
@@ -170,7 +192,41 @@ function EditQuiz(props) {
   ////// Defining conditonal JSX content
   ///////////////////////////////////////////////
 
-  if (!showTypeForm && !showViewQuestions) {
+  if (!showQuestionForm && !showTypeForm) {
+    modalContent = (
+      <>
+        <button
+          className={styles["edit-quiz-modal__btn--close"]}
+          onClick={props.onClose}
+        >
+          &times;
+        </button>
+
+        <header className={styles["edit-quiz-modal__header"]}>
+          <h1>Editting Quiz</h1>
+        </header>
+
+        <UpdateQuizForm
+          title={quizCtx.title}
+          desc={quizCtx.desc}
+          onUpdateQuizData={updateQuizDataHandler}
+        />
+
+        <ViewQuestions
+          questions={quizQuestions}
+          onRemoveQuestion={removeQuestionHandler}
+          onError={errorHandler}
+        />
+
+        <div className={styles["edit-quiz-modal__actions"]}>
+          <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
+          <Button onClick={toggleQuestionFormHandler}>Add New Question</Button>
+        </div>
+      </>
+    );
+  }
+
+  if (showQuestionForm) {
     let listContent;
 
     if (modifiedQuestions.length > 0) {
@@ -190,9 +246,9 @@ function EditQuiz(props) {
       <>
         <button
           className={styles["edit-quiz-modal__btn--close"]}
-          onClick={props.onClose}
+          onClick={toggleQuestionFormHandler}
         >
-          &times;
+          <ArrowLeft />
         </button>
 
         <header className={styles["edit-quiz-modal__header"]}>
@@ -205,14 +261,9 @@ function EditQuiz(props) {
           isQuizModified={isQuizModified}
           onAddQuestion={addQuestionHandler}
           onUpdateModifiedQuestions={updateModifiedQuestionsHandler}
-          onClose={props.onClose}
+          onClose={toggleQuestionFormHandler}
           onError={errorHandler}
         />
-
-        <div className={styles["edit-quiz-modal__actions"]}>
-          <Button onClick={toggleTypeFormHandler}>Add New Type</Button>
-          <Button onClick={toggleViewQuestionsHandler}>View Questions</Button>
-        </div>
       </>
     );
   }
@@ -224,7 +275,7 @@ function EditQuiz(props) {
           className={styles["edit-quiz-modal__btn--close"]}
           onClick={toggleTypeFormHandler}
         >
-          &times;
+          <ArrowLeft />
         </button>
 
         <header className={styles["edit-quiz-modal__header"]}>
@@ -240,30 +291,6 @@ function EditQuiz(props) {
     );
   }
 
-  if (showViewQuestions) {
-    modalContent = (
-      <>
-        <button
-          className={styles["edit-quiz-modal__btn--close"]}
-          onClick={toggleViewQuestionsHandler}
-        >
-          &times;
-        </button>
-
-        <header className={styles["edit-quiz-modal__header"]}>
-          <h1>Current Questions</h1>
-        </header>
-
-        <ViewQuestions
-          questions={quizQuestions}
-          onRemoveQuestion={removeQuestionHandler}
-          onClose={toggleViewQuestionsHandler}
-          onError={errorHandler}
-        />
-      </>
-    );
-  }
-
   return (
     <>
       {error && (
@@ -273,7 +300,7 @@ function EditQuiz(props) {
           onConfirm={confirmErrorHandler}
         />
       )}
-      <Modal>{modalContent}</Modal>
+      <Modal className={styles["edit-quiz-modal"]}>{modalContent}</Modal>
     </>
   );
 }

@@ -21,6 +21,7 @@ function ViewQuestions(props) {
 
   return (
     <div className={styles["view-questions"]}>
+      <h1>Questions</h1>
       <ul>{questionsContent}</ul>
     </div>
   );

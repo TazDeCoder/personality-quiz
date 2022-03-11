@@ -45,6 +45,7 @@
 .question-form__control button {
   background: none;
   border: none;
+  border-radius: 50%;
 }
 
 .question-form__control p {
