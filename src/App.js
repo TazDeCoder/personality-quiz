@@ -170,7 +170,7 @@ function App() {
     fetchQuizzesHandler();
   };
 
-  const updateQuizHandler = async (updatedQuiz, quizId) => {
+  const updateQuizHandler = async (quizId, updatedQuiz) => {
     const response = await fetch(`/api/quiz/${quizId}`, {
       method: "PUT",
       body: JSON.stringify(updatedQuiz),

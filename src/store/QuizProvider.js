@@ -29,8 +29,8 @@ function QuizProvider(props) {
     defaultQuizState
   );
 
-  const setQuizHandler = (currQuiz) => {
-    dispatchQuizState({ type: "SET_QUIZ", quiz: currQuiz });
+  const setQuizHandler = (quiz) => {
+    dispatchQuizState({ type: "SET_QUIZ", quiz: quiz });
   };
 
   const updateQuizHandler = (newQuiz) => {

@@ -2,9 +2,9 @@ import { useState, useRef, useContext } from "react";
 
 import styles from "./QuizzesSearchBar.module.css";
 // COMPONENTS
-import SearchBar from "../UI/SearchBar/SearchBar";
+import SearchBar from "../../UI/SearchBar/SearchBar";
 // CONTEXTS
-import QuizContext from "../../store/quiz-context";
+import QuizContext from "../../../store/quiz-context";
 
 function QuizzesSearchBar(props) {
   const RESULTS_LIMIT = 5;
