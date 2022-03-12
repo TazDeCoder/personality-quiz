@@ -1,17 +1,23 @@
+import { useContext } from "react";
+
 import styles from "./ViewQuestions.module.css";
 // COMPONENTS
 import QuestionItem from "./QuestionItem";
+// CONTEXT
+import QuizContext from "../../../store/quiz-context";
 
 function ViewQuestions(props) {
+  const quizCtx = useContext(QuizContext);
+
   const questionsContent =
-    props.questions.length > 0 ? (
-      props.questions.map((question, idx) => {
+    quizCtx.questions.length > 0 ? (
+      quizCtx.questions.map((question, idx) => {
         return (
           <QuestionItem
-            key={question.id}
+            key={question._id}
             title={`Q${idx + 1}: ${question.prompt}`}
             answers={question.answers}
-            onRemove={props.onRemoveQuestion.bind(null, question.id)}
+            onRemove={props.onRemoveQuestion.bind(null, question._id)}
           />
         );
       })

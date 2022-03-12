@@ -21,25 +21,18 @@ function EditQuiz(props) {
 
   ////////////////////////////////////////////////
   ////// Declaring states and context
-  ////// (+ adding side-effects)
   ///////////////////////////////////////////////
 
   const quizCtx = useContext(QuizContext);
 
   const [error, setError] = useState(null);
-  const [isQuizModified, setIsQuizModified] = useState(false);
+
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [showTypeForm, setShowTypeForm] = useState(false);
+
   const [modifiedQuestions, setModifiedQuestions] = useState([]);
-  const [quizQuestions, setQuizQuestions] = useState(quizCtx.questions);
-  const [quizTypes, setQuizTypes] = useState(quizCtx.types);
 
-  // SIDE-EFFECTS
-
-  useEffect(() => {
-    if (modifiedQuestions.length === 0) setIsQuizModified(false);
-    else setIsQuizModified(true);
-  }, [modifiedQuestions]);
+  const [isQuizModified, setIsQuizModified] = useState(false);
 
   ////////////////////////////////////////////////
   ////// Event handlers
@@ -70,12 +63,10 @@ function EditQuiz(props) {
   const updateQuizDataHandler = (inputQuizData) => {
     // Create quiz data object
     const quizData = {
-      ...quizCtx,
       title: inputQuizData.title,
       desc: inputQuizData.description,
     };
-    console.log(quizData);
-    // Update current quiz with quiz data
+    // Update quiz context state with quiz data
     quizCtx.updateQuiz(quizData);
     // Create updated quiz data object
     const updatedQuizData = {
@@ -84,67 +75,55 @@ function EditQuiz(props) {
       types: quizCtx.types,
     };
     // Handle updated quiz data
-    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
+    props.onUpdateQuiz(quizCtx.id, updatedQuizData);
   };
 
   const addTypeHandler = (newType) => {
+    const updatedTypes = [...quizCtx.types, newType];
     // Create quiz data object
     const quizData = {
-      ...quizCtx,
-      types: [...quizTypes, newType],
+      types: updatedTypes,
     };
-    // Update current quiz with quiz data
+    // Update quiz context state with quiz data
     quizCtx.updateQuiz(quizData);
     // Create updated quiz data object
     const updatedQuizData = {
       title: quizCtx.title,
       description: quizCtx.desc,
       questions: quizCtx.questions,
-      types: [...quizTypes, newType],
+      types: updatedTypes,
     };
     // Handle updated quiz data
-    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
-    // Update quiz types state
-    setQuizTypes((prevTypes) => {
-      const updatedTypes = prevTypes.concat(newType);
-      return updatedTypes;
-    });
+    props.onUpdateQuiz(quizCtx.id, updatedQuizData);
   };
 
   const addQuestionHandler = (newQuestion) => {
+    const updatedQuestions = [...quizCtx.questions, newQuestion];
     // Create quiz data object
     const quizData = {
-      ...quizCtx,
-      questions: [...quizQuestions, newQuestion],
+      questions: updatedQuestions,
     };
-    // Update current quiz with quiz data
+    // Update quiz context state with quiz data
     quizCtx.updateQuiz(quizData);
     // Create updated quiz data object
     const updatedQuizData = {
       title: quizCtx.title,
       description: quizCtx.desc,
-      questions: [...quizQuestions, newQuestion],
+      questions: updatedQuestions,
       types: quizCtx.types,
     };
     // Handle updated quiz data
-    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
-    // Update quiz questions state
-    setQuizQuestions((prevQuestions) => {
-      const updatedQuestions = prevQuestions.concat(newQuestion);
-      return updatedQuestions;
-    });
+    props.onUpdateQuiz(quizCtx.id, updatedQuizData);
   };
 
   const removeQuestionHandler = (questionId) => {
-    // Checking if question already exists
-    const existingQuestionIdx = quizQuestions.findIndex(
-      (question) => question.id === questionId
+    const updatedQuestions = quizCtx.questions.filter(
+      (question) => question._id !== questionId
     );
-    if (existingQuestionIdx === -1) return;
     // Create quiz data object
     const quizData = {
       ...quizCtx,
-      questions: quizQuestions.splice(existingQuestionIdx, 1),
+      questions: updatedQuestions,
     };
     // Update current quiz with quiz data
     quizCtx.updateQuiz(quizData);
@@ -152,17 +131,11 @@ function EditQuiz(props) {
     const updatedQuizData = {
       title: quizCtx.title,
       description: quizCtx.desc,
-      questions: quizQuestions.splice(existingQuestionIdx, 1),
+      questions: updatedQuestions,
       types: quizCtx.types,
     };
     // Handle updated quiz data
-    props.onUpdateQuiz(updatedQuizData, quizCtx.id);
-    // Update quiz questions state
-    setQuizQuestions((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-      updatedQuestions.splice(existingQuestionIdx, 1);
-      return updatedQuestions;
-    });
+    props.onUpdateQuiz(quizCtx.id, updatedQuizData);
   };
 
   // STATE UPDATING HANDLERS
@@ -178,7 +151,7 @@ function EditQuiz(props) {
     setModifiedQuestions((prevQuestions) => {
       // Checking if question already exists
       const existingQuestionIdx = prevQuestions.findIndex(
-        (question) => question.id === questionId
+        (question) => question._id === questionId
       );
       if (existingQuestionIdx === -1) return prevQuestions;
       // Remove question from modified questions state
@@ -187,6 +160,11 @@ function EditQuiz(props) {
       return updatedQuestions;
     });
   };
+
+  useEffect(() => {
+    if (modifiedQuestions.length === 0) setIsQuizModified(false);
+    else setIsQuizModified(true);
+  }, [modifiedQuestions]);
 
   ////////////////////////////////////////////////
   ////// Defining conditonal JSX content
@@ -213,7 +191,6 @@ function EditQuiz(props) {
         />
 
         <ViewQuestions
-          questions={quizQuestions}
           onRemoveQuestion={removeQuestionHandler}
           onError={errorHandler}
         />
@@ -231,10 +208,10 @@ function EditQuiz(props) {
 
     if (modifiedQuestions.length > 0) {
       listContent = modifiedQuestions.map((question) => (
-        <li key={question.id}>
+        <li key={question._id}>
           <ListItem title={question.prompt} />
           <Button
-            onClick={removeModifiedQuestionHandler.bind(null, question.id)}
+            onClick={removeModifiedQuestionHandler.bind(null, question._id)}
           >
             <RemoveIcon />
           </Button>

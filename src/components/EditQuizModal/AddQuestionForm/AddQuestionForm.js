@@ -80,7 +80,7 @@ function QuizForm(props) {
     setInputAnswers((prevAnswers) => {
       // Checking if answer already exists
       const existingAnswerIdx = prevAnswers.findIndex(
-        (answer) => answer.id === answerId
+        (answer) => answer._id === answerId
       );
       if (existingAnswerIdx === -1) return;
       // Remove selected answer
@@ -122,7 +122,6 @@ function QuizForm(props) {
     const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
     // Data provided is valid. Create answer data object
     const answerData = {
-      id: Math.random().toString(),
       text: enteredAnswer,
       types: typesTitle,
     };
@@ -163,7 +162,6 @@ function QuizForm(props) {
     }
     // Data provided is valid. Create question data object
     const questionData = {
-      id: Math.random().toString(),
       prompt: enteredPrompt,
       answers: inputAnswers,
     };
@@ -186,7 +184,9 @@ function QuizForm(props) {
     // Checking stored inputs for data validity
     for (const iptQuestion of inputQuestions) {
       // Checking if any new questions are added
-      if (quizCtx.questions.some((question) => iptQuestion.id === question.id))
+      if (
+        quizCtx.questions.some((question) => iptQuestion._id === question._id)
+      )
         continue;
       else questionsData.push(iptQuestion);
     }
@@ -203,13 +203,13 @@ function QuizForm(props) {
 
   const answersContent = inputAnswers.map((answer, idx) => {
     return (
-      <li key={answer.id}>
+      <li key={answer._id}>
         <ListItem
           key={Math.random().toString()}
           title={`Answer ${idx + 1}: ${answer.text}`}
         />
 
-        <Button onClick={removeAnswerHandler.bind(null, answer.id)}>
+        <Button onClick={removeAnswerHandler.bind(null, answer._id)}>
           <RemoveIcon />
         </Button>
       </li>

@@ -11,7 +11,7 @@ function QuestionItem(props) {
 
   const [showAnswers, setShowAnswers] = useState(false);
 
-  const toggleQuestionHandler = (e) => {
+  const toggleQuestionHandler = () => {
     setShowAnswers((prevShowAnswers) => !prevShowAnswers);
   };
 
@@ -19,7 +19,7 @@ function QuestionItem(props) {
     answersContent = (
       <ul className={styles["question-item__answers"]}>
         {props.answers.map((answer) => (
-          <li key={answer.id}>
+          <li key={answer._id}>
             <ListItem title={answer.text} />
           </li>
         ))}
