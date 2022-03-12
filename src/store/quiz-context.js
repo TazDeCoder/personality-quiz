@@ -17,7 +17,7 @@ const QuizContext = createContext({
     },
   ],
   types: [{ title: "", description: "" }],
-  setQuiz: (currQuiz) => {},
+  setQuiz: (quiz) => {},
   updateQuiz: (newQuiz) => {},
 });
 

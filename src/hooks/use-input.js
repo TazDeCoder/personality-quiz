@@ -27,11 +27,11 @@ function inputStateReducer(state, action) {
   return initialInputState;
 }
 
-function useInput(validateValue) {
-  const [inputState, dispatch] = useReducer(
-    inputStateReducer,
-    initialInputState
-  );
+function useInput(validateValue, defaultValue) {
+  const [inputState, dispatch] = useReducer(inputStateReducer, {
+    ...initialInputState,
+    value: defaultValue ? defaultValue : "",
+  });
 
   const valueIsValid = validateValue(inputState.value);
   const hasErrors = inputState.isTouched && !valueIsValid;

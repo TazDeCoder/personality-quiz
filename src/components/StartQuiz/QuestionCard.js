@@ -7,10 +7,10 @@ function QuestionCard(props) {
   };
 
   const listContent = props.answers.map((answer) => (
-    <li key={answer.id}>
+    <li key={answer._id}>
       <label>{answer.text}</label>
       <input
-        id={answer.id}
+        id={answer._id}
         type="radio"
         name={props.groupName}
         value={answer.types}

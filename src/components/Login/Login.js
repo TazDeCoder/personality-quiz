@@ -111,7 +111,7 @@ function Login(props) {
     // Handle user data
     userCtx.onLogin(userData).catch((err) => {
       props.onError({
-        title: `Login failed! ${err.status}`,
+        title: `Login failed! (${err.status})`,
         message: err.message,
       });
     });
