@@ -10,7 +10,6 @@ function QuizList(props) {
           id={quiz.id}
           title={quiz.title}
           author={quiz.author}
-          // quiz={quiz}
           onViewQuiz={props.onViewQuiz}
           onError={props.onError}
         />
