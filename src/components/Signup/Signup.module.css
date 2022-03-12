@@ -9,9 +9,13 @@
   border-color: #ff8800;
 }
 
+.signup h1 {
+  font-size: 1.4rem;
+}
+
 .signup__controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
   max-width: 30rem;
   padding: 1rem;
@@ -46,5 +50,9 @@
 .signup__actions {
   text-align: right;
   width: 100%;
-  margin: 0.5rem;
+  margin: 1rem;
+}
+
+.signup__actions button {
+  width: 5rem;
 }

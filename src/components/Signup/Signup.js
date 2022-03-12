@@ -123,41 +123,44 @@ function Signup(props) {
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <div className={styles["signup__controls"]}>
-        <div className={usernameInputClasses}>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={enteredUsername}
-            placeholder="Enter your username"
-            required
-            onChange={usernameChangedHandler}
-            onBlur={usernameBlurHandler}
-          />
-        </div>
+    <div className={styles.signup}>
+      <h1>Sign up</h1>
+      <form onSubmit={submitHandler}>
+        <div className={styles["signup__controls"]}>
+          <div className={usernameInputClasses}>
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={enteredUsername}
+              placeholder="Enter a unique username"
+              required
+              onChange={usernameChangedHandler}
+              onBlur={usernameBlurHandler}
+            />
+          </div>
 
-        <div className={passwordInputClasses}>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="text"
-            value={enteredPassword}
-            placeholder="Enter your password"
-            required
-            onChange={passwordChangedHandler}
-            onBlur={passwordBlurHandler}
-          />
-        </div>
+          <div className={passwordInputClasses}>
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="text"
+              value={enteredPassword}
+              placeholder="Enter a strong password"
+              required
+              onChange={passwordChangedHandler}
+              onBlur={passwordBlurHandler}
+            />
+          </div>
 
-        <div className={styles["signup__actions"]}>
-          <Button type="submit" disabled={!formIsValid}>
-            Sign in
-          </Button>
+          <div className={styles["signup__actions"]}>
+            <Button type="submit" disabled={!formIsValid}>
+              Sign in
+            </Button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
 
