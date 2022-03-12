@@ -22,6 +22,7 @@ function QuestionCard(props) {
 
   return (
     <Card className={styles["question-card"]}>
+      <div>{`${props.questionNumber} / ${props.questionsLength}`}</div>
       <legend>{props.prompt}</legend>
       <ul className={styles["question-card__list"]}>{listContent}</ul>
     </Card>

@@ -68,10 +68,11 @@ function StartQuiz(props) {
   const controlsContent = quizCtx.questions.map((question, idx, arr) => (
     <fieldset ref={(el) => (questionsRef.current[idx] = el)} key={question.id}>
       <div className={styles["start-quiz__control"]}>
-        <h1>{`Question ${idx + 1} / ${arr.length}`}</h1>
         <QuestionCard
           prompt={question.prompt}
           answers={question.answers}
+          questionsLength={arr.length}
+          questionNumber={idx + 1}
           groupName={`answer${idx + 1}`}
         />
       </div>
