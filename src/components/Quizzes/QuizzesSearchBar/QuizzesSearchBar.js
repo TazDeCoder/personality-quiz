@@ -16,6 +16,7 @@ function QuizzesSearchBar(props) {
   const quizCtx = useContext(QuizContext);
 
   const searchBarRef = useRef();
+
   const [searchTerms, setSearchTerms] = useState([]);
   const [cursor, setCursor] = useState(0);
 
@@ -26,6 +27,37 @@ function QuizzesSearchBar(props) {
   const resetSearchBar = () => {
     searchBarRef.current.value = "";
     setSearchTerms([]);
+  };
+
+  const fetchQuizAndLoadQuiz = async (quizId) => {
+    try {
+      const response = await fetch(`/api/quiz/${quizId}`);
+
+      if (!response.ok) {
+        const err = new Error("Failed to fetch quiz");
+        err.status = response.status;
+      }
+
+      const data = await response.json();
+
+      const transformedQuiz = {
+        id: data._id,
+        title: data.title,
+        author: props.author,
+        desc: data.description,
+        questions: data.questions,
+        types: data.types,
+      };
+      // Update current quiz
+      quizCtx.setQuiz(transformedQuiz);
+      // Open quiz
+      props.onViewQuiz();
+    } catch (err) {
+      props.onError({
+        title: `Something went wrong! (${err.status})`,
+        message: err.message,
+      });
+    }
   };
 
   ////////////////////////////////////////////////
@@ -68,8 +100,8 @@ function QuizzesSearchBar(props) {
     if (e.keyCode === 13) {
       const searchTerm = searchTerms[cursor];
       const quiz = props.quizzes.find((quiz) => quiz.id === searchTerm.id);
-      quizCtx.setQuiz(quiz);
-      props.onViewQuiz();
+      // Load quiz
+      fetchQuizAndLoadQuiz(quiz.id);
       // Clear searchbar field
       resetSearchBar();
     }
@@ -87,35 +119,8 @@ function QuizzesSearchBar(props) {
     const quiz = props.quizzes.find(
       (quiz) => quiz.id === e.target.getAttribute("id")
     );
-
-    try {
-      const response = await fetch(`/api/quiz/${quiz.id}`);
-
-      if (!response.ok) {
-        const err = new Error("Failed to fetch quiz");
-        err.status = response.status;
-      }
-
-      const data = await response.json();
-
-      const transformedQuiz = {
-        id: data._id,
-        title: data.title,
-        author: props.author,
-        desc: data.description,
-        questions: data.questions,
-        types: data.types,
-      };
-      // Update current quiz
-      quizCtx.setQuiz(transformedQuiz);
-      // Open quiz
-      props.onViewQuiz();
-    } catch (err) {
-      props.onError({
-        title: `Something went wrong! (${err.status})`,
-        message: err.message,
-      });
-    }
+    // Load quiz
+    fetchQuizAndLoadQuiz(quiz.id);
     // Clear searchbar field
     resetSearchBar();
   };
