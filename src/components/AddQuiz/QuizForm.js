@@ -1,6 +1,8 @@
 import styles from "./QuizForm.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
+import Input from "../UI/Input/Input";
+import TextArea from "../UI/TextArea/TextArea";
 // CUSTOM HOOKS
 import useInput from "../../hooks/use-input";
 
@@ -21,9 +23,7 @@ function QuizForm(props) {
     inputBlurHandler: titleBlurHandler,
   } = useInput((value) => value.trim().length !== 0);
   // TITLE CLASSES
-  const titleInputClasses = enteredTitleHasErrors
-    ? `${styles["quiz-form__control"]} ${styles.invalid}`
-    : styles["quiz-form__control"];
+  const titleInputClasses = enteredTitleHasErrors ? styles.invalid : "";
 
   // DESC STATE + HANDLERS
   const {
@@ -34,9 +34,7 @@ function QuizForm(props) {
     inputBlurHandler: descBlurHandler,
   } = useInput((value) => value.trim().length !== 0);
   // DESC STATE + HANDLERS
-  const descInputClasses = enteredDescHasErrors
-    ? `${styles["quiz-form__control"]} ${styles.invalid}`
-    : styles["quiz-form__control"];
+  const descInputClasses = enteredDescHasErrors ? styles.invalid : "";
 
   // Checking if all inputs provided are valid
   if (enteredTitleIsValid && enteredDescIsValid) formIsValid = true;
@@ -59,32 +57,34 @@ function QuizForm(props) {
   return (
     <form onSubmit={submitHandler}>
       <div className={styles["quiz-form__controls"]}>
-        <div className={titleInputClasses}>
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            value={enteredTitle}
-            placeholder="Enter quiz title"
-            maxLength="128"
-            required
-            onChange={titleChangedHandler}
-            onBlur={titleBlurHandler}
-          />
-        </div>
+        <Input
+          className={titleInputClasses}
+          id={"title"}
+          label={"Title"}
+          type={"text"}
+          value={enteredTitle}
+          onChange={titleChangedHandler}
+          input={{
+            placeholder: "Enter quiz title",
+            maxLength: "128",
+            required: true,
+            onBlur: titleBlurHandler,
+          }}
+        />
 
-        <div className={descInputClasses}>
-          <label htmlFor="desc">Desc</label>
-          <textarea
-            id="desc"
-            value={enteredDesc}
-            placeholder="Write brief description of quiz"
-            maxLength="400"
-            required
-            onChange={descChangedHandler}
-            onBlur={descBlurHandler}
-          />
-        </div>
+        <TextArea
+          className={descInputClasses}
+          id={"desc"}
+          label={"Desc"}
+          value={enteredDesc}
+          onChange={descChangedHandler}
+          textarea={{
+            placeholder: "Write brief description of quiz",
+            maxLength: "400",
+            required: true,
+            onBlur: descBlurHandler,
+          }}
+        />
 
         <div className={styles["quiz-form__actions"]}>
           <Button type="submit" disabled={!formIsValid}>

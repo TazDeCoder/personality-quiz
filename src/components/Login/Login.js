@@ -3,6 +3,7 @@ import { useState, useContext, useEffect, useCallback } from "react";
 import styles from "./Login.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
+import Input from "../UI/Input/Input";
 // CUSTOM HOOKS
 import useInput from "../../hooks/use-input";
 import UserContext from "../../store/user-context";
@@ -35,9 +36,7 @@ function Login(props) {
     inputBlurHandler: usernameBlurHandler,
   } = useInput(validateUsername);
   // USERNAME CLASSES
-  const usernameInputClasses = enteredUsernameHasErrors
-    ? `${styles["login__control"]} ${styles.invalid}`
-    : styles["login__control"];
+  const usernameInputClasses = enteredUsernameHasErrors ? styles.invalid : "";
 
   // PASSWORD STATE + HANDLERS
   const {
@@ -48,9 +47,7 @@ function Login(props) {
     inputBlurHandler: passwordBlurHandler,
   } = useInput(validatePassword);
   // PASSWORD CLASSES
-  const passwordInputClasses = enteredPasswordHasErrors
-    ? `${styles["login__control"]} ${styles.invalid}`
-    : styles["login__control"];
+  const passwordInputClasses = enteredPasswordHasErrors ? styles.invalid : "";
 
   // Checking if all inputs provided are valid
   if (enteredUsernameIsValid && enteredPasswordIsValid) formIsValid = true;
@@ -124,31 +121,33 @@ function Login(props) {
       <h1>Login</h1>
       <form onSubmit={submitHandler}>
         <div className={styles["login__controls"]}>
-          <div className={usernameInputClasses}>
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={enteredUsername}
-              placeholder="Enter your username"
-              required
-              onChange={usernameChangedHandler}
-              onBlur={usernameBlurHandler}
-            />
-          </div>
+          <Input
+            id={"username"}
+            className={usernameInputClasses}
+            label={"Username"}
+            type={"text"}
+            value={enteredUsername}
+            onChange={usernameChangedHandler}
+            input={{
+              placeholder: "Enter your username",
+              required: true,
+              onBlur: usernameBlurHandler,
+            }}
+          />
 
-          <div className={passwordInputClasses}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="text"
-              value={enteredPassword}
-              placeholder="Enter your password"
-              required
-              onChange={passwordChangedHandler}
-              onBlur={passwordBlurHandler}
-            />
-          </div>
+          <Input
+            id={"password"}
+            className={passwordInputClasses}
+            label={"Password"}
+            type={"text"}
+            value={enteredPassword}
+            onChange={passwordChangedHandler}
+            input={{
+              placeholder: "Enter your password",
+              required: true,
+              onBlur: passwordBlurHandler,
+            }}
+          />
 
           <div className={styles["login__actions"]}>
             <Button type="submit" disabled={!formIsValid}>

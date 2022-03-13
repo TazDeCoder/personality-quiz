@@ -22,31 +22,6 @@
   margin: 0 auto;
 }
 
-.signup__control {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  margin: 0.25rem;
-}
-
-.signup__control label {
-  font-size: 1.1rem;
-  width: 20%;
-}
-
-.signup__control input {
-  max-width: 100%;
-  width: 20rem;
-  padding: 0.5rem;
-  font: inherit;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.signup__control input:focus {
-  background-color: #cee3f0;
-}
-
 .signup__actions {
   text-align: right;
   width: 100%;

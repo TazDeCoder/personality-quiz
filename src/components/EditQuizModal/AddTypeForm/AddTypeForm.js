@@ -3,6 +3,8 @@ import { useContext } from "react";
 import styles from "./AddTypeForm.module.css";
 // COMPONENTS
 import Button from "../../UI/Button/Button";
+import Input from "../../UI/Input/Input";
+import TextArea from "../../UI/TextArea/TextArea";
 // CONTEXTS
 import QuizContext from "../../../store/quiz-context";
 // CUSTOM HOOKS
@@ -28,7 +30,7 @@ function AddType(props) {
     inputResetHandler: resetEnteredTitle,
   } = useInput((value) => value.trim().length !== 0);
   // TITLE CLASSES
-  const titleNameClasses = enteredTitleHasErrors
+  const titleInputClasses = enteredTitleHasErrors
     ? `${styles["type-form__control"]} ${styles.invalid}`
     : styles["type-form__control"];
 
@@ -42,9 +44,7 @@ function AddType(props) {
     inputResetHandler: resetEnteredDesc,
   } = useInput((value) => value.trim().length !== 0);
   // DESC CLASSES
-  const descNameClasses = enteredDescHasErrors
-    ? `${styles["type-form__control"]} ${styles.invalid}`
-    : styles["type-form__control"];
+  const descInputClasses = enteredDescHasErrors ? styles.invalid : "";
 
   // Checking if all inputs provided are valid
   if (enteredTitleIsValid && enteredDescIsValid) formIsValid = true;
@@ -101,29 +101,33 @@ function AddType(props) {
   return (
     <form onSubmit={submitHandler}>
       <div className={styles["type-form__controls"]}>
-        <div className={titleNameClasses}>
-          <label>Title</label>
-          <input
-            type="text"
-            placeholder="Enter type title"
-            value={enteredTitle}
-            required
-            onChange={titleChangedHandler}
-            onBlur={titleBlurHandler}
-          />
-        </div>
+        <Input
+          id={"title"}
+          className={titleInputClasses}
+          label={"Title"}
+          type={"text"}
+          value={enteredTitle}
+          onChange={titleChangedHandler}
+          input={{
+            placeholder: "Enter type title",
+            required: true,
+            onBlur: titleBlurHandler,
+          }}
+        />
 
-        <div className={descNameClasses}>
-          <label>Desc</label>
-          <textarea
-            value={enteredDesc}
-            placeholder="Write description of type"
-            maxLength="128"
-            required
-            onChange={descChangedHandler}
-            onBlur={descBlurHandler}
-          />
-        </div>
+        <TextArea
+          className={descInputClasses}
+          id={"desc"}
+          label={"Desc"}
+          value={enteredDesc}
+          onChange={descChangedHandler}
+          textarea={{
+            placeholder: "Write description of type",
+            maxLength: "128",
+            required: true,
+            onBlur: descBlurHandler,
+          }}
+        />
 
         <div className={styles["type-form__actions"]}>
           <Button type="submit" disabled={!formIsValid}>

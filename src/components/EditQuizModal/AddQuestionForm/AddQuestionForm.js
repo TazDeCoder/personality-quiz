@@ -6,6 +6,7 @@ import AddIcon from "../../UI/Icons/AddIcon";
 import RemoveIcon from "../../UI/Icons/RemoveIcon";
 import Button from "../../UI/Button/Button";
 import ListItem from "../../UI/ListItem/ListItem";
+import Input from "../../UI/Input/Input";
 // CONTEXTS
 import QuizContext from "../../../store/quiz-context";
 // CUSTOM HOOKS
@@ -21,6 +22,7 @@ function QuizForm(props) {
 
   const initialTypesState = quizCtx.types.map((type) => {
     return {
+      id: type._id,
       title: type.title,
       isChecked: false,
     };
@@ -39,9 +41,7 @@ function QuizForm(props) {
     inputResetHandler: resetEnteredPrompt,
   } = useInput((value) => value.trim().length !== 0);
   // PROMPT CLASSES
-  const promptNameClasses = enteredPromptHasErrors
-    ? `${styles["question-form__control"]} ${styles.invalid}`
-    : styles["question-form__control"];
+  const promptInputClasses = enteredPromptHasErrors ? styles.invalid : "";
 
   // ANSWER STATE + HANDLERS
   const {
@@ -52,9 +52,7 @@ function QuizForm(props) {
     inputResetHandler: resetEnteredAnswer,
   } = useInput((value) => value.trim().length !== 0);
   // ANSWER CLASSES
-  const answerNameClasses = enteredAnswerHasErrors
-    ? `${styles["question-form__control"]} ${styles.invalid}`
-    : styles["question-form__control"];
+  const answerInputClasses = enteredAnswerHasErrors ? styles.invalid : "";
 
   ////////////////////////////////////////////////
   ////// Event handlers
@@ -220,13 +218,16 @@ function QuizForm(props) {
     inputTypes.length > 0 ? (
       inputTypes.map((type) => {
         return (
-          <li key={Math.random().toString()}>
-            <label>{type.title}</label>
-            <input
-              type="checkbox"
+          <li key={type.id}>
+            <Input
+              id={type.id}
+              label={type.title}
+              type={"checkbox"}
               value={type.title.toLowerCase()}
-              checked={type.isChecked}
               onChange={typesChangeHandler}
+              input={{
+                checked: type.isChecked,
+              }}
             />
           </li>
         );
@@ -238,14 +239,18 @@ function QuizForm(props) {
   return (
     <form onSubmit={submitHandler}>
       <div className={styles["question-form__controls"]}>
-        <div className={promptNameClasses}>
-          <label>Prompt</label>
-          <input
-            type="text"
+        <div className={styles["question-form__control"]}>
+          <Input
+            id={"prompt"}
+            className={promptInputClasses}
+            label={"Prompt"}
+            type={"text"}
             value={enteredPrompt}
-            placeholder="Enter question prompt"
             onChange={promptChangedHandler}
-            onBlur={promptBlurHandler}
+            input={{
+              placeholder: "Enter question prompt",
+              onBlur: promptBlurHandler,
+            }}
           />
 
           <Button onClick={addPromptHandler}>
@@ -257,14 +262,18 @@ function QuizForm(props) {
           <ul>{answersContent}</ul>
         </div>
 
-        <div className={answerNameClasses}>
-          <label>Answer</label>
-          <input
-            type="text"
+        <div className={styles["question-form__control"]}>
+          <Input
+            id={"answer"}
+            className={answerInputClasses}
+            label={"Answer"}
+            type={"text"}
             value={enteredAnswer}
-            placeholder="Enter answer to prompt"
             onChange={answerChangedHandler}
-            onBlur={answerBlurHandler}
+            input={{
+              placeholder: "Enter answer to prompt",
+              onBlur: answerBlurHandler,
+            }}
           />
 
           <Button onClick={addAnswerHandler}>

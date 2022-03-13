@@ -20,40 +20,6 @@
   margin: 0 auto;
 }
 
-.update-quiz-form__control {
-  display: flex;
-  flex-grow: 1;
-  margin: 0.25rem;
-}
-
-.update-quiz-form__control label {
-  font-size: 1.1rem;
-  width: 20%;
-}
-
-.update-quiz-form__control input {
-  max-width: 100%;
-  width: 20rem;
-  padding: 0.5rem;
-  font: inherit;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.update-quiz-form__control input:focus,
-.update-quiz-form__control textarea:focus {
-  background-color: #cee3f0;
-}
-
-.update-quiz-form__control textarea {
-  flex-grow: 1;
-  height: 10rem;
-  padding: 1rem;
-  font: inherit;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
 .update-quiz-form__actions {
   text-align: right;
   width: 100%;

@@ -17,29 +17,9 @@
   margin: 0 auto;
 }
 
-.question-form__controls label {
-  width: 4rem;
-  font-size: 1.1rem;
-}
-
-.question-form__controls input {
-  padding: 0.25rem;
-  font-size: 1rem;
-}
-
 .question-form__control {
   display: flex;
-  align-items: baseline;
-}
-
-.question-form__control input[type="text"] {
-  max-width: 95%;
-  width: 20rem;
-  margin: 0.5rem;
-}
-
-.question-form__control input:focus {
-  background-color: #cee3f0;
+  align-items: center;
 }
 
 .question-form__control button {
@@ -66,6 +46,10 @@
   margin: 0 2px;
 }
 
+.question-form__control ul > li label {
+  width: 4rem;
+}
+
 .question-form__actions {
   display: flex;
   align-items: center;
@@ -87,4 +71,5 @@
 .question-form__answers button {
   background: none;
   border: none;
+  border-radius: 50%;
 }

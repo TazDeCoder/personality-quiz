@@ -19,38 +19,6 @@
   margin: 0 auto;
 }
 
-.type-form__control {
-  display: flex;
-  align-items: baseline;
-}
-
-.type-form__control label {
-  font-size: 1.1rem;
-  width: 4rem;
-}
-
-.type-form__control input {
-  max-width: 95%;
-  width: 20rem;
-  padding: 0.25rem;
-  margin: 0.5rem;
-  font-size: 1rem;
-}
-
-.type-form__control input:focus,
-.type-form__control textarea:focus {
-  background-color: #cee3f0;
-}
-
-.type-form__control textarea {
-  max-width: 95%;
-  width: 20rem;
-  height: 10rem;
-  padding: 1rem;
-  margin: 0 0.5rem;
-  font-size: 1rem;
-}
-
 .type-form__actions {
   display: flex;
   align-items: center;
