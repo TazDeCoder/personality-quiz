@@ -16,6 +16,7 @@ import ErrorModal from "./components/UI/ErrorModal/ErrorModal";
 import UserContext from "./store/user-context";
 import QuizProvider from "./store/QuizProvider";
 import Signup from "./components/Signup/Signup";
+import Spinner from "./components/UI/Spinner/Spinner";
 
 function App() {
   let mainContent, modalContent;
@@ -28,6 +29,7 @@ function App() {
   const userCtx = useContext(UserContext);
 
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignupForm, setShowSignupForm] = useState(false);
@@ -66,6 +68,7 @@ function App() {
 
   const fetchQuizzesHandler = useCallback(async () => {
     setError(null);
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/quizzes");
@@ -93,6 +96,8 @@ function App() {
         message: err.message,
       });
     }
+
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -309,6 +314,10 @@ function App() {
         onError={errorHandler}
       />
     );
+  }
+
+  if (isLoading) {
+    mainContent = <Spinner />;
   }
 
   return (
