@@ -1,0 +1,22 @@
+.textarea {
+  flex-grow: 1;
+  display: flex;
+  margin: 0.25rem;
+}
+
+.textarea label {
+  width: 4rem;
+}
+
+.textarea textarea {
+  flex-grow: 1;
+  height: 10rem;
+  padding: 1rem;
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.textarea textarea:focus {
+  background-color: #cee3f0;
+}
