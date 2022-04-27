@@ -2,7 +2,7 @@
 
 ## Description
 
-A React application that hosts ready-to-play quizzes from the **'personality-quiz-api'**, and supports log-in feature for creating quizzes
+A React application that hosts ready-to-play quizzes from the **'quiz-api'**, and supports log-in feature for creating quizzes
 
 **Features:**
 
