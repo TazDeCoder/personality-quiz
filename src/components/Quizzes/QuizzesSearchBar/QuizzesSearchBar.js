@@ -5,6 +5,7 @@ import styles from "./QuizzesSearchBar.module.css";
 import SearchBar from "../../UI/SearchBar/SearchBar";
 // CONTEXTS
 import QuizContext from "../../../store/quiz-context";
+import { API_URL } from "../../../config";
 
 function QuizzesSearchBar(props) {
   const RESULTS_LIMIT = 5;
@@ -31,7 +32,7 @@ function QuizzesSearchBar(props) {
 
   const fetchQuizAndLoadQuiz = async (quizId) => {
     try {
-      const response = await fetch(`/api/quiz/${quizId}`);
+      const response = await fetch(`${API_URL}/api/quiz/${quizId}`);
 
       if (!response.ok) {
         const err = new Error("Failed to fetch quiz");
