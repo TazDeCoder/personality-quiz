@@ -14,7 +14,7 @@ function ViewQuestions(props) {
       quizCtx.questions.map((question, idx) => {
         return (
           <QuestionItem
-            key={question._id}
+            key={Math.random().toString()}
             title={`Q${idx + 1}: ${question.prompt}`}
             answers={question.answers}
             onRemove={props.onRemoveQuestion.bind(null, question._id)}

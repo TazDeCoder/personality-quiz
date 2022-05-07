@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 
 import UserContext from "./user-context";
 
+import { API_URL } from "../config";
+
 function UserProvider(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,7 +33,7 @@ function UserProvider(props) {
 
   const loginHandler = async (user) => {
     try {
-      const response = await fetch("/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -59,7 +61,7 @@ function UserProvider(props) {
 
   const fetchUserDetail = useCallback(async () => {
     try {
-      const response = await fetch("/users/profile", {
+      const response = await fetch(`${API_URL}/users/profile`, {
         method: "GET",
         headers: {
           Authorization: `bearer ${token}`,

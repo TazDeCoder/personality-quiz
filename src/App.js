@@ -18,6 +18,8 @@ import QuizProvider from "./store/QuizProvider";
 import Signup from "./components/Signup/Signup";
 import Spinner from "./components/UI/Spinner/Spinner";
 
+import { API_URL } from "./config";
+
 function App() {
   let mainContent, modalContent;
 
@@ -71,7 +73,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/quizzes");
+      const response = await fetch(`${API_URL}/api/quizzes`);
 
       if (!response.ok) {
         const err = new Error("Failed to fetch quizzes");
@@ -137,11 +139,10 @@ function App() {
   // PROPS HANDLERS
 
   const createUserHandler = async (newUser) => {
-    const response = await fetch("/signup", {
+    const response = await fetch(`${API_URL}/signup`, {
       method: "POST",
       body: JSON.stringify(newUser),
       headers: {
-        Authorization: `bearer ${userCtx.token}`,
         "Content-Type": "application/json",
       },
     });
@@ -155,7 +156,7 @@ function App() {
   };
 
   const addQuizHandler = async (newQuiz) => {
-    const response = await fetch("/api/quiz", {
+    const response = await fetch(`${API_URL}/api/quiz`, {
       method: "POST",
       body: JSON.stringify(newQuiz),
       headers: {
@@ -176,7 +177,7 @@ function App() {
   };
 
   const updateQuizHandler = async (quizId, updatedQuiz) => {
-    const response = await fetch(`/api/quiz/${quizId}`, {
+    const response = await fetch(`${API_URL}/api/quiz/${quizId}`, {
       method: "PUT",
       body: JSON.stringify(updatedQuiz),
       headers: {
@@ -201,7 +202,7 @@ function App() {
     const existingQuizIdx = quizzes.findIndex((quiz) => quiz.id === quizId);
     if (existingQuizIdx === -1) return;
     // Remove quiz from quiz
-    const response = await fetch(`/api/quiz/${quizId}`, {
+    const response = await fetch(`${API_URL}/api/quiz/${quizId}`, {
       method: "DELETE",
       headers: {
         Authorization: `bearer ${userCtx.token}`,

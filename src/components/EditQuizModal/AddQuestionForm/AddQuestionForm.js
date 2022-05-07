@@ -12,7 +12,7 @@ import QuizContext from "../../../store/quiz-context";
 // CUSTOM HOOKS
 import useInput from "../../../hooks/use-input";
 
-function QuizForm(props) {
+function AddQuestionForm(props) {
   ////////////////////////////////////////////////
   ////// Declaring states and context
   ////// (+ conditional classes)
@@ -201,12 +201,8 @@ function QuizForm(props) {
 
   const answersContent = inputAnswers.map((answer, idx) => {
     return (
-      <li key={answer._id}>
-        <ListItem
-          key={Math.random().toString()}
-          title={`Answer ${idx + 1}: ${answer.text}`}
-        />
-
+      <li key={Math.random().toString()}>
+        <ListItem title={`Answer ${idx + 1}: ${answer.text}`} />
         <Button onClick={removeAnswerHandler.bind(null, answer._id)}>
           <RemoveIcon />
         </Button>
@@ -296,4 +292,4 @@ function QuizForm(props) {
   );
 }
 
-export default QuizForm;
+export default AddQuestionForm;

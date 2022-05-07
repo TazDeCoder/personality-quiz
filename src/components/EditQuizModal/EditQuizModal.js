@@ -16,7 +16,7 @@ import ArrowLeft from "../UI/Icons/ArrowLeft";
 import QuizContext from "../../store/quiz-context";
 import UpdateQuizForm from "./UpdateQuizForm/UpdateQuizForm";
 
-function EditQuiz(props) {
+function EditQuizModal(props) {
   let modalContent;
 
   ////////////////////////////////////////////////
@@ -208,7 +208,7 @@ function EditQuiz(props) {
 
     if (modifiedQuestions.length > 0) {
       listContent = modifiedQuestions.map((question) => (
-        <li key={question._id}>
+        <li key={Math.random().toString()}>
           <ListItem title={question.prompt} />
           <Button
             onClick={removeModifiedQuestionHandler.bind(null, question._id)}
@@ -282,4 +282,4 @@ function EditQuiz(props) {
   );
 }
 
-export default EditQuiz;
+export default EditQuizModal;

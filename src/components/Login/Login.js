@@ -8,6 +8,8 @@ import Input from "../UI/Input/Input";
 import useInput from "../../hooks/use-input";
 import UserContext from "../../store/user-context";
 
+import { API_URL } from "../../config";
+
 function Login(props) {
   let formIsValid = false;
 
@@ -60,7 +62,7 @@ function Login(props) {
 
   const fetchUsersListing = useCallback(async () => {
     try {
-      const response = await fetch("/users");
+      const response = await fetch(`${API_URL}/users`);
 
       if (!response.ok) {
         const err = new Error("Failed to fetch users");

@@ -10,7 +10,7 @@ import QuizContext from "../../../store/quiz-context";
 // CUSTOM HOOKS
 import useInput from "../../../hooks/use-input";
 
-function AddType(props) {
+function AddTypeForm(props) {
   let formIsValid = false;
 
   ////////////////////////////////////////////////
@@ -139,4 +139,4 @@ function AddType(props) {
   );
 }
 
-export default AddType;
+export default AddTypeForm;

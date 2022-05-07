@@ -7,12 +7,14 @@ import Card from "../../UI/Card/Card";
 // CONTEXTS
 import QuizContext from "../../../store/quiz-context";
 
+import { API_URL } from "../../../config";
+
 function QuizItem(props) {
   const quizCtx = useContext(QuizContext);
 
   const viewQuizItemHandler = async () => {
     try {
-      const response = await fetch(`/api/quiz/${props.id}`);
+      const response = await fetch(`${API_URL}/api/quiz/${props.id}`);
 
       if (!response.ok) {
         const err = new Error("Failed to fetch quiz");
