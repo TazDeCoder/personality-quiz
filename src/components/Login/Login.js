@@ -81,7 +81,7 @@ function Login(props) {
       // Close modal window
       props.onClose();
     }
-  }, []);
+  }, [props]);
 
   useEffect(() => {
     fetchUsersListing();

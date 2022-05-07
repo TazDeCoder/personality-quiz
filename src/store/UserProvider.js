@@ -80,7 +80,7 @@ function UserProvider(props) {
     } catch (err) {
       throw err;
     }
-  }, [isAdmin, token]);
+  }, [token]);
 
   useEffect(() => {
     if (isLoggedIn) fetchUserDetail();
