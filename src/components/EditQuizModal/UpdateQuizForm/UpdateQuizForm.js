@@ -1,3 +1,5 @@
+import escape from "validator/lib/escape";
+
 import styles from "./UpdateQuizForm.module.css";
 // COMPONENTS
 import Button from "../../UI/Button/Button";
@@ -5,6 +7,8 @@ import Input from "../../UI/Input/Input";
 import TextArea from "../../UI/TextArea/TextArea";
 // CUSTOM HOOKS
 import useInput from "../../../hooks/use-input";
+
+import { validator } from "../../lib/index";
 
 function UpdateQuizForm(props) {
   let formIsValid = false;
@@ -21,7 +25,7 @@ function UpdateQuizForm(props) {
     hasErrors: enteredTitleHasErrors,
     inputChangeHandler: titleChangedHandler,
     inputBlurHandler: titleBlurHandler,
-  } = useInput((value) => value.trim().length !== 0, props.title);
+  } = useInput(validator("quizTitle"), props.title);
   // TITLE CLASSES
   const titleInputClasses = enteredTitleHasErrors
     ? `${styles["update-quiz-form__control"]} ${styles.invalid}`
@@ -34,7 +38,7 @@ function UpdateQuizForm(props) {
     hasErrors: enteredDescHasErrors,
     inputChangeHandler: descChangedHandler,
     inputBlurHandler: descBlurHandler,
-  } = useInput((value) => value.trim().length !== 0, props.desc);
+  } = useInput(validator("quizDesc"), props.desc);
   // DESC STATE + HANDLERS
   const descInputClasses = enteredDescHasErrors ? styles.invalid : "";
 
@@ -52,10 +56,13 @@ function UpdateQuizForm(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    // Sanitize input fields
+    const sanitizedEnteredTitle = escape(enteredTitle);
+    const sanitizedEnteredDesc = escape(enteredDesc);
     // Create quiz data object
     const quizData = {
-      title: enteredTitle,
-      description: enteredDesc,
+      title: sanitizedEnteredTitle,
+      description: sanitizedEnteredDesc,
     };
     // Handle quiz data
     props.onUpdateQuizData(quizData);
@@ -73,7 +80,7 @@ function UpdateQuizForm(props) {
           onChange={titleChangedHandler}
           input={{
             placeholder: "Enter quiz title",
-            maxLength: "128",
+            maxLength: "200",
             required: true,
             onBlur: titleBlurHandler,
           }}

@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, useCallback } from "react";
+import { equals, escape } from "validator/lib";
 
 import styles from "./Login.module.css";
 // COMPONENTS
@@ -9,16 +10,10 @@ import useInput from "../../hooks/use-input";
 import UserContext from "../../store/user-context";
 
 import { API_URL } from "../../config";
+import { validator } from "../../lib";
 
 function Login(props) {
   let formIsValid = false;
-
-  ////////////////////////////////////////////////
-  ////// Helper functions
-  ///////////////////////////////////////////////
-
-  const validateUsername = (username) => username.trim().length !== 0;
-  const validatePassword = (password) => password.trim().length !== 0;
 
   ////////////////////////////////////////////////
   ////// Declaring states and context
@@ -36,7 +31,7 @@ function Login(props) {
     hasErrors: enteredUsernameHasErrors,
     inputChangeHandler: usernameChangedHandler,
     inputBlurHandler: usernameBlurHandler,
-  } = useInput(validateUsername);
+  } = useInput(validator("username"));
   // USERNAME CLASSES
   const usernameInputClasses = enteredUsernameHasErrors ? styles.invalid : "";
 
@@ -47,7 +42,7 @@ function Login(props) {
     hasErrors: enteredPasswordHasErrors,
     inputChangeHandler: passwordChangedHandler,
     inputBlurHandler: passwordBlurHandler,
-  } = useInput(validatePassword);
+  } = useInput(validator("password"));
   // PASSWORD CLASSES
   const passwordInputClasses = enteredPasswordHasErrors ? styles.invalid : "";
 
@@ -97,8 +92,8 @@ function Login(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     // Checking if username already exists
-    const existingUsernameIdx = usersListing.findIndex(
-      (user) => user.username === enteredUsername
+    const existingUsernameIdx = usersListing.findIndex((user) =>
+      equals(user.username, enteredUsername)
     );
     if (existingUsernameIdx === -1) {
       props.onError({
@@ -107,10 +102,13 @@ function Login(props) {
       });
       return;
     }
+    // Sanitize input fields
+    const sanitizedEnteredUsername = escape(enteredUsername);
+    const sanitizedEnteredPassword = escape(enteredPassword);
     // Create user data object
     const userData = {
-      username: enteredUsername,
-      password: enteredPassword,
+      username: sanitizedEnteredUsername,
+      password: sanitizedEnteredPassword,
     };
     // Handle user data
     userCtx.onLogin(userData).catch((err) => {
@@ -137,6 +135,8 @@ function Login(props) {
             onChange={usernameChangedHandler}
             input={{
               placeholder: "Enter your username",
+              minLength: 6,
+              maxLength: 32,
               required: true,
               onBlur: usernameBlurHandler,
             }}
@@ -151,6 +151,7 @@ function Login(props) {
             onChange={passwordChangedHandler}
             input={{
               placeholder: "Enter your password",
+              minLength: 6,
               required: true,
               onBlur: passwordBlurHandler,
             }}

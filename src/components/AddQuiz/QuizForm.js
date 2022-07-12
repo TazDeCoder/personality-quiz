@@ -1,3 +1,5 @@
+import escape from "validator/lib/escape";
+
 import styles from "./QuizForm.module.css";
 // COMPONENTS
 import Button from "../UI/Button/Button";
@@ -5,6 +7,8 @@ import Input from "../UI/Input/Input";
 import TextArea from "../UI/TextArea/TextArea";
 // CUSTOM HOOKS
 import useInput from "../../hooks/use-input";
+
+import { validator } from "../../lib/index";
 
 function QuizForm(props) {
   let formIsValid = false;
@@ -21,7 +25,7 @@ function QuizForm(props) {
     hasErrors: enteredTitleHasErrors,
     inputChangeHandler: titleChangedHandler,
     inputBlurHandler: titleBlurHandler,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput(validator("quizTitle"));
   // TITLE CLASSES
   const titleInputClasses = enteredTitleHasErrors ? styles.invalid : "";
 
@@ -32,7 +36,7 @@ function QuizForm(props) {
     hasErrors: enteredDescHasErrors,
     inputChangeHandler: descChangedHandler,
     inputBlurHandler: descBlurHandler,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput(validator("quizDesc"));
   // DESC STATE + HANDLERS
   const descInputClasses = enteredDescHasErrors ? styles.invalid : "";
 
@@ -45,10 +49,13 @@ function QuizForm(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    // Sanitize input fields
+    const sanitizedEnteredTitle = escape(enteredTitle);
+    const sanitizedEnteredDesc = escape(enteredDesc);
     // Create quiz data object
     const quizData = {
-      title: enteredTitle,
-      description: enteredDesc,
+      title: sanitizedEnteredTitle,
+      description: sanitizedEnteredDesc,
     };
     // Handle quiz data
     props.onSaveQuizData(quizData);
@@ -66,7 +73,7 @@ function QuizForm(props) {
           onChange={titleChangedHandler}
           input={{
             placeholder: "Enter quiz title",
-            maxLength: "128",
+            maxLength: "200",
             required: true,
             onBlur: titleBlurHandler,
           }}

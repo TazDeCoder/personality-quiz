@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { isEmpty, isLength, escape } from "validator/lib";
 
 import styles from "./AddQuestionForm.module.css";
 // COMPONENTS
@@ -39,7 +40,7 @@ function AddQuestionForm(props) {
     inputChangeHandler: promptChangedHandler,
     inputBlurHandler: promptBlurHandler,
     inputResetHandler: resetEnteredPrompt,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput((value) => !isEmpty(value));
   // PROMPT CLASSES
   const promptInputClasses = enteredPromptHasErrors ? styles.invalid : "";
 
@@ -50,7 +51,7 @@ function AddQuestionForm(props) {
     inputChangeHandler: answerChangedHandler,
     inputBlurHandler: answerBlurHandler,
     inputResetHandler: resetEnteredAnswer,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput((value) => !isEmpty(value));
   // ANSWER CLASSES
   const answerInputClasses = enteredAnswerHasErrors ? styles.invalid : "";
 
@@ -101,7 +102,7 @@ function AddQuestionForm(props) {
       return;
     }
 
-    if (inputAnswers.length > 3) {
+    if (isLength(inputAnswers, { min: 3 })) {
       props.onError({
         title: "Answers limit reached",
         message: "Remove an existing answer to add your answer (max 4)",
@@ -109,19 +110,22 @@ function AddQuestionForm(props) {
       return;
     }
 
-    if (enteredAnswer.trim().length === 0) {
+    if (isEmpty(enteredAnswer)) {
       props.onError({
         title: "Invalid answer",
         message: "Must specify a valid answer for the question",
       });
       return;
     }
-    // Extract title from types
-    const typesTitle = filteredTypes.map((type) => type.title.toLowerCase());
+    // Sanitize inputs
+    const sanitizedEnteredAnswer = escape(enteredAnswer);
+    const sanitizedFilteredInputTypes = filteredTypes.map((type) =>
+      escape(type.title.toLowerCase())
+    );
     // Data provided is valid. Create answer data object
     const answerData = {
-      text: enteredAnswer,
-      types: typesTitle,
+      text: sanitizedEnteredAnswer,
+      types: sanitizedFilteredInputTypes,
     };
     // Update answers state
     setInputAnswers((prevAnswers) => {
@@ -151,17 +155,20 @@ function AddQuestionForm(props) {
       return;
     }
 
-    if (enteredPrompt.trim().length === 0) {
+    if (isEmpty(enteredPrompt)) {
       props.onError({
         title: "Invalid prompt",
         message: "Must specify a valid prompt for the question",
       });
       return;
     }
+    // Sanitize inputs
+    const sanitizedInputAnswers = inputAnswers.map((answer) => escape(answer));
+    const sanitizedEnteredPrompt = escape(enteredPrompt);
     // Data provided is valid. Create question data object
     const questionData = {
-      prompt: enteredPrompt,
-      answers: inputAnswers,
+      prompt: sanitizedInputAnswers,
+      answers: sanitizedEnteredPrompt,
     };
     // Update questions state
     setInputQuestions((prevQuestions) => {
@@ -193,8 +200,12 @@ function AddQuestionForm(props) {
       props.onClose();
       return;
     }
+    // Sanitize data
+    const sanitizedQuestionsData = questionsData.map((question) =>
+      escape(question)
+    );
     // Handle questions data
-    questionsData.map((questionData) => props.onAddQuestion(questionData));
+    sanitizedQuestionsData.map((question) => props.onAddQuestion(question));
     // Close modal window
     props.onClose();
   };
@@ -245,6 +256,7 @@ function AddQuestionForm(props) {
             onChange={promptChangedHandler}
             input={{
               placeholder: "Enter question prompt",
+              maxLength: "64",
               onBlur: promptBlurHandler,
             }}
           />
@@ -268,6 +280,7 @@ function AddQuestionForm(props) {
             onChange={answerChangedHandler}
             input={{
               placeholder: "Enter answer to prompt",
+              maxLength: "64",
               onBlur: answerBlurHandler,
             }}
           />

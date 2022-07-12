@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { isEmpty, isLength, equals, escape } from "validator/lib";
 
 import styles from "./AddTypeForm.module.css";
 // COMPONENTS
@@ -28,7 +29,7 @@ function AddTypeForm(props) {
     inputChangeHandler: titleChangedHandler,
     inputBlurHandler: titleBlurHandler,
     inputResetHandler: resetEnteredTitle,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput((value) => !isEmpty(value) && isLength(value, { max: 64 }));
   // TITLE CLASSES
   const titleInputClasses = enteredTitleHasErrors
     ? `${styles["type-form__control"]} ${styles.invalid}`
@@ -42,7 +43,7 @@ function AddTypeForm(props) {
     inputChangeHandler: descChangedHandler,
     inputBlurHandler: descBlurHandler,
     inputResetHandler: resetEnteredDesc,
-  } = useInput((value) => value.trim().length !== 0);
+  } = useInput((value) => !isEmpty(value) && isLength(value, { max: 128 }));
   // DESC CLASSES
   const descInputClasses = enteredDescHasErrors ? styles.invalid : "";
 
@@ -57,14 +58,14 @@ function AddTypeForm(props) {
     e.preventDefault();
     // Checking field validity
     if (enteredTitleHasErrors || enteredDescHasErrors) {
-      if (enteredTitle.trim().length === 0) {
+      if (isEmpty(enteredTitle)) {
         props.onError({
           title: "Invalid title",
           message: "Must specify a valid title for the type",
         });
       }
 
-      if (enteredDesc.trim().length === 0) {
+      if (isEmpty(enteredDesc)) {
         props.onError({
           title: "Invalid description",
           message: "Must specify a valid description for the type",
@@ -74,8 +75,8 @@ function AddTypeForm(props) {
       return;
     }
     // Checking if type already exists
-    const existingTypeIdx = quizCtx.types.findIndex(
-      (type) => type.title.toLowerCase() === enteredTitle.toLowerCase()
+    const existingTypeIdx = quizCtx.types.findIndex((type) =>
+      equals(type.title, enteredTitle)
     );
     if (existingTypeIdx !== -1) {
       props.onError({
@@ -84,10 +85,13 @@ function AddTypeForm(props) {
       });
       return;
     }
+    // Sanitize input fields
+    const sanitizedEnteredTitle = escape(enteredTitle);
+    const sanitizedEnteredDesc = escape(enteredDesc);
     // Data provided is valid. Create type data object
     const typeData = {
-      title: enteredTitle,
-      description: enteredDesc,
+      title: sanitizedEnteredTitle,
+      description: sanitizedEnteredDesc,
     };
     // Handle type data
     props.onAddType(typeData);
@@ -110,6 +114,7 @@ function AddTypeForm(props) {
           onChange={titleChangedHandler}
           input={{
             placeholder: "Enter type title",
+            maxLength: "64",
             required: true,
             onBlur: titleBlurHandler,
           }}
