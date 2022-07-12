@@ -65,6 +65,7 @@ function UserProvider(props) {
         method: "GET",
         headers: {
           Authorization: `bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 

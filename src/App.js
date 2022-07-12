@@ -73,7 +73,12 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/quizzes`);
+      const response = await fetch(`${API_URL}/api/quizzes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         const err = new Error("Failed to fetch quizzes");

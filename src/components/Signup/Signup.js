@@ -63,7 +63,12 @@ function Signup(props) {
 
   const fetchUsersListing = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/users`);
+      const response = await fetch(`${API_URL}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         const err = new Error("Failed to fetch users");
