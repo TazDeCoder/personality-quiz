@@ -7,25 +7,19 @@ import { API_URL } from "../config";
 function UserProvider(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [token, setToken] = useState("");
-  const [username, setUsername] = useState("");
+  const [token, setToken] = useState(null);
+  const [username, setUsername] = useState(undefined);
 
   useEffect(() => {
-    const storedUserTokenInformation = localStorage?.getItem("userToken") ?? "";
-
-    if (storedUserTokenInformation.length !== 0) {
+    const storedUserTokenInformation =
+      localStorage?.getItem("userToken") ?? null;
+    if (storedUserTokenInformation) {
       setToken(storedUserTokenInformation);
-    }
-
-    const storedUserLoggedInInformation = localStorage.getItem("isLoggedIn");
-
-    if (storedUserLoggedInInformation === "true") {
       setIsLoggedIn(true);
     }
   }, []);
 
   const logoutHandler = () => {
-    localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
     localStorage.removeItem("userToken");
     setToken("");
@@ -51,9 +45,7 @@ function UserProvider(props) {
 
       setToken(token);
       localStorage.setItem("userToken", token);
-
       setIsLoggedIn(true);
-      localStorage.setItem("isLoggedIn", "true");
     } catch (err) {
       throw err;
     }
